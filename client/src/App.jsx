@@ -17,7 +17,6 @@ const App = () => {
 
 
   return (
-    <div>
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<LoginPage />}></Route>
@@ -40,7 +39,6 @@ const App = () => {
           theme="dark"
         />
       </BrowserRouter>
-    </div>
   );
 };
 

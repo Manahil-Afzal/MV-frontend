@@ -35,7 +35,7 @@ const Signup = () => {
     newForm.append("password", password);
 
     axios
-      .post(`${server}/user/create-user`, newForm, config)
+      .post(`${server}/user/create-user`, config, nerForm)
       .then((res) => {
         //  toast.success(res.data.message);
             toast.success(res.data.message || "Signup successful!");

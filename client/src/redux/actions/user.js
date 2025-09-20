@@ -1,3 +1,26 @@
+// import axios from "axios";
+
+// // load user 
+// export const loadUser = () => async(dispatch) =>{
+//      try {
+//         dispatch({
+//             type: "LoadUserRequest",
+//         });
+//         const { data } = await axios.get(`${server}/user/getuser`, {withCredentials: true})
+//           dispatch({
+//             type: "LoadUserSuccess",
+//              payload: data.user,
+//           })
+//     } catch (error) {
+//           dispatch({
+//                type: "LoadUserFail",
+//                payload: error.response.data.message,
+//           })
+//      }
+// }
+
+// actions/user.js
+
 import axios from "axios";
 
 // load user 
@@ -6,7 +29,7 @@ export const loadUser = () => async(dispatch) =>{
         dispatch({
             type: "LoadUserRequest",
         });
-        const { data } = await axios.get(`${server}/user/getuser`, {withCredentials: true})
+const { data } = await axios.get(`${server}/user/getuser`, { withCredentials: true });
           dispatch({
             type: "LoadUserSuccess",
              payload: data.user,
@@ -14,7 +37,7 @@ export const loadUser = () => async(dispatch) =>{
     } catch (error) {
           dispatch({
                type: "LoadUserFail",
-               payload: error.response.data.message,
+               payload: error.response?.data?.message,
           })
      }
 }
