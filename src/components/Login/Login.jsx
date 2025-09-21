@@ -1,7 +1,7 @@
 import { React, useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import styles from "../../styles/styles.js";
-import { Link,  useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { server } from "../../server";
@@ -17,8 +17,7 @@ const Login = () => {
     await axios
       .post(
         `${server}/user/login/user`,
-        { email: email,
-          password: password, },
+        { email: email, password: password },
         { withCredentials: true }
       )
       .then((res) => {
@@ -96,8 +95,9 @@ const Login = () => {
                 )}
               </div>
             </div>
-            {/* <div className={`${styles.normalFlex} justify-between`}>
-              <div className={`${styles.normalFlex} `}>
+
+            <div className={`${styles.normalFlex} justify-between w-full`}>
+              <div className={`${styles.normalFlex}`}>
                 <input
                   type="checkbox"
                   name="remember-me"
@@ -106,47 +106,22 @@ const Login = () => {
                 />
                 <label
                   htmlFor="remember-me"
-                  className="ml-2 block text-sm text-gray-900"
+                  className="ml-2 text-sm text-gray-900"
                 >
                   Remember me
                 </label>
               </div>
-              <div className="text-sm">
+
+              {/* Forgot Password */}
+              <div>
                 <a
-                  href=".forgot-password"
-                  className="font-medium text-blue-600 hover:text-blue-500"
+                  href="/forgot-password"
+                  className="text-sm font-medium text-blue-600 hover:text-blue-500"
                 >
                   Forget Your Password?
                 </a>
               </div>
-            </div> */}
-            <div className={`${styles.normalFlex} justify-between w-full`}>
-  {/* Remember Me */}
-  <div className={`${styles.normalFlex}`}>
-    <input
-      type="checkbox"
-      name="remember-me"
-      id="remember-me"
-      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-    />
-    <label
-      htmlFor="remember-me"
-      className="ml-2 text-sm text-gray-900"
-    >
-      Remember me
-    </label>
-  </div>
-
-  {/* Forgot Password */}
-  <div>
-    <a
-      href="/forgot-password"
-      className="text-sm font-medium text-blue-600 hover:text-blue-500"
-    >
-      Forget Your Password?
-    </a>
-  </div>
-</div>
+            </div>
 
             <div>
               <button
