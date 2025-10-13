@@ -28,25 +28,26 @@ const Signup = () => {
     e.preventDefault();
     const config = { headers: { "Content-Type": "multipart/form-data" }};
     const newForm = new FormData();
-    
     newForm.append("file", avatar);
     newForm.append("name", name);
     newForm.append("email", email);
     newForm.append("password", password);
 
-    axios
-      .post(`${server}/user/create-user`, config, nerForm)
+    // axios
+    //   .post(`${server}/user/create-user`, config, newForm)
+      axios.post(`${server}/user/create-user`, newForm, config)
+
       .then((res) => {
-        //  toast.success(res.data.message);
+         toast.success(res.data.message);
             toast.success(res.data.message || "Signup successful!");
             setName("");
             setEmail("");
             setPassword("");
             setAvatar();
-
+          navigate("/login");
  })
       .catch((error) => {
-        // toast.error(error.response.data.message);
+        toast.error(error.response.data.message);
             toast.error(error?.response?.data?.message || "Signup failed!");
                 console.log(error);
       });

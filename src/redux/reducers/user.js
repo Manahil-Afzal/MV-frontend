@@ -32,6 +32,7 @@ import { createReducer } from "@reduxjs/toolkit";
 
 const initialState = {
   isAuthenticated: false,
+   user: null, 
 };
 //builder callback notation
 export const userReducer = createReducer(initialState, (builder) => {

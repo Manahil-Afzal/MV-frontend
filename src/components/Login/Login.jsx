@@ -5,13 +5,17 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { server } from "../../server";
+import { useDispatch } from "react-redux";
+import { loadUser } from "../../redux/actions/user";  
 
 const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [visible, setVisible] = useState("");
+  const [visible, setVisible] = useState(false);
+  const dispatch = useDispatch();
 
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     await axios
@@ -22,7 +26,9 @@ const Login = () => {
       )
       .then((res) => {
         toast.success("login Success!");
-        navigate("/");
+         dispatch(loadUser());  
+        navigate("/profile");
+        window.location.reload();
       })
       .catch((err) => {
         toast.error(err.response.data.message);
@@ -111,8 +117,6 @@ const Login = () => {
                   Remember me
                 </label>
               </div>
-
-              {/* Forgot Password */}
               <div>
                 <a
                   href="/forgot-password"
