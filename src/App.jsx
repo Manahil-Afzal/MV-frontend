@@ -1,6 +1,3 @@
-
-
-
 import React, { useEffect } from "react";
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
@@ -20,7 +17,7 @@ import {
   ProfilePage,
   ShopCreatePage,
   SellerActivationPage,
-  ShopLoginPage
+  ShopLoginPage,
 } from "./routes/Routes.js";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -30,26 +27,36 @@ import { useSelector } from "react-redux";
 import ProtectedRoute from "./routes/ProtectedRoute.jsx";
 import ShopHomePage from "./pages/Shop/ShopHomePage";
 import SellerProtectedRoute from "./routes/SellerProtectedRoute.jsx";
-import { ShopDashboardPage } from "./routes/ShopRoutes";
+import SellerDashboardPage from "./pages/Shop/ShopDashboardPage.jsx";
+import ShopDashboardPage from "./pages/Shop/ShopDashboardPage.jsx";
 
 
 const App = () => {
   const { loading, isAuthenticated } = useSelector((state) => state.user);
   const { isLoading, isSeller } = useSelector((state) => state.seller);
-
+  
   useEffect(() => {
     Store.dispatch(loadUser());
     Store.dispatch(loadSeller());
   }, []);
 
+  if(loading || isLoading) {
+    return <div className="loading">Loading...</div>;
+  }
   return (
     <>
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/sign-up" element={<SignupPage />} />
-        <Route path="/activation/:activation_token" element={<ActivationPage />} />
-        <Route path="/seller/activation/:activation_token" element={<SellerActivationPage />} />
+        <Route
+          path="/activation/:activation_token"
+          element={<ActivationPage />}
+        />
+        <Route
+          path="/seller/activation/:activation_token"
+          element={<SellerActivationPage />}
+        />
         <Route path="/products" element={<ProductsPage />} />
         <Route path="/product/:name" element={<ProductDetailsPage />} />
         <Route path="/best-selling" element={<BestSellingPage />} />
@@ -79,22 +86,23 @@ const App = () => {
         {/* Shop Routes */}
         <Route path="/shop-create" element={<ShopCreatePage />} />
         <Route path="/shop-login" element={<ShopLoginPage />} />
-        <Route path="/shop/:id" 
-        element={
-           <SellerProtectedRoute
-              isSeller={isSeller}
-           >
+        <Route
+          path="/shop/:id"
+          element={
+            <SellerProtectedRoute isSeller={isSeller}>
               <ShopHomePage />
             </SellerProtectedRoute>
-        } />
+          }
+        />
 
         <Route
-         path="/dashboard" 
-        element={
-           <SellerProtectedRoute >
+          path="/dashboard"
+          element={
+            <SellerProtectedRoute >
               <ShopDashboardPage />
             </SellerProtectedRoute>
-        } />
+          }
+        />
       </Routes>
 
       {/* Toast Notifications */}
@@ -105,7 +113,7 @@ const App = () => {
         newestOnTop={false}
         closeOnClick
         rtl={false}
-        pauseOnFocusLoss 
+        pauseOnFocusLoss
         draggable
         pauseOnHover
         theme="dark"

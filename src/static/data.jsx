@@ -266,7 +266,7 @@ export const productData = [
 {
   id: 1,
   category: "Computers & Laptops",
-  name: "MacBook Pro M2 256GB SSD 8GB RAM Space-Gray",
+  name: "MacBook Pro M2 256GB SSD 8GB RAM Space Gray",
   description:
     "Product details are crucial for customers to make informed decisions. Includes features, specs, dimensions, weight, materials, and images for better understanding.MacBooks feature Apple's M4 series of chips for powerful performance, macOS operating system for a user-friendly interface, and deep integration with other Apple devices through the ecosystem for seamless workflows. Key features include long battery life, stunning Retina displays, advanced AI capabilities powered by the Neural Engine, and a strong focus on security and privacy.The M4 family of chips brings hardware-accelerated ray tracing for graphics, improved memory bandwidth, and efficient performance for demanding tasks and video editing.  ",
   image_Url: [

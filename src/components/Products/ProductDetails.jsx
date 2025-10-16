@@ -31,10 +31,10 @@ const ProductDetails = ({ data }) => {
   return (
     <div className="bg-white ">
       {data ? (
-        <div className={`${styles.section} w-[60%]  800px:w-[60%] `}>
+        <div className={`${styles.section} w-[90%]  800:w-[80%] `}>
           <div className="w-full py-5 ">
-            <div className="block w-full 800px:flex">
-              <div className="w-[50%] 800px:w-[50%]">
+            <div className="block w-full 800:flex">
+              <div className="w-[50%] 800:w-[50%]">
                 <img
                   src={data.image_Url[select].url}
                   alt=""
@@ -66,7 +66,8 @@ const ProductDetails = ({ data }) => {
                     />
                   </div>
                 </div>
-                <div className="w-full 800px:w-[50%] pt-5">
+              </div>
+                  <div className="w-full 800:w-[50%] pt-5">
                   <h1 className={`${styles.productTitle}`}>{data.name}</h1>
                   <p>{data.description}</p>
                   <div className="flex pt-3">
@@ -147,7 +148,6 @@ const ProductDetails = ({ data }) => {
                     </div>
                   </div>
                 </div>
-              </div>
             </div>
           </div>
           <ProductDetailsInfo data={data} />
@@ -234,8 +234,8 @@ const ProductDetailsInfo = ({ data }) => {
       ) : null}
 
       {active === 3 && (
-        <div className="w-full block 800px:flex p-5">
-          <div className="w-full 800px:w-[50%]">
+        <div className="w-full block 800:flex p-5">
+          <div className="w-full 800:w-[50%]">
             <div className="flex items-center">
               <img
                 src={data.shop.shop_avatar.url}
@@ -255,7 +255,7 @@ const ProductDetailsInfo = ({ data }) => {
               checked to ensure customer satisfaction."
             </p>
           </div>
-          <div className="w-full 800px:w-[50%] mt-5 800px:mt-0 800px:flex flex-col items-end">
+          <div className="w-full 800:w-[50%] mt-5 800:mt-0 800:flex flex-col items-end">
             <div className="text-left">
               <h5 className="font-[600]">
                 Joined on : <span className="font-[500]">14 March, 2024</span>

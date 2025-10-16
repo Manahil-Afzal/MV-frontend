@@ -5,7 +5,7 @@ import  { sellerReducer } from "./reducers/seller.js";
 const Store = configureStore({
     reducer:{
           user: userReducer,
-            seller: sellerReducer,
+          seller: sellerReducer,
     },
 });
 

@@ -22,7 +22,7 @@ const ProfileContent = ({ active }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
   };
-
+      console.log(user.avatar.url);
   return (
     <div className="w-full ">
       {/* profile page */}
@@ -31,8 +31,7 @@ const ProfileContent = ({ active }) => {
           <div className="flex justify-center w-full ">
             <div className="relative">
               <img
-                //   src={`${backend_url}${user?.avatar?.url}`}
-                src={`${backend_url}/${user?.avatar}`}
+                src={`${backend_url}${user?.avatar.url}`}
                 className="w-[150px] h-[150px] rounded-full object-cover border-[3px] border-[#3ad132]"
                 alt=""
               />

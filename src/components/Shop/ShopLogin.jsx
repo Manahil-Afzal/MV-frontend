@@ -26,7 +26,7 @@ const ShopLogin = () => {
       .then((res) => {
         toast.success("login Success!");
          dispatch(loadUser());  
-        window.location.reload();
+        // window.location.reload();
       })
       .catch((err) => {
         toast.error(err.response.data.message);

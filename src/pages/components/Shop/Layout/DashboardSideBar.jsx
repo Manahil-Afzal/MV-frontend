@@ -11,10 +11,10 @@ import { HiOutlineReceiptRefund } from "react-icons/hi";
 
 const DashboardSideBar = ({ active }) => {
   return (
-    <div className="w-full h-[89vh] bg-white shadow-sm overflow-y-scroll sticky top-0 left-0 z-10">
+    <div className=" w-full h-[89vh] bg-white shadow-sm overflow-y-scroll sticky top-0 left-0 z-10">
       {/* single item */}
-      <div className="w-full flex items-center p-4">
-        <Link to="/dashboard" className="w-full flex items-center">
+      <div className=" w-full flex items-center p-4">
+        <Link to="/dashboard" className=" w-full flex items-center">
           <RxDashboard
             size={30}
             color={`${active === 1 ? "crimson" : "#555"}`}
@@ -199,3 +199,7 @@ const DashboardSideBar = ({ active }) => {
 };
 
 export default DashboardSideBar;
+
+
+
+

@@ -1,25 +1,32 @@
 import { createReducer } from "@reduxjs/toolkit";
 
 const initialState = {
-  isAuthenticated: false,
-   user: null, 
+  isSeller: false,
+   shop: null, 
+   loading: true,
+  //  isLoading: false,
+  isLoading:true,
+   error: null,
 };
 
 //builder callback notation
 export const sellerReducer = createReducer(initialState, (builder) => {
   builder
     .addCase("LoadSellerRequest", (state) => {
-      state.isLoading = true;
+      state.loading = true;
     })
     .addCase("LoadSellerSuccess", (state, action) => {
-      state.isLoading = false;
-      state.isAuthenticated = true;
-      state.user = action.payload;
+      state.loading = false;
+      state.isSeller = true;
+      state.isSeller = action.payload;
     })
     .addCase("LoadSellerFail", (state, action) => {
-      state.isLoading = false;
+      state.loading = false;
       state.error = action.payload;
-      state.isAuthenticated = false;
+      state.isSeller = false;
+    })
+     .addCase("clearErrors", (state) => {
+      state.error = null;
     })
  
 });

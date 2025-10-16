@@ -13,11 +13,12 @@ const ProductDetailsPage = () => {
   const { name } = useParams();
   const [data, setData] = useState(null);
   const productName = name.replace(/-/g, " ");
-
+  
   useEffect(() => {
     const data = productData.find((i) => i.name === productName);
     setData(data);
   }, []);
+    console.log(data);
   return (
     <div>
       <Header />

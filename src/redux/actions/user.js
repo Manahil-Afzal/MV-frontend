@@ -21,6 +21,9 @@
 
 // actions/user.js
 
+
+
+import { server } from "../../server";
 import axios from "axios";
 
 // load user 
@@ -49,10 +52,10 @@ export const loadSeller = () => async(dispatch) =>{
         dispatch({
             type: "LoadSellerRequest",
         });
-const { data } = await axios.get(`${server}/shop/getSeller`, { withCredentials: true });
+const { data } = await axios.get(`${server}/shop/get-seller`, { withCredentials: true });
           dispatch({
             type: "LoadSellerSuccess",
-             payload: data.seller,
+             payload: data.shop,
           })
     } catch (error) {
           dispatch({

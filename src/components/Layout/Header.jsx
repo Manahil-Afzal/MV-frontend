@@ -71,8 +71,8 @@ const handleCategoryClick = (category) => {
 
   return (
     <>
-      <div className={`${styles.section}`}>
-        <div className="h-[50px] flex items-center justify-between px-4 shadow-md">
+      <div className={`max-w-9xl mx-auto `}>
+        <div className=" flex items-center justify-between px-4 shadow-md">
           <Link to="/">
             <img
               src="https://shopo.quomodothemes.website/assets/images/logo.svg"
@@ -141,7 +141,7 @@ const handleCategoryClick = (category) => {
 
       {/*  Desktop Navbar  */}
       <div
-        className={`hidden md:flex items-center w-full bg-[#3321c8] h-[60px] px-11 rounded-md mt-4 relative ${
+        className={`hidden md:flex items-center w-full bg-[#3321c8] h-[60px] px-11 rounded-md  relative ${
           active ? "shadow-sm top-0 left-0 z-10" : ""
         }`}
       >
@@ -165,7 +165,7 @@ const handleCategoryClick = (category) => {
        {dropDown && (
   <DropDown
     categoriesData={categoriesData}
-    handleCategoryClick={handleCategoryClick}   // <-- pass the real handler
+    handleCategoryClick={handleCategoryClick}   
     dropDownProducts={dropDownProducts}
   />
 )}
@@ -203,7 +203,7 @@ const handleCategoryClick = (category) => {
           <Link to={isAuthenticated ? "/profile" : "/login"}>
             {isAuthenticated && user?.avatar ? (
               <img
-                src={`${backend_url}/${user.avatar}`}
+                src={`${backend_url}${user.avatar.url}`}
                 className="w-[35px] h-[35px] rounded-full border border-white"
                 alt="Profile"
               />
@@ -216,7 +216,7 @@ const handleCategoryClick = (category) => {
 
       {/* ------------ Sidebar for Mobile ------------- */}
       {openSidebar && (
-        <div className="fixed top-0 left-0 w-full h-screen bg-[#0000005e] z-20">
+        <div className="800:hidden fixed top-0 left-0 w-full h-screen bg-[#0000005e] z-20">
           <div className="w-[50%] bg-white h-full shadow-md p-5 relative overflow-y-scroll">
             {/* Close */}
             <RxCross1
@@ -255,7 +255,7 @@ const handleCategoryClick = (category) => {
                 </span>
               </div>
 
-              <Link to="/seller">
+              <Link to="/shop-create">
                 <button className="bg-[#3bc177] text-white px-4 py-2 rounded-md flex items-center gap-2">
                   Become Seller <IoArrowForward />
                 </button>
@@ -270,7 +270,7 @@ const handleCategoryClick = (category) => {
               >
                 {isAuthenticated && user?.avatar ? (
                   <img
-                    src={`${backend_url}/${user.avatar}`}
+                    src={`${backend_url}${user.avatar.url}`}
                     className="w-[60px] h-[60px] rounded-full border-[3px] border-[#3bc177]"
                     alt="Profile"
                   />

@@ -29,13 +29,13 @@ const ProductDetailsCard = ({ setOpen, data }) => {
     <div className="bg-[#fff]">
       {data ? (
         <div className="fixed w-full h-screen top-0 left-0 bg-[#00000030] z-40 flex items items-center justify-center">
-          <div className="w-[90%] 800px:w-[60%] h-[90vh] overflow-y-scroll 800px:h-[75vh] bg-white rounded-md shadow-sm relative p-4">
+          <div className="w-[90%] 800:w-[60%] h-[90vh] overflow-y-scroll 800:h-[75vh] bg-white rounded-md shadow-sm relative p-4">
             <RxCross2
               size={30}
               className="absolute right-3 top-3 z-50"
               onClick={() => setOpen(false)}
             />
-            <div className="block w-full 800px:flex">
+            <div className="block w-full gap-4 800:flex">
               <div className="w-1/2 h-full flex flex-col">
                 <img
                   src={data.image_Url[0].url}
@@ -55,8 +55,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                     </p>
                   </div>
                 </div>
-              </div>
-
+                
               <div className="w-1/2 h-full flex flex-col justify-center items-start px-4">
                 <div
                   className={`${styles.button} bg-[#000]  rounded-[4px] h-12 flex items-center justify-center cursor-pointer`}
@@ -71,13 +70,14 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                   ({data.total_sell}) Sold out
                 </h5>
               </div>
-            </div>
+              
+              </div>
 
-            <div className="w-full 800px:w-[50%] -mt-100 pt-50 pl-[290px] pr-[50px]">
+            <div className="w-full 800:w-1/2">
               <h1 className={`${styles.productTitle}  text-[20px] `}>
                 {data.name}
               </h1>
-              <p> {data.description}</p>
+              <p> {data.description.slice(0,600)}...</p>
               <div className="flex pt-3">
                 <h4 className={`${styles.productDiscountPrice}`}>
                   {data.discount_price}$
@@ -131,6 +131,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                 </span>
               </div>
             </div>
+           </div>
           </div>
         </div>
       ) : null}

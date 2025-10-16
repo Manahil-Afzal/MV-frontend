@@ -7,6 +7,8 @@ import FeaturedProduct from "../components/Route/FeaturedProduct/FeaturedProduct
 import Events from "../components/Events/Events";
 import Sponsored from "../components/Route/Sponsored.jsx";
 import Footer from "../components/Layout/Footer";
+import Loader from '../components/Layout/Loader';
+
 
 const HomePage = () =>  {
   return (
@@ -19,6 +21,7 @@ const HomePage = () =>  {
       <FeaturedProduct/>
       <Sponsored/>
       <Footer/>
+      <Loader />
     </div>
   )
 }

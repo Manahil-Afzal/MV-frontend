@@ -1,4 +1,4 @@
-import ShopDashboardPage from "../pages/Shop/ShopDashboardPage.jsx";
+import ShopDashboardPage from "../../pages/Shop/ShopDashboardPage";
 
 export {
     ShopDashboardPage,
