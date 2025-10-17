@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
-import styles from "../../../styles/styles";
-import { productData } from "../../../static/data";
-import ProductCard from "../../../components/Route/ProductCard/ProductCard";
+import styles from "../../styles/styles";
+import { productData } from "../../static/data";
+import ProductCard from "../../components/Route/ProductCard/ProductCard";
 
 
 

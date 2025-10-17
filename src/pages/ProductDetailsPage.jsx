@@ -3,9 +3,9 @@ import Footer from "../components/Layout/Footer";
 import Header from "../components/Layout/Header";
 import ProductDetails from "../components/Products/ProductDetails";
 import { useParams } from "react-router-dom";
-import styles from "../../src/styles/styles";
+import styles from "../styles/styles";
 import { productData } from "../static/data";  
-import SuggestedProduct from "./components/Products/SuggestedProduct";
+import SuggestedProduct from "../components/Products/SuggestedProduct.jsx";
 
 
 

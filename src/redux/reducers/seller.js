@@ -4,8 +4,8 @@ const initialState = {
   isSeller: false,
    shop: null, 
    loading: true,
-  //  isLoading: false,
-  isLoading:true,
+   isLoading: false,
+  // isLoading:true,
    error: null,
 };
 

@@ -29,6 +29,8 @@ import ShopHomePage from "./pages/Shop/ShopHomePage";
 import SellerProtectedRoute from "./routes/SellerProtectedRoute.jsx";
 import SellerDashboardPage from "./pages/Shop/ShopDashboardPage.jsx";
 import ShopDashboardPage from "./pages/Shop/ShopDashboardPage.jsx";
+import ShopCreateProduct from "./pages/Shop/ShopCreateProduct.jsx";
+
 
 
 const App = () => {
@@ -103,6 +105,15 @@ const App = () => {
             </SellerProtectedRoute>
           }
         />
+           <Route
+          path="/dashboard-create-product"
+          element={
+            <SellerProtectedRoute >
+              <ShopCreateProduct />
+            </SellerProtectedRoute>
+          }
+        />
+
       </Routes>
 
       {/* Toast Notifications */}
