@@ -661,3 +661,10 @@ export const footerSupportLinks = [
 ];
 
 
+export const sellerData = {
+  name: "MV Shop",
+  // description: "We sell high-quality electronics and laptops.",
+  address: "60094,California, CA 95014, USA",
+  PhoneNumber: "+1 800-275-2273",
+  createdAt: "2025-10-01T12:00:00.000Z"
+};

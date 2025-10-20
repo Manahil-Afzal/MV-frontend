@@ -66,7 +66,7 @@ const DashboardHeader = () => {
             <img
               src={
                 seller?.avatar
-                  ? `${backend_url}${seller.avatar}`
+                  ? `${backend_url}/uploads/${seller.avatar}`
                : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtGhh6EJ3GsKjem9tPvDkiLHQrR1z-HFFUHA&s"
                 }
               alt=""

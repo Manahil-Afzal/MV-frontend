@@ -7,7 +7,7 @@ const ShopDashboardPage = () => {
     <div>
       <DashboardHeader  />
       <div className="flex item-center justify-between w-full">
-         <div className='w-[80px] 800px:w-[330px]'>
+         <div className='w-[80px] 800:w-[330px]'>
                  <DashboardSideBar active={1}/>
          </div>
       </div>

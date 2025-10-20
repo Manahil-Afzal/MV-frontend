@@ -30,7 +30,7 @@ import SellerProtectedRoute from "./routes/SellerProtectedRoute.jsx";
 import SellerDashboardPage from "./pages/Shop/ShopDashboardPage.jsx";
 import ShopDashboardPage from "./pages/Shop/ShopDashboardPage.jsx";
 import ShopCreateProduct from "./pages/Shop/ShopCreateProduct.jsx";
-
+import ShopPage from "./pages/Shop/ShopHomePage.jsx";
 
 
 const App = () => {
@@ -86,6 +86,7 @@ const App = () => {
         <Route path="/order/success/:id" element={<OrderSuccessPage />} />
 
         {/* Shop Routes */}
+        <Route path="/shop" element={<ShopPage />} />
         <Route path="/shop-create" element={<ShopCreatePage />} />
         <Route path="/shop-login" element={<ShopLoginPage />} />
         <Route
