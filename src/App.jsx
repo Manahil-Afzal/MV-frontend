@@ -31,18 +31,22 @@ import SellerDashboardPage from "./pages/Shop/ShopDashboardPage.jsx";
 import ShopDashboardPage from "./pages/Shop/ShopDashboardPage.jsx";
 import ShopCreateProduct from "./pages/Shop/ShopCreateProduct.jsx";
 import ShopPage from "./pages/Shop/ShopHomePage.jsx";
+import ShopAllProducts from "./pages/Shop/ShopAllProducts.jsx";
+import ShopCreateEvents from "./pages/Shop/ShopCreateEvents.jsx";
+import ShopAllEvents from "./pages/Shop/ShopAllEvents.jsx";
+import ShopAllCoupouns from "./pages/Shop/ShopAllCoupouns.jsx";
 
 
 const App = () => {
   const { loading, isAuthenticated } = useSelector((state) => state.user);
   const { isLoading, isSeller } = useSelector((state) => state.seller);
-  
+
   useEffect(() => {
     Store.dispatch(loadUser());
     Store.dispatch(loadSeller());
   }, []);
 
-  if(loading || isLoading) {
+  if (loading || isLoading) {
     return <div className="loading">Loading...</div>;
   }
   return (
@@ -101,19 +105,54 @@ const App = () => {
         <Route
           path="/dashboard"
           element={
-            <SellerProtectedRoute >
+            <SellerProtectedRoute>
               <ShopDashboardPage />
             </SellerProtectedRoute>
           }
         />
-           <Route
+        <Route
           path="/dashboard-create-product"
           element={
-            <SellerProtectedRoute >
+            <SellerProtectedRoute>
               <ShopCreateProduct />
             </SellerProtectedRoute>
           }
         />
+        <Route
+          path="/dashboard-products"
+          element={
+            <SellerProtectedRoute>
+              <ShopAllProducts />
+            </SellerProtectedRoute>
+          }
+        />
+           <Route
+          path="/dashboard-create-event"
+          element={
+            <SellerProtectedRoute>
+              <ShopCreateEvents />
+            </SellerProtectedRoute>
+          }
+        />
+
+           <Route
+          path="/dashboard-events"
+          element={
+            <SellerProtectedRoute>
+              <ShopAllEvents />
+            </SellerProtectedRoute>
+          }
+        />
+
+          <Route
+          path="/dashboard-coupouns"
+          element={
+            <SellerProtectedRoute>
+              <ShopAllCoupouns />
+            </SellerProtectedRoute>
+          }
+        />
+
 
       </Routes>
 

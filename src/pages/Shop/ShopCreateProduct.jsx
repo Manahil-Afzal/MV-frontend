@@ -21,4 +21,4 @@ const ShopCreateProduct=()=> {
   )
 }
 
-export default ShopCreateProduct
+export default ShopCreateProduct;

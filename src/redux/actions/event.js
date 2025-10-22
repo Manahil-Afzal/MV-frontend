@@ -1,72 +1,72 @@
 import axios from "axios";
 import { server } from "../../server";
 
-// create product
-export const createProduct = (newForm) => async (dispatch) => {
+// create event
+export const createevent = (newForm) => async (dispatch) => {
   try {
     dispatch({
-      type: "productCreateRequest",
+      type: "eventCreateRequest",
     });
     const config = { headers: { "Content-Type": "multipart/form-data" } };
 
     const { data } = await axios.post(
-      `${server}/product/create-product`,
+      `${server}/event/create-event`,
       newForm,
       config
     );
     dispatch({
-      type: "productCreateSuccess",
-      payload: data.product,
+      type: "eventCreateSuccess",
+      payload: data.event,
     });
   } catch (error) {
     dispatch({
-      type: "productCreateFail",
+      type: "eventCreateFail",
       payload: error.response.data.message,
     });
   }
 };
 
-// get All products
-export const getAllProductsShop = (id) => async (dispatch) => {
+// get All events of a shop
+export const getAlleventsShop = (id) => async (dispatch) => {
   try {
     dispatch({
-      type: "getAllProductsShopRequest",
+      type: "getAlleventsShopRequest",
     });
     const { data } = await axios.get(
-      `${server}/product/get-all-product-shop/${id}`
+      `${server}/event/get-all-events/${id}`
     );
     dispatch({
-      type: "getAllProductsShopSuccess",
-      payload: data.products,
+      type: "getAlleventsShopSuccess",
+      payload: data.events,
     });
   } catch (error) {
     dispatch({
-      type: "getAllProductsShopFailed",
+      type: "getAlleventsShopFailed",
       payload: error.response.data.message,
     });
   }
 };
 
-// delete product of a shop
-export const deleteProduct = (id) => async (dispatch) => {
+// delete event of a shop
+export const deleteEvent = (id) => async (dispatch) => {
   try {
     dispatch({
-      type: "deleteProductRequest",
+      type: "deleteeventRequest",
     });
     const { data } = await axios.delete(
-      `${server}/product/delete-shop-product/${id}`,
+      `${server}/event/delete-shop-event/${id}`,
       {
         withCredentials: true,
       }
     );
 
     dispatch({
-      type: "deleteProductSuccess",
+      type: "deleteeventSuccess",
       payload: data.message,
     });
   } catch (error) {
     dispatch({
-      type: "getAllProductsFailed",
+      type: "getAlleventsFailed",
       payload: error.response.data.message,
     });
   }
