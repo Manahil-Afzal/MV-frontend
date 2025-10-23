@@ -48,36 +48,33 @@ const Header = ({ activeHeading }) => {
     setSearchData(filtered);
   };
 
-
   // handle category click
-const handleCategoryClick = (category) => {
-  console.log("Clicked category:", category);
+  const handleCategoryClick = (category) => {
+    console.log("Clicked category:", category);
 
-  if (!category || typeof category !== "string") return;
+    if (!category || typeof category !== "string") return;
 
-  const filtered =
-    productData &&
-    productData.filter(
-      (p) =>
-        p.category &&
-        p.category.toLowerCase().includes(category.toLowerCase())
-    );
+    const filtered =
+      productData &&
+      productData.filter(
+        (p) =>
+          p.category &&
+          p.category.toLowerCase().includes(category.toLowerCase())
+      );
 
-  console.log("Filtered products:", filtered);
-  setDropDownProducts(filtered);
-};
-
- 
+    console.log("Filtered products:", filtered);
+    setDropDownProducts(filtered);
+  };
 
   return (
     <>
       <div className={`max-w-9xl mx-auto `}>
-        <div className=" flex items-center justify-between px-4 shadow-md">
-          <Link to="/">
+        <div className="h-[70px] flex items-center justify-between px-4 shadow-md">
+          <Link to="/" className="ml-20">
             <img
-              src="https://shopo.quomodothemes.website/assets/images/logo.svg"
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfOTbSSEiEXBDYndLMpKOO0EQFZGYDChWE0w&s"
               alt="Logo"
-              className="h-[40px]"
+              className="h-[110px] object-contain"
             />
           </Link>
 
@@ -88,11 +85,11 @@ const handleCategoryClick = (category) => {
               placeholder="Search Product..."
               value={searchTerm}
               onChange={handleSearchChange}
-              className="h-[40px] w-full px-2 border-[#3957db] border-[2px] rounded-md"
+              className="h-[35px] w-full px-2 bg-white border-2 border-[#123243] rounded-md text-[#123243]"
             />
             <AiOutlineSearch
               size={28}
-              className="absolute right-2 top-2 cursor-pointer"
+              className="absolute right-2 top-1 cursor-pointer"
             />
             {searchData && searchData.length > 0 && (
               <div className="absolute bg-white shadow-md w-full z-10 p-3">
@@ -117,7 +114,7 @@ const handleCategoryClick = (category) => {
 
           <div className={`${styles.button}`}>
             <Link to="/shop-create">
-              <button className="flex items-center gap-1 text-white cursor-pointer">
+              <button className="flex items-center gap-1 bg-[#F2A533] text-white cursor-pointer">
                 Become Seller <IoArrowForward />
               </button>
             </Link>
@@ -141,7 +138,7 @@ const handleCategoryClick = (category) => {
 
       {/*  Desktop Navbar  */}
       <div
-        className={`hidden md:flex items-center w-full bg-[#3321c8] h-[60px] px-11 rounded-md  relative ${
+        className={`hidden md:flex items-center w-full bg-[#123243] h-[60px] px-11 rounded-md  relative ${
           active ? "shadow-sm top-0 left-0 z-10" : ""
         }`}
       >
@@ -162,15 +159,13 @@ const handleCategoryClick = (category) => {
             />
           </button>
 
-       {dropDown && (
-  <DropDown
-    categoriesData={categoriesData}
-    handleCategoryClick={handleCategoryClick}   
-    dropDownProducts={dropDownProducts}
-  />
-)}
-
-
+          {dropDown && (
+            <DropDown
+              categoriesData={categoriesData}
+              handleCategoryClick={handleCategoryClick}
+              dropDownProducts={dropDownProducts}
+            />
+          )}
         </div>
 
         {/* Navbar Center */}

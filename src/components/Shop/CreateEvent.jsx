@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { categoriesData } from "../../../static/data";
+import { categoriesData } from "../../static/data";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import toast from "react-hot-toast";
-import DashboardSideBar from "./DashboardSideBar";
-import {createevent} from "../../../redux/actions/event";
+import DashboardSideBar from "./Layout/DashboardSideBar";
+import {createevent} from "../../redux/actions/event";
 
 
 const CreateEvent = () => {
@@ -89,7 +89,7 @@ const CreateEvent = () => {
   };
 
   return (
-    <div className="w-[50%] bg-white shadow h-[80vh] rounded-[4px] p-3 overflow-y-scroll ">
+    <div className="w-[70%] bg-white shadow h-[80vh] rounded-[4px] p-3 overflow-y-scroll ">
       <h5 className="text-[30px] font-Poppins text-center">Create Event</h5>
       {/*create event  form*/}
       <form onSubmit={handleSubmit}>

@@ -2,7 +2,7 @@ import React from 'react'
 import DashboardHeader from '../../components/Shop/Layout/DashboardHeader';
 import DashboardSideBar from '../../components/Shop/Layout/DashboardSideBar';
 import AllCoupouns from "../../components/Shop/AllCoupouns"
-
+import Toast from 'react-hot-toast';
 
 const ShopAllCoupouns=()=> {
   return (
@@ -13,7 +13,8 @@ const ShopAllCoupouns=()=> {
                  <DashboardSideBar active={9} />
              </div>
              <div className="w-full justify-center flex">
-                <ShopAllCoupouns />
+                <AllCoupouns />
+                <Toast />
              </div>
         </div>
     </div>

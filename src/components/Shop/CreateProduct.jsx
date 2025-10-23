@@ -20,7 +20,7 @@ const CreateProduct = () => {
   const [OriginalPrice, setOriginalPrice] = useState("");
   const [discountPrice, setDiscountPrice] = useState("");
   const [stock, setStock] = useState("");
-        console.log(seller)
+        console.log(seller);
 
   useEffect(() => {
     if (error) {
@@ -62,7 +62,7 @@ const CreateProduct = () => {
 
 
   return (
-    <div className="w-[50%] bg-white shadow h-[80vh] rounded-[4px] p-3 overflow-y-scroll ">
+    <div className="w-[70%] bg-white shadow h-[80vh] rounded-[4px] p-3 overflow-y-scroll ">
       <h5 className="text-[30px] font-Poppins text-center">Create Product</h5>
       {/*create product form*/}
       <form onSubmit={handleSubmit}>

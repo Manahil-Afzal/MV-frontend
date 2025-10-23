@@ -1,6 +1,6 @@
 import axios from "axios";
 import { server } from "../../server";
-
+import toast from "react-hot-toast";
 // create event
 export const createevent = (newForm) => async (dispatch) => {
   try {
@@ -50,24 +50,21 @@ export const getAlleventsShop = (id) => async (dispatch) => {
 // delete event of a shop
 export const deleteEvent = (id) => async (dispatch) => {
   try {
-    dispatch({
-      type: "deleteeventRequest",
-    });
+    dispatch({ type: "deleteeventRequest" });
+
     const { data } = await axios.delete(
       `${server}/event/delete-shop-event/${id}`,
-      {
-        withCredentials: true,
-      }
+      { withCredentials: true }
     );
 
-    dispatch({
-      type: "deleteeventSuccess",
-      payload: data.message,
-    });
+    dispatch({ type: "deleteeventSuccess", payload: id }); // send id
+    toast.success(data.message);
+
   } catch (error) {
     dispatch({
-      type: "getAlleventsFailed",
-      payload: error.response.data.message,
+      type: "deleteeventFailed",
+      payload: error.response?.data?.message || "Error deleting event",
     });
+    toast.error(error.response?.data?.message || "Error deleting event");
   }
 };

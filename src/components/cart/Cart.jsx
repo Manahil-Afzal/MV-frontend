@@ -51,7 +51,7 @@ const Cart = ({ setOpenCart }) => {
           <div className="px-5 mb-3">
                 {/* checkout buttons */}
                 <Link to="/checkout">
-                  <div className={`h-[45px] flex items-center justify-center w-[100%] bg-[#e44343] rounded-[5px] `}>
+                  <div className={`h-[45px] flex items-center justify-center w-[100%] bg-[#F2A533] rounded-[5px] `}>
                         <h1 className="text-#fff text-[18px] font-[600]"
                         >Checkout Now (USD$1080) </h1>
                   </div>
@@ -71,7 +71,7 @@ const CartSingle = ({ data }) => {
       <div className="w-full flex items-center">
         <div>
           <div
-            className={`bg-[#e44343] border border-[#e4434373] rounded-full w-[25px] h-[25px] ${styles.normalFlex}`}
+            className={`bg-[#F2A533] border border-[#e4434373] rounded-full w-[25px] h-[25px] ${styles.normalFlex}`}
             onClick={() => setValue(value + 1)}
           >
             <HiPlus size={18} color="#fff" />
@@ -92,7 +92,7 @@ const CartSingle = ({ data }) => {
           <div className="pl-[5px]">
                <h1>{data.name}</h1>
                <h4 className="font-[400] text-[15px] text-[#00000082]">${data.price} * {value}</h4>
-               <h4 className="font-[600] text-[17px] pt-[3px] text-[#d02222] font-Roboto">
+               <h4 className="font-[600] text-[17px] pt-[3px] bg-[#F2A533] font-Roboto">
                   US${totalPrice}
                </h4>
           </div>

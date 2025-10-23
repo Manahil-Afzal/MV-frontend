@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@mui/material";
 import { AiOutlineEye, AiOutlineDelete } from "react-icons/ai";
@@ -7,22 +7,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllProductsShop } from "../../redux/actions/product";
 import { DataGrid, renderActionsCell } from "@mui/x-data-grid";
 import { deleteProduct } from "../../redux/actions/product";
-import styles from "../../styles/styles";
-import { RxCross1 } from "react-icons/rx";
 
 const AllProducts = () => {
-  const [open, setOpen] = useState(false);
   const { products, isLoading } = useSelector((state) => state.products);
   const { seller } = useSelector((state) => state.seller);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getAllProductsShop(seller._id));
+    dispatch(getAllProductsShop(seller?._id));
   }, [dispatch]);
 
   const handleDelete = (id) => {
     dispatch(deleteProduct(id));
-    window.location.reload();
+     dispatch(getAllProductsShop())
   };
 
   const columns = [
@@ -84,7 +81,7 @@ const AllProducts = () => {
       renderCell: (params) => {
         return (
           <>
-            <Button onClick={() => handleDelete(params._id)}>
+            <Button onClick={() => handleDelete(params.row.id)}>
               <AiOutlineDelete size={20} />
             </Button>
           </>
@@ -100,7 +97,7 @@ const AllProducts = () => {
         id: item._id,
         name: item.name,
         price: "US$" + item.discountPrice,
-        Stock: item.stock,
+        Stock: item.sold_out,
         sold: 10,
       });
     });
@@ -110,13 +107,13 @@ const AllProducts = () => {
       {isLoading ? (
         <Loader />
       ) : (
-        <div className="w-full mx-8 pt-1 mt-10 bg-white">
+        <div className="w-full mx-1 pt-1 mt-10 bg-white">
           <DataGrid
             rows={row}
             columns={columns}
             pageSize={10}
+             autoHeight
             disableRowSelectionOnClick
-            autoHeight
           />
          
         </div>

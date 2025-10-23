@@ -4,9 +4,10 @@ import { Button } from "@mui/material";
 import { AiOutlineEye, AiOutlineDelete } from "react-icons/ai";
 import Loader from "../Layout/Loader";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllProductsShop } from "../../redux/actions/product";
 import { DataGrid, renderActionsCell } from "@mui/x-data-grid";
-import { deleteProduct } from "../../redux/actions/product";
+import toast from "react-hot-toast";
+import { getAlleventsShop, deleteEvent } from "../../redux/actions/event";
+
 
 
 const AllEvents = () => {
@@ -14,14 +15,18 @@ const AllEvents = () => {
   const { seller } = useSelector((state) => state.seller);
   const dispatch = useDispatch();
    
-  useEffect(() => {
-    dispatch(getAllProductsShop(seller._id));
-  }, [dispatch]);
+useEffect(() => {
+  if (seller && seller._id) {
+    dispatch(getAlleventsShop(seller._id));
+  }
+}, [dispatch, seller]);
 
-  const handleDelete = (id) => {
-    dispatch(deleteEvent(id));
-    window.location.reload();
-  };
+  
+const handleDelete = (id) => {
+  dispatch(deleteEvent(id));
+  toast.success("Event Deleted Successfully!");
+};
+
 
   const columns = [
     { field: "id", headerName: "Product Id", minWidth: 150, flex: 0.7 },
@@ -52,44 +57,28 @@ const AllEvents = () => {
       flex: 0.6,
     },
     {
-      field: "Preview",
-      flex: 0.8,
-      minWidth: 100,
-      headerName: "",
-      type: "number",
-      sortable: false,
-      renderCell: (params) => {
-        const d = params.row.name;
-        const product_name = d.replace(/\s+/g, "-");
-        return (
-          <>
-            <Link to={`/product/${product_name}`}>
-              <Button>
-                <AiOutlineEye size={20} />
-              </Button>
-            </Link>
-          </>
-        );
-      },
+    field: "Preview",
+    renderCell: (params) => {
+      return (
+        <Link to={`/event/${params.row.id}`}>
+          <Button>
+            <AiOutlineEye size={20} />
+          </Button>
+        </Link>
+      );
     },
-    {
-      field: "Delete",
-      flex: 0.8,
-      minWidth: 120,
-      headerName: "",
-      type: "number",
-      sortable: false,
-      renderCell: (params) => {
-        return (
-          <>
-            <Button onClick={() => handleDelete(params._id)}>
-              <AiOutlineDelete size={20} />
-            </Button>
-          </>
-        );
-      },
+  },
+  {
+    field: "Delete",
+    renderCell: (params) => {
+      return (
+        <Button onClick={() => handleDelete(params.row.id)}>
+          <AiOutlineDelete size={20} />
+        </Button>
+      );
     },
-  ];
+  },
+];
 
   const row = [];
   events &&
@@ -99,7 +88,7 @@ const AllEvents = () => {
         name: item.name,
         price: "US$" + item.discountPrice,
         Stock: item.stock,
-        sold: 10,
+        sold: item.soldOut
       });
     });
 
@@ -108,7 +97,7 @@ const AllEvents = () => {
       {isLoading ? (
         <Loader />
       ) : (
-        <div className="w-full mx-8 pt-1 mt-10 bg-white">
+        <div className="w-full mx-1 pt-1 mt-10 bg-white">
           <DataGrid
             rows={row}
             columns={columns}
