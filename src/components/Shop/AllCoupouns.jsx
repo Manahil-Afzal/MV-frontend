@@ -28,57 +28,57 @@ const AllCoupouns = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+  const fetchCoupons = async () => {
     setIsLoading(true);
-      axios
-        .get(`${server}/coupoun/get-coupoun/${seller._id}`, {
-          withCredentials: true,
-        })
-        .then((res) => {
-          setIsLoading(false);
-          setCoupouns(res.data.coupounCodes);
-        })
-        .catch((error) => {
-          setIsLoading(false);
-        });
-  }, [dispatch]);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-   await axios.post(
-  `${server}/coupoun/create-coupoun-code`,
-  {
-    name,
-    minAmount: Number(minAmount),
-    maxAmount: Number(maxAmount),
-    selectedProducts: selectedProducts ? [selectedProducts] : [],
-    value: Number(value),
-    shopId: seller._id,
-  },
-  { withCredentials: true }
-)
-
-      .then((res) => {
-         toast.success("Coupoun code created successfully!");
-            setOpen(false);
-          window.location.reload();
-        })
-      .catch((error) => {
-        toast.error(error.response.data.message);
+    try {
+      const { data } = await axios.get(`${server}/coupoun/get-coupoun/${seller._id}`, {
+        withCredentials: true,
       });
+      setCoupouns(data.coupounCodes);
+      setIsLoading(false);
+    } catch (error) {
+      toast.error("Failed to fetch coupons");
+      setIsLoading(false);
+    }
   };
 
+  if (seller && seller._id) fetchCoupons();
+}, [seller]);
+
+
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const { data } = await axios.post(
+      `${server}/coupoun/create-coupoun-code`,
+      {
+        name,
+        value: Number(value),
+        minAmount: Number(minAmount),
+        maxAmount: Number(maxAmount),
+        selectedProducts: selectedProducts || "", // send string
+        shopId: seller._id,
+      },
+      { withCredentials: true }
+    );
+
+    setCoupouns([...coupouns, data.coupounCode]); // update UI instantly
+    toast.success("Coupon code created successfully!");
+    setOpen(false);
+    setName(""); setValue(""); setMinAmount(""); setMaxAmount(""); setSelectedProducts("");
+  } catch (error) {
+    toast.error(error.response?.data?.message || "Failed to create coupon");
+  }
+};
 
 
 const handleDelete = async (id) => {
   try {
-    const { data } = await axios.delete(
-      `${server}/coupoun/delete-coupoun/${id}`,
-      { withCredentials: true }
-    );
+    const { data } = await axios.delete(`${server}/coupoun/delete-coupoun/${id}`, { withCredentials: true });
     setCoupouns(coupouns.filter((item) => item._id !== id));
     toast.success(data.message || "Coupon deleted successfully!");
   } catch (error) {
-    toast.error(error.response?.data?.message || "Error deleting coupon");
+    toast.error(error.response?.data?.message || "Failed to delete coupon");
   }
 };
 

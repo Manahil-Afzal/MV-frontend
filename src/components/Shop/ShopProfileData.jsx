@@ -1,10 +1,20 @@
-import React,{useState} from "react";
+import React,{useState, useEffect} from "react";
 import { productData } from "../../static/data";
 import ProductCard from "../Route/ProductCard/ProductCard";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import styles from "../../styles/styles";
+import { useSelector, useDispatch } from "react-redux";
+import { getAllProductsShop } from "../../redux/actions/product";
+
 
 const ShopProfileData = ({ isOwner }) => {
+    const { products} = useSelector((state) => state.products);
+    const {id} = useParams();
+    const dispatch = useDispatch();
+    useEffect(() =>{
+    (getAllProductsShop(id));
+    },[dispatch])
+
   const [active, setActive] = useState(1);
   return (
     <div className="w-full">
@@ -54,10 +64,6 @@ const ShopProfileData = ({ isOwner }) => {
           )}
         </div>
       </div>
-
-
-
-
       <br />
       <div className="grid grid-cols-1 gap-[20px] md:grid-cols-2 md:gap-[25px] lg:grid-cols-3  lg:gap-[25px] xl:grid-cols-4 xl:gap-[20px] mb-12 border-0">
         {productData &&

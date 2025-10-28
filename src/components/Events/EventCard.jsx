@@ -2,7 +2,8 @@ import React from "react";
 import styles from "../../styles/styles";
 import  CountDown from "./CountDown";
 
-const EventCard=({active}) =>{
+const EventCard=({active, data}) =>{
+      console.log(data);
   return (
     <div className={`w-full block bg-white rounded-lg ${active ? "unset" : "mb-12"} lg:flex p-4 mb-12 shadow-md`}>
       <div className="w-full lg:-w[50%] m-auto">

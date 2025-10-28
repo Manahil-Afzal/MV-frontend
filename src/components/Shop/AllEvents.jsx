@@ -11,7 +11,7 @@ import { getAlleventsShop, deleteEvent } from "../../redux/actions/event";
 
 
 const AllEvents = () => {
-  const { events, isLoading } = useSelector((state) => state.events);
+  const { events, isLoading } = useSelector((state) => state.event);
   const { seller } = useSelector((state) => state.seller);
   const dispatch = useDispatch();
    

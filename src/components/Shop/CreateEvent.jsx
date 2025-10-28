@@ -10,7 +10,7 @@ import {createevent} from "../../redux/actions/event";
 
 const CreateEvent = () => {
   const { seller } = useSelector((state) => state.seller);
-  const { isLoading, success, error } = useSelector((state) => state.events);
+  const { isLoading, success, error } = useSelector((state) => state.event);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 

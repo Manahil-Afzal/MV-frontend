@@ -4,6 +4,7 @@ import { createReducer } from "@reduxjs/toolkit";
 
 const initialState = {
   isLoading: true,
+   allEvents: [],
 };
 
 export const eventReducer = createReducer(initialState, (builder) => {
@@ -39,14 +40,32 @@ export const eventReducer = createReducer(initialState, (builder) => {
     .addCase("deleteeventRequest", (state) => {
           state.isLoading = true;
      })
-     .addCase("deleteeventSuccess", (state,action) => {
-          state.isLoading = false;
-          state.message = action.payload; 
+   .addCase("deleteeventSuccess", (state, action) => {
+  state.isLoading = false;
+  state.success = true;
+  state.message = action.payload; // message from backend
+})
+.addCase("deleteeventFailed", (state, action) => {
+  state.isLoading = false;
+  state.error = action.payload;
+  state.success = false;
+})
+
+
+
+     // get all events of shop
+     .addCase("getAlleventsRequest", (state) => {
+          state.isLoading = true; 
      })
-       .addCase("deleteeventFailed", (state, action) => {
-          state.isLoading = false;
-          state.error = action.payload; 
+    .addCase("getAlleventsSuccess", (state,action) => {
+          state.isLoading = false; 
+          state.allEvents = action.payload;
      })
+    .addCase("getAlleventsFailed", (state, action)=>{
+          state.isLoading = false; 
+          state.error = action.payload;
+     })
+
     .addCase("clearErrors", (state) => {
       state.error = null;
     });

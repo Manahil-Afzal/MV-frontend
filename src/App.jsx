@@ -35,6 +35,9 @@ import ShopAllProducts from "./pages/Shop/ShopAllProducts.jsx";
 import ShopCreateEvents from "./pages/Shop/ShopCreateEvents.jsx";
 import ShopAllEvents from "./pages/Shop/ShopAllEvents.jsx";
 import ShopAllCoupouns from "./pages/Shop/ShopAllCoupouns.jsx";
+import { getAllEvents } from "./redux/actions/event.js";
+import { getAllProducts } from "./redux/actions/product";
+import { useDispatch } from "react-redux";
 
 
 const App = () => {
@@ -44,6 +47,8 @@ const App = () => {
   useEffect(() => {
     Store.dispatch(loadUser());
     Store.dispatch(loadSeller());
+    Store.dispatch(getAllProducts());
+    Store.dispatch(getAllEvents());
   }, []);
 
   if (loading || isLoading) {

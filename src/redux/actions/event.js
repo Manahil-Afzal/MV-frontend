@@ -32,9 +32,9 @@ export const getAlleventsShop = (id) => async (dispatch) => {
     dispatch({
       type: "getAlleventsShopRequest",
     });
-    const { data } = await axios.get(
-      `${server}/event/get-all-events/${id}`
-    );
+    // const { data } = await axios.get(`${server}/event/get-all-events/${id}`);
+   const { data } = await axios.get(`${server}/event/get-all-events`);
+
     dispatch({
       type: "getAlleventsShopSuccess",
       payload: data.events,
@@ -51,20 +51,29 @@ export const getAlleventsShop = (id) => async (dispatch) => {
 export const deleteEvent = (id) => async (dispatch) => {
   try {
     dispatch({ type: "deleteeventRequest" });
+    const { data } = await axios.delete(`/api/event/${id}`);
+    dispatch({ type: "deleteeventSuccess", payload: data.message });
+  } catch (error) {
+    dispatch({ type: "deleteeventFailed", payload: error.response.data.message });
+  }
+};
 
-    const { data } = await axios.delete(
-      `${server}/event/delete-shop-event/${id}`,
-      { withCredentials: true }
-    );
 
-    dispatch({ type: "deleteeventSuccess", payload: id }); // send id
-    toast.success(data.message);
+export const getAllEvents = () => async (dispatch) => {
+  try {
+    dispatch({
+      type: "getAlleventsRequest",
+    });
 
+    const { data } = await axios.get(`${server}/event/get-all-events`);
+    dispatch({
+      type: "getAlleventsSuccess",
+      payload: data.events,
+    });
   } catch (error) {
     dispatch({
-      type: "deleteeventFailed",
+      type: "getAlleventsFailed",
       payload: error.response?.data?.message || "Error deleting event",
     });
-    toast.error(error.response?.data?.message || "Error deleting event");
   }
 };
