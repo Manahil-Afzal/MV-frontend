@@ -420,15 +420,14 @@ const handleSearchChange = (e) => {
             {searchData && searchData.length > 0 && (
               <div className="absolute bg-white shadow-md w-full z-10 p-3 max-h-60 overflow-y-scroll">
                 {searchData.map((i, index) => {
-                  const product_name = i.name.replace(/\s+/g, "-");
                   return (
-                    <Link to={`/product/${product_name}`} key={index}>
+                    <Link to={`/product/${i._id}`} key={index}>
                       <div className="flex items-center gap-2 py-2 hover:bg-gray-100 rounded-md cursor-pointer">
                         <img
                           src={`${backend_url}${i.images[0]}`}
                           alt={i.name}
                           className="w-[40px] h-[40px] mr-[10px]"
-                        />
+                         />
                         <h1>{i.name}</h1>
                       </div>
                     </Link>
