@@ -16,7 +16,13 @@ const Cart = ({ setOpenCart }) => {
     dispatch(removeFromCart(data));
   };
 
-  const totalPrice = cart.reduce((acc, item) => acc + item.qty * item.discountPrice, 0)
+  // const totalPrice = cart.reduce((acc, item) => acc + item.qty * item.discountPrice, 0)
+
+  // convert discountPrice to number safely
+const totalPrice = cart.reduce((acc, item) => {
+  const price = Number(String(item.discountPrice).replace(/\$/g, '')) || 0;
+  return acc + price * item.qty;
+}, 0);
 
   const quantityChangeHandler = (data) => {
     dispatch(addToCart(data));
@@ -87,7 +93,9 @@ const Cart = ({ setOpenCart }) => {
 
 const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
   const [value, setValue] = useState(data.qty);
-  const totalPrice = data.discountPrice * value;
+  // const totalPrice = data.discountPrice * value;
+const price = Number(String(data.discountPrice).replace(/\$/g, '')) || 0;
+const totalPrice = price * value;
 
   const increment = (data) => {
     if (data.stock < value) {
@@ -135,9 +143,9 @@ const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
 
         <div className="pl-[5px]">
           <h1>{data.name}</h1>
-          <h4 className="font-[400] text-[15px] text-[#00000082]">${data.discountPrice } * {value}</h4>
+          <h4 className="font-[400] text-[15px] text-[#00000082]">{data.discountPrice } * {value}</h4>
           <h4 className="font-[600] text-[17px] pt-[3px] bg-[#F2A533] font-Roboto">
-            US${totalPrice}
+            USD${totalPrice}
           </h4>
         </div>
         <RxCross1 className="cursor-pointer"

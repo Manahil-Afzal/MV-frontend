@@ -11,13 +11,14 @@ import {
 } from "react-icons/ai";
 import { DataGrid } from "@mui/x-data-grid";
 import { Button } from "@mui/material";
-import { MdOutlineTrackChanges } from "react-icons/md";
+import { MdTrackChanges } from "react-icons/md";
 import axios from "axios";
 import { RxCross1 } from "react-icons/rx";
 import toast from "react-hot-toast";
 import { Country, State, City } from "country-state-city";
-import { updateUserAddress, deleteUserAddress } from "../../redux/actions/user";
+import { updateUserAddress,  loadUser, deleteUserAddress, updateUserPassword } from "../../redux/actions/user";
 import { server } from "../../server";
+import { getAllOrdersOfUser } from "../../redux/actions/order";
 
 
 const ProfileContent = ({ active }) => {
@@ -76,7 +77,7 @@ const ProfileContent = ({ active }) => {
           <div className="flex justify-center w-full ">
             <div className="relative">
               <img
-                src={`${backend_url}${user?.avatar}`}
+                src={`${backend_url}${user?.avatar.url}`}
                 className="w-[150px] h-[150px] rounded-full object-cover border-[3px] border-[#3ad132]"
                 alt=""
               />
@@ -208,18 +209,13 @@ const ProfileContent = ({ active }) => {
 };
 
 const AllOrders = () => {
-  const orders = [
-    {
-      _id: "7463hvbfbhfbrtr28820221",
-      orderItems: [
-        {
-          name: "Iphone 14 pro max",
-        },
-      ],
-      totalPrice: 120,
-      orderStatus: "Processing",
-    },
-  ];
+    const {user} = useSelector((state) => state.user);
+    const {orders} = useSelector((state) => state.order);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(getAllOrdersOfUser(user._id));
+    }, [dispatch, user]);
 
   const columns = [
     {
@@ -261,7 +257,7 @@ const AllOrders = () => {
       renderCell: (params) => {
         return (
           <>
-            <Link to={`/order/${params.id}`}>
+            <Link to={`/user/order/${params.id}`}>
               <Button>
                 <AiOutlineArrowRight size={20} />
               </Button>
@@ -273,22 +269,15 @@ const AllOrders = () => {
   ];
 
   const row = [];
-  //  order && orders.forEach((item) => {
-  //      row.push({
-  //         id: item._id,
-  //         itemsQty: item.orderItems.length,
-  //         total: "US$" + item.totalPrice,
-  //         status: item.orderStatus,
-  //      });
-  //  });
-  orders.forEach((item) => {
-    row.push({
-      id: item._id,
-      itemsQty: item.orderItems.length,
-      total: "US$" + item.totalPrice,
-      status: item.orderStatus,
-    });
-  });
+   orders && orders.forEach((item) => {
+       row.push({
+          id: item._id,
+          itemsQty: item.orderItems.length,
+          total: "US$" + item.totalPrice,
+          status: item.orderStatus,
+       });
+   });
+  
 
   return (
     <div className="pl-8 pt-1">
@@ -304,32 +293,29 @@ const AllOrders = () => {
 };
 
 const AllRefundOrders = () => {
-  const orders = [
-    {
-      _id: "7463hvbfbhfbrtr28820221",
-      orderItems: [
-        {
-          name: "Iphone 14 pro max",
-        },
-      ],
-      totalPrice: 120,
-      orderStatus: "Processing",
-    },
-  ];
+  const { user } = useSelector((state) => state.user);
+  const { orders } = useSelector((state) => state.order);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getAllOrdersOfUser(user._id));
+  }, []);
+
+  const eligibleOrders =
+    orders && orders.filter((item) => item.status === "Processing refund");
+
   const columns = [
-    {
-      field: "id",
-      headerName: "Order ID",
-      minWidth: 150,
-      flex: 0.7,
-    },
+    { field: "id", headerName: "Order ID", minWidth: 150, flex: 0.7 },
+
     {
       field: "status",
-      headerName: "status",
-      minwidth: 130,
+      headerName: "Status",
+      minWidth: 130,
       flex: 0.7,
       cellClassName: (params) => {
-        return params.value === "Delivered" ? "greenColor" : "redColor";
+        return params.getValue(params.id, "status") === "Delivered"
+          ? "greenColor"
+          : "redColor";
       },
     },
     {
@@ -339,6 +325,7 @@ const AllRefundOrders = () => {
       minWidth: 130,
       flex: 0.7,
     },
+
     {
       field: "total",
       headerName: "Total",
@@ -346,17 +333,18 @@ const AllRefundOrders = () => {
       minWidth: 130,
       flex: 0.8,
     },
+
     {
-      field: "",
+      field: " ",
       flex: 1,
-      minwidth: 150,
+      minWidth: 150,
       headerName: "",
       type: "number",
       sortable: false,
       renderCell: (params) => {
         return (
           <>
-            <Link to={`/order/${params.id}`}>
+            <Link to={`/user/order/${params.id}`}>
               <Button>
                 <AiOutlineArrowRight size={20} />
               </Button>
@@ -366,16 +354,18 @@ const AllRefundOrders = () => {
       },
     },
   ];
+
   const row = [];
 
-  orders.forEach((item) => {
-    row.push({
-      id: item._id,
-      itemsQty: item.orderItems.length,
-      total: "US$" + item.totalPrice,
-      status: item.orderStatus,
+  eligibleOrders &&
+    eligibleOrders.forEach((item) => {
+      row.push({
+        id: item._id,
+        itemsQty: item.cart.length,
+        total: "US$ " + item.totalPrice,
+        status: item.status,
+      });
     });
-  });
 
   return (
     <div className="pl-8 pt-1">
@@ -383,35 +373,34 @@ const AllRefundOrders = () => {
         rows={row}
         columns={columns}
         pageSize={10}
-        disableSelectionOnClick
         autoHeight
+        disableSelectionOnClick
       />
     </div>
   );
 };
 
 const TrackOrder = () => {
-  const orders = [
-    {
-      _id: "7463hvbfbhfbrtr28820221",
-      orderItems: [
-        {
-          name: "Iphone 14 pro max",
-        },
-      ],
-      totalPrice: 120,
-      orderStatus: "Processing",
-    },
-  ];
+  const { user } = useSelector((state) => state.user);
+  const { orders } = useSelector((state) => state.order);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getAllOrdersOfUser(user._id));
+  }, []);
+
   const columns = [
     { field: "id", headerName: "Order ID", minWidth: 150, flex: 0.7 },
+
     {
       field: "status",
-      headerName: "status",
-      minwidth: 130,
+      headerName: "Status",
+      minWidth: 130,
       flex: 0.7,
       cellClassName: (params) => {
-        return params.value === "Delivered" ? "greenColor" : "redColor";
+        return params.getValue(params.id, "status") === "Delivered"
+          ? "greenColor"
+          : "redColor";
       },
     },
     {
@@ -421,6 +410,7 @@ const TrackOrder = () => {
       minWidth: 130,
       flex: 0.7,
     },
+
     {
       field: "total",
       headerName: "Total",
@@ -428,19 +418,20 @@ const TrackOrder = () => {
       minWidth: 130,
       flex: 0.8,
     },
+
     {
       field: " ",
       flex: 1,
-      minwidth: 130,
+      minWidth: 150,
       headerName: "",
       type: "number",
       sortable: false,
       renderCell: (params) => {
         return (
           <>
-            <Link to={`/order/${params.id}`}>
+            <Link to={`/user/track/order/${params.id}`}>
               <Button>
-                <MdOutlineTrackChanges size={20} />
+                <MdTrackChanges size={20} />
               </Button>
             </Link>
           </>
@@ -448,16 +439,18 @@ const TrackOrder = () => {
       },
     },
   ];
+
   const row = [];
 
-  orders.forEach((item) => {
-    row.push({
-      id: item._id,
-      itemsQty: item.orderItems.length,
-      total: "US$" + item.totalPrice,
-      status: item.orderStatus,
+  orders &&
+    orders.forEach((item) => {
+      row.push({
+        id: item._id,
+        itemsQty: item.cart.length,
+        total: "US$ " + item.totalPrice,
+        status: item.status,
+      });
     });
-  });
 
   return (
     <div className="pl-8 pt-1">
@@ -473,80 +466,61 @@ const TrackOrder = () => {
 };
 
 const ChangePassword = () => {
+  const dispatch = useDispatch();
+  const { error, message } = useSelector(state => state.user);
+
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const passwordChangeHandler = async (e) => {
-  e.preventDefault();
+  const passwordChangeHandler = (e) => {
+    e.preventDefault();
+    dispatch(updateUserPassword(oldPassword, newPassword, confirmPassword));
+  };
 
-  try {
-    console.log({ oldPassword, newPassword, confirmPassword }); // debug
-    const res = await axios.put(
-      `${server}/user/update-user-password`,
-      { oldPassword, newPassword, confirmPassword },
-      { withCredentials: true }
-    );
-
-    toast.success(res.data.message);
+useEffect(() => {
+  if (error) toast.error(error);
+  if (message) {
+    toast.success(message);
     setOldPassword("");
     setNewPassword("");
     setConfirmPassword("");
-  } catch (error) {
-    console.log(error);
-    toast.error(error.response?.data?.message || "Error updating password");
   }
-};
+}, [error, message]);
+
 
   return (
     <div className="w-full px-5">
-      <h1 className="block text-[25px] text-center font-[600] text-[#000000ba] pb-2">
-        Change Password
-      </h1>
-      <div className="w-full">
-        <form
-          aria-required
-          onSubmit={passwordChangeHandler}
-          className="flex flex-col items-center"
-        >
-          <div className=" w-[50%] 800px:w-[50%] mt-5">
-            <label className="block pb-2">Enter your old password</label>
-            <input
-              type="password"
-              className={`${styles.input} !w-[95%] mb-4 800px:mb-0`}
-              required
-              value={oldPassword}
-              onChange={(e) => setOldPassword(e.target.value)}
-            />
-          </div>
-          <div className=" w-[50%] 800px:w-[50%] mt-2">
-            <label className="block pb-2">Enter your new password</label>
-            <input
-              type="password"
-              className={`${styles.input} !w-[95%] mb-4 800px:mb-0`}
-              required
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-            />
-          </div>
-          <div className=" w-[50%] 800px:w-[50%] mt-2">
-            <label className="block pb-2">Enter your confirm password</label>
-            <input
-              type="password"
-              className={`${styles.input} !w-[95%] mb-4 800px:mb-0`}
-              required
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
-            <input
-              className={`w-[95%] h-[40px] border border-[#3a24db] text-center text-[#3a24db] rounded-[3px] mt-8 cursor-pointer`}
-              required
-              value="Update"
-              type="submit"
-            />
-          </div>
-        </form>
-      </div>
+      <h1 className="text-2xl text-center font-semibold pb-4">Change Password</h1>
+      <form onSubmit={passwordChangeHandler} className="flex flex-col items-center gap-4">
+        <input
+          type="password"
+          placeholder="Old Password"
+          value={oldPassword}
+          onChange={(e) => setOldPassword(e.target.value)}
+          className="border p-2 w-1/2 rounded"
+          required
+        />
+        <input
+          type="password"
+          placeholder="New Password"
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+          className="border p-2 w-1/2 rounded"
+          required
+        />
+        <input
+          type="password"
+          placeholder="Confirm New Password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          className="border p-2 w-1/2 rounded"
+          required
+        />
+        <button type="submit" className="border border-[#3a24db] text-center text-[#3a24db] px-6 py-2 rounded mt-2">
+          Update Password
+        </button>
+      </form>
     </div>
   );
 };
@@ -555,7 +529,7 @@ const Address = () => {
   const [open, setOpen] = useState(false);
       const [country, setCountry] = useState("");
       const [city, setCity] = useState("");
-      const [zipCode, setZipCode] = useState();
+      const [zipCode, setZipCode] = useState("");
       const [address1, setAddress1] = useState("");
       const [address2, setAddress2] = useState("");
       const [addressType, setAddressType] = useState("");
@@ -582,8 +556,8 @@ const Address = () => {
     } else {
         dispatch(
           updateUserAddress(
-            Country,
-            City,
+            country,
+            city,
             address1,
             address2,
             addressType,
@@ -703,7 +677,7 @@ const Address = () => {
                         type="number"
                         className={`${styles.input}`}
                         required
-                        value={zipCode}
+                        value={zipCode || ""} 
                         onChange={(e) => setZipCode(e.target.value)}
                       />
                     </div>

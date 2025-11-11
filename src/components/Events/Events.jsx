@@ -2,6 +2,8 @@ import React from 'react';
 import styles from "../../styles/styles";
 import EventCard from "./EventCard";
 import { useSelector } from 'react-redux';
+import { backend_url } from '../../server';
+
 
 const Events = () => {
   const { allEvents, isLoading } = useSelector((state) => state.event);
@@ -25,4 +27,4 @@ const Events = () => {
   )
 }
 
-export default Events
+export default Events;

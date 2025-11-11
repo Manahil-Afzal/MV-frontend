@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { DataGrid, renderActionsCell } from "@mui/x-data-grid";
 import toast from "react-hot-toast";
 import { getAlleventsShop, deleteEvent } from "../../redux/actions/event";
-
+import { backend_url } from "../../server";
 
 
 const AllEvents = () => {
@@ -88,7 +88,7 @@ const handleDelete = (id) => {
         name: item.name,
         price: "US$" + item.discountPrice,
         Stock: item.stock,
-        sold: item.soldOut
+        sold: item.soldOut,
       });
     });
 

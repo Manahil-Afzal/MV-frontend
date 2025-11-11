@@ -7,6 +7,8 @@ import { server } from "../../server";
 import { useParams } from "react-router-dom";
 import Loader from "../Layout/Loader";
 import { getAllProductsShop } from "../../redux/actions/product";
+import { Link } from "react-router-dom";
+
 
 const ShopInfo = ({ isOwner }) => {
   //  const { data } = useSelector((state) => state.data);
@@ -67,12 +69,12 @@ const ShopInfo = ({ isOwner }) => {
           </div>
           <div className="p-3 text-left mb-1 ">
             <h5 className="font-[600]">Address</h5>
-            <h4 className="text-[#000000a6] text-left mb-1">{data?.address}</h4>
+            <h4 className="text-[#000000a6] text-left mb-1"> United State, California</h4>
           </div>
           <div className="p-3">
             <h5 className="font-[600] text-left mb-1">Phone Number</h5>
             <h4 className="text-[#000000a6] text-left mb-1">
-              {data?.PhoneNumber}
+                 555-0100 
             </h4>
           </div>
           <div className="p-3">
@@ -86,16 +88,16 @@ const ShopInfo = ({ isOwner }) => {
           <div className="p-3">
             <h5 className="font-[600] text-left mb-1">Joined On</h5>
             <h4 className="text-[#000000a6] text-left mb-1">
-              {data?.createdAt?.slice(0, 10)}
+                    12-10-25
             </h4>
           </div>
           {isOwner && (
             <div className="py-3 px-4">
-              <div
-                className={`${styles.button} !w-full !h-[42px] !rounded-[5px]`}
-              >
-                <span className="text-white">Edit Shop </span>
-              </div>
+               <Link to="/settings">
+                  <div className={`${styles.button} !w-full !h-[42px] !rounded-[5px]`}>
+                        <span className="text-white">Edit Shop</span>
+                  </div>
+               </Link>
               <div
                 className={`${styles.button} !w-full !h-[42px] !rounded-[5px]`}
                 onClick={logoutHandler}

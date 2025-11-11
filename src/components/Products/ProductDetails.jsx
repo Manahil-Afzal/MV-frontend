@@ -18,14 +18,14 @@ import toast from "react-hot-toast";
 const ProductDetails = ({ data }) => {
   const { wishlist } = useSelector((state) => state.wishlist);
   const { cart } = useSelector((state) => state.cart);
-  const { products } = useState((state) => state.products);
+  const { allProducts } = useSelector((state) => state.products);
   const [count, setCount] = useState(1);
   const [click, setClick] = useState(false);
   const [select, setSelect] = useState(0);
   const navigate = useNavigate();
   const { id } = useParams();
   const dispatch = useDispatch();
-
+  
   useEffect(() => {
     dispatch(getAllProductsShop(data && data?.shop._id));
     if (wishlist && wishlist.find((i) => i._id === data?._id)) {
@@ -34,36 +34,36 @@ const ProductDetails = ({ data }) => {
       setClick(false);
     }
 
-  }, [ data, wishlist]);
+  }, []);
 
-const removeFromWishlistHandler = (data) => {
+  const removeFromWishlistHandler = (data) => {
     setClick(!click);
     dispatch(removeFromWishlist(data));
   }
 
-  const addToWishlistHandler = (data) =>  {
+  const addToWishlistHandler = (data) => {
     setClick(!click);
     dispatch(addToWishlist(data));
   }
 
 
   const addToCartHandler = (id) => {
-      const isItemExists = cart && cart.find((i) => i._id === id);
-      if (isItemExists) {
-        toast.error("Item already in cart!")
+    const isItemExists = cart && cart.find((i) => i._id === id);
+    if (isItemExists) {
+      toast.error("Item already in cart!")
+    }
+    else {
+      if (data.stock < count) {
+        toast.error("Product stock limited!");
+      } else {
+        const cartData = { ...data, qty: count }
+        dispatch(addToCart(cartData));
+        toast.success("Item added to cart successfully!")
       }
-      else {
-        if (data.stock < count) {
-          toast.error("Product stock limited!");
-        } else {
-          const cartData = { ...data, qty: count }
-          dispatch(addToCart(cartData));
-          toast.success("Item added to cart successfully!")
-        }
-      }
-    };
+    }
+  };
 
-    
+
   const incrementCount = () => {
     setCount(count + 1);
   };
@@ -74,9 +74,24 @@ const removeFromWishlistHandler = (data) => {
     }
   };
 
+const totalReviewsLength = allProducts?.reduce(
+  (acc, product) => acc + (product.reviews?.length || 0),
+  0
+);
+
+const totalRatings = allProducts?.reduce(
+  (acc, product) => acc + (product.reviews?.reduce((sum, review) => sum + review.rating, 0) || 0),
+  0
+); 
+
+const averageRating = totalReviewsLength > 0 ? totalRatings / totalReviewsLength : 0;
+
+
+
   const handleMessageSubmit = () => {
     navigate("/inbox?conversation=507ebjver884ehfdjeriv84");
   };
+
 
   return (
     <div className="bg-white ">
@@ -87,7 +102,7 @@ const removeFromWishlistHandler = (data) => {
               <div className="w-[50%] 800:w-[50%]">
                 <img
                   // src={data.image_Url[select].url}
-                  src={`${backend_url}${data && data.images[select]?.url}`}
+                  src={`${backend_url}/${data && data.images[select]}`}
                   alt=""
                   className="w-[80%]"
                 />
@@ -99,7 +114,7 @@ const removeFromWishlistHandler = (data) => {
                   >
                     <img
                       // src={data?.image_Url[0].url}
-                      src={`${backend_url}${data.images && data.images[0]}`}
+                      src={`${backend_url}/${data.images && data.images[0]}`}
                       alt=""
                       className="h-[150px]"
                       onClick={() => setSelect(0)}
@@ -171,29 +186,29 @@ const removeFromWishlistHandler = (data) => {
 
                 <div
                   className={`${styles.button}, !mt-6 !rounded !h-11 flex items-center`}
-                   onClick={() => addToCartHandler(data._id)}
-               >
+                  onClick={() => addToCartHandler(data._id)}
+                >
                   <span className="text-white flex items-center">
                     Add to Cart <AiOutlineShoppingCart className="ml-1" />
                   </span>
                 </div>
                 <div className=" flex items-center pt-8">
-                   <Link to={`/shop/preview/${data?.shop._id}`}>
-                  <img
-                    src={`${backend_url}${data?.shop.avatar}`}
-                    // src={data.shop.shop_avatar.url}
-                    alt=""
-                    className="w-[50px] h-[50px] rounded-full mr-2"
-                  />                   
-                   </Link>
+                  <Link to={`/shop/preview/${data?.shop._id}`}>
+                    <img
+                      src={`${backend_url}${data?.shop.avatar}`}
+                      // src={data.shop.shop_avatar.url}
+                      alt=""
+                      className="w-[50px] h-[50px] rounded-full mr-2"
+                    />
+                  </Link>
                   <div className="pr-8">
-                <Link to={`/shop/preview/${data?.shop._id}`}>
-                    <h3 className={`${styles.shop_name} pb-1 pt-1`}>
-                      {data.shop.name}
-                    </h3>
+                    <Link to={`/shop/preview/${data?.shop._id}`}>
+                      <h3 className={`${styles.shop_name} pb-1 pt-1`}>
+                        {data.shop.name}
+                      </h3>
                     </Link>
                     <h5 className="pb-3 text-[15px] ">
-                      (4/5) Ratings
+                      ({averageRating}/5) Ratings
                     </h5>
                   </div>
                   <div
@@ -208,14 +223,14 @@ const removeFromWishlistHandler = (data) => {
               </div>
             </div>
           </div>
-          <ProductDetailsInfo data={data} products={products} />
+          <ProductDetailsInfo data={data} products={allProducts} totalReviewsLength={totalReviewsLength}/>
         </div>
       ) : null}
     </div>
   );
 };
 
-const ProductDetailsInfo = ({ data, products }) => {
+const ProductDetailsInfo = ({ data, products, totalReviewsLength, totalRatings}) => {
   const [active, setActive] = useState(1);
   return (
     <div className="bg-[#f5f6fb] px-3 800px:px-10 py-2 rounded ">
@@ -288,8 +303,36 @@ const ProductDetailsInfo = ({ data, products }) => {
       ) : null}
 
       {active === 2 ? (
-        <div className="w-full justify-center min-h-[40vh] flex items-center">
-          <p> No Reviews yet</p>
+        <div className="w-full  min-h-[40vh] flex flex-col items-center py-3 overflow-y-scroll">
+          {
+            data && data.reviews.map((item, index) => (
+              <div className="w-full flex my-2">
+                <img src={`${backend_url}/uploads/${item.user.avatar}`}
+                  alt=""
+                  className="w-[50px] h-[50px] rounded-full"
+                />
+                <div className="pl-2">
+                  <div className="w-full flex items-center">
+                    <h1 className=" font-[500] mr-1">{item.user.name}</h1>
+                    <Ratings ratings={data?.ratings} />
+                  </div>
+                  <p>
+                    {item.comment}
+                  </p>
+                </div>
+              </div>
+            ))
+          }
+
+          <div className="w-full flex justify-center">
+            {
+              data && data.reviews.length === 0 && (
+                <h5>
+                  No reviews have for this product
+                </h5>
+              )
+            }
+          </div>
         </div>
       ) : null}
 
@@ -307,7 +350,7 @@ const ProductDetailsInfo = ({ data, products }) => {
                 <div className="pl-3">
                   <h3 className={`${styles.shop_name}`}>{data.shop.name}</h3>
                   <h5 className="pb-2 text-[15px]">
-                    {data.shop.ratings} Ratings{" "}
+                    {averageRating}/5 Ratings{" "}
                   </h5>
                 </div>
               </div>
@@ -333,7 +376,7 @@ const ProductDetailsInfo = ({ data, products }) => {
                 </span>
               </h5>
               <h5 className="font-[600]">
-                Total Reviews : <span className="font-[500]">324</span>
+                Total Reviews : <span className="font-[500]">{totalReviewsLength}</span>
               </h5>
               <Link to="/">
                 <div

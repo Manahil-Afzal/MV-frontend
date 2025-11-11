@@ -3,6 +3,8 @@ import Footer from "../components/Layout/Footer";
 import Header from "../components/Layout/Header";
 import Lottie from 'react-lottie';
 import animationData from "../Assets/Loader2.json";
+// import animationData from "../Assets/Order.json";
+
 
 const OrderSuccessPage = () => {
   return (

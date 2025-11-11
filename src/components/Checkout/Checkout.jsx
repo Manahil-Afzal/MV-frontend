@@ -7,6 +7,8 @@ import { useEffect } from "react";
 import axios from "axios";
 import { server } from "../../server";
 import { toast } from "react-toastify";
+import { backend_url } from "../../server";
+
 
 const Checkout = () => {
   const { user } = useSelector((state) => state.user);
@@ -16,10 +18,10 @@ const Checkout = () => {
   const [userInfo, setUserInfo] = useState(false);
   const [address1, setAddress1] = useState("");
   const [address2, setAddress2] = useState("");
-  const [zipCode, setZipCode] = useState(null);
-  const [couponCode, setCouponCode] = useState("");
-  const [couponCodeData, setCouponCodeData] = useState(null);
-  const [discountPrice, setDiscountPrice] = useState(null);
+  const [zipCode, setZipCode] = useState("");
+  const [coupounCode, setCoupounCode] = useState("");
+  const [coupounCodeData, setCoupounCodeData] = useState("");
+  const [discountPrice, setDiscountPrice] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,31 +29,31 @@ const Checkout = () => {
   }, []);
 
   const paymentSubmit = () => {
-   if(address1 === "" || address2 === "" || zipCode === null || country === "" || city === ""){
+    if (address1 === "" || address2 === "" || zipCode === null || country === "" || city === "") {
       toast.error("Please choose your delivery address!")
-   } else{
-    const shippingAddress = {
-      address1,
-      address2,
-      zipCode,
-      country,
-      city,
-    };
+    } else {
+      const shippingAddress = {
+        address1,
+        address2,
+        zipCode,
+        country,
+        city,
+      };
 
-    const orderData = {
-      cart,
-      totalPrice,
-      subTotalPrice,
-      shipping,
-      discountPrice,
-      shippingAddress,
-      user,
+      const orderData = {
+        cart,
+        totalPrice,
+        subTotalPrice,
+        shipping,
+        discountPrice,
+        shippingAddress,
+        user,
+      }
+
+      // update local storage with the updated orders array
+      localStorage.setItem("latestOrder", JSON.stringify(orderData));
+      navigate("/payment");
     }
-
-    // update local storage with the updated orders array
-    localStorage.setItem("latestOrder", JSON.stringify(orderData));
-    navigate("/payment");
-   }
   };
 
   const subTotalPrice = cart.reduce(
@@ -64,48 +66,48 @@ const Checkout = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const name = couponCode;
+    const name = coupounCode;
 
-    await axios.get(`${server}/coupon/get-coupon-value/${name}`).then((res) => {
-      const shopId = res.data.couponCode?.shopId;
-      const couponCodeValue = res.data.couponCode?.value;
-      if (res.data.couponCode !== null) {
-        const isCouponValid =
+    await axios.get(`${server}/coupoun/get-coupoun-value/${name}`).then((res) => {
+      const shopId = res.data.coupounCode?.shopId;
+      const coupounCodeValue = res.data.coupounCode?.value;
+      if (res.data.coupounCode !== null) {
+        const isCoupounValid =
           cart && cart.filter((item) => item.shopId === shopId);
 
-        if (isCouponValid.length === 0) {
-          toast.error("Coupon code is not valid for this shop");
-          setCouponCode("");
+        if (isCoupounValid.length === 0) {
+          toast.error("coupoun code is not valid for this shop");
+          setCoupounCode("");
         } else {
-          const eligiblePrice = isCouponValid.reduce(
+          const eligiblePrice = isCoupounValid.reduce(
             (acc, item) => acc + item.qty * item.discountPrice,
             0
           );
-          const discountPrice = (eligiblePrice * couponCodeValue) / 100;
+          const discountPrice = (eligiblePrice * coupounCodeValue) / 100;
           setDiscountPrice(discountPrice);
-          setCouponCodeData(res.data.couponCode);
-          setCouponCode("");
+          setCoupounCodeData(res.data.coupounCode);
+          setCoupounCode("");
         }
       }
-      if (res.data.couponCode === null) {
-        toast.error("Coupon code doesn't exists!");
-        setCouponCode("");
+      if (res.data.coupounCode === null) {
+        toast.error("coupoun code doesn't exists!");
+        setCoupounCode("");
       }
     });
   };
 
-  const discountPercentenge = couponCodeData ? discountPrice : "";
+  const discountPercentenge = coupounCodeData ? discountPrice : "";
 
-  const totalPrice = couponCodeData
+  const totalPrice = coupounCodeData
     ? (subTotalPrice + shipping - discountPercentenge).toFixed(2)
     : (subTotalPrice + shipping).toFixed(2);
 
   console.log(discountPercentenge);
 
   return (
-    <div className="w-full flex flex-col items-center py-8">
-      <div className="w-[90%] 1000px:w-[70%] block 800px:flex">
-        <div className="w-full 800px:w-[65%]">
+    <div className="w-full flex flex-col  bg-[#fff] items-center py-8">
+      <div className="w-[90%] 100:w-[70%]  800:flex">
+        <div className="w-full 800:w-[65%] ">
           <ShippingInfo
             user={user}
             country={country}
@@ -122,24 +124,25 @@ const Checkout = () => {
             setZipCode={setZipCode}
           />
         </div>
-        <div className="w-full 800px:w-[35%] 800px:mt-0 mt-8">
+        <div className="w-full 800:w-[35%]  800:mt-0 mt-8">
           <CartData
             handleSubmit={handleSubmit}
             totalPrice={totalPrice}
             shipping={shipping}
             subTotalPrice={subTotalPrice}
-            couponCode={couponCode}
-            setCouponCode={setCouponCode}
+            coupounCode={coupounCode}
+            setCoupounCode={setCoupounCode}
             discountPercentenge={discountPercentenge}
           />
         </div>
       </div>
       <div
-        className={`${styles.button} w-[150px] 800px:w-[280px] mt-10`}
+        className={`${styles.button} w-[150px] 800:w-[280px] mt-10 !bg-[#123243] border border-[#123243]`}
         onClick={paymentSubmit}
       >
         <h5 className="text-white">Go to Payment</h5>
       </div>
+
     </div>
   );
 };
@@ -160,7 +163,7 @@ const ShippingInfo = ({
   setZipCode,
 }) => {
   return (
-    <div className="w-full 800px:w-[95%] bg-white rounded-md p-5 pb-8">
+    <div className="w-full 800:w-[95%] border border-[#123243] bg-white rounded-1xl shadow-sm p-6">
       <h5 className="text-[18px] font-[500]">Shipping Address</h5>
       <br />
       <form>
@@ -169,7 +172,7 @@ const ShippingInfo = ({
             <label className="block pb-2">Full Name</label>
             <input
               type="text"
-              value={user && user.name}
+              // value={user && user.name}
               required
               className={`${styles.input} !w-[95%]`}
             />
@@ -178,14 +181,14 @@ const ShippingInfo = ({
             <label className="block pb-2">Email Address</label>
             <input
               type="email"
-              value={user && user.email}
+              // value={user && user.email}
               required
               className={`${styles.input}`}
             />
           </div>
         </div>
 
-        <div className="w-full flex pb-3">
+        <div className="w-full flex  pb-3">
           <div className="w-[50%]">
             <label className="block pb-2">Phone Number</label>
             <input
@@ -286,13 +289,14 @@ const ShippingInfo = ({
                   type="checkbox"
                   className="mr-3"
                   value={item.addressType}
-                  onClick={() =>
-                    setAddress1(item.address1) ||
-                    setAddress2(item.address2) ||
-                    setZipCode(item.zipCode) ||
-                    setCountry(item.country) ||
-                    setCity(item.city)
-                  }
+                  onClick={() => {
+                    setAddress1(item.address1);
+                    setAddress2(item.address2);
+                    setZipCode(item.zipCode);
+                    setCountry(item.country);
+                    setCity(item.city);
+                  }}
+
                 />
                 <h2>{item.addressType}</h2>
               </div>
@@ -308,12 +312,12 @@ const CartData = ({
   totalPrice,
   shipping,
   subTotalPrice,
-  couponCode,
-  setCouponCode,
+  coupounCode,
+  setCoupounCode,
   discountPercentenge,
 }) => {
   return (
-    <div className="w-full bg-[#fff] rounded-md p-5 pb-8">
+    <div className="w-full 800:w-[95%] border border-[#123243] bg-white rounded-1xl shadow-lg p-6">
       <div className="flex justify-between">
         <h3 className="text-[16px] font-[400] text-[#000000a4]">subtotal:</h3>
         <h5 className="text-[18px] font-[600]">${subTotalPrice}</h5>
@@ -337,12 +341,12 @@ const CartData = ({
           type="text"
           className={`${styles.input} h-[40px] pl-2`}
           placeholder="Copoun code"
-          value={couponCode}
-          onChange={(e) => setCouponCode(e.target.value)}
+          value={coupounCode}
+          onChange={(e) => setCoupounCode(e.target.value)}
           required
         />
         <input
-          className={`w-full h-[40px] border border-[#f63b60] text-center text-[#f63b60] rounded-[3px] mt-8 cursor-pointer`}
+          className={`w-full h-[40px] border border-[#F2A533]  text-center text-[#F2A533] rounded-[3px] mt-8 cursor-pointer`}
           required
           value="Apply code"
           type="submit"
@@ -353,3 +357,7 @@ const CartData = ({
 };
 
 export default Checkout;
+
+
+
+

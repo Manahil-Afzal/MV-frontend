@@ -108,9 +108,8 @@ export const updateUserAddress =
       });
     }
   };
-// Delete user address
-// ✅ correct frontend action
-export const deleteUserAddress = (addressId) => async (dispatch) => {
+
+  export const deleteUserAddress = (addressId) => async (dispatch) => {
   try {
     dispatch({ type: "deleteUserAddressRequest" });
 
@@ -129,6 +128,30 @@ export const deleteUserAddress = (addressId) => async (dispatch) => {
     dispatch({
       type: "deleteUserAddressFailed",
       payload: error.response?.data?.message,
+    });
+  }
+};
+
+
+// update user password
+export const updateUserPassword = (oldPassword, newPassword, confirmPassword) => async (dispatch) => {
+  try {
+    dispatch({ type: "updateUserPasswordRequest" });
+
+    const { data } = await axios.put(
+      `${server}/user/update-user-password`,
+      { oldPassword, newPassword, confirmPassword },
+      { withCredentials: true }
+    );
+
+    dispatch({
+      type: "updateUserPasswordSuccess",
+      payload: data.message,
+    });
+  } catch (error) {
+    dispatch({
+      type: "updateUserPasswordFailed",
+      payload: error.response?.data?.message || "Something went wrong",
     });
   }
 };

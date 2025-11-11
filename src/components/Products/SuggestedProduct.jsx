@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
 import styles from "../../styles/styles";
-import { productData } from "../../static/data";
 import ProductCard from "../../components/Route/ProductCard/ProductCard";
 import { useSelector } from "react-redux";
 
@@ -9,14 +8,14 @@ import { useSelector } from "react-redux";
 
 const SuggestedProduct = ({ data }) => {
     const {allProducts} = useSelector((state) => state.products);
-    const {productData, setProductData} = useState([]);
+    const [productData, setProductData] = useState([]);
     
    useEffect(() => {
-    if (products && data) {
+    if (allProducts && data) {
       const filtered = allProducts &&  allProducts.filter((item) => item.category === data.category);
       setProductData(filtered);
     }
-  }, [products, data]);
+  }, [allProducts, data]);
 
   return (
     <div>

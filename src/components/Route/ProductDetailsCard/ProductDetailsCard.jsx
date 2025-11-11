@@ -271,8 +271,8 @@ const ProductDetailsCard = ({ setOpen, data }) => {
               onClick={() => setOpen(false)}
             />
 
-            <div className="block w-full 800px:flex">
-              <div className="w-full 800px:w-[50%]">
+            <div className="block w-full 800:flex">
+              <div className="w-full 800:w-[50%]">
                 <img src={`${data.images && data.images[0]?.url}`} alt="" />
                 <div className="flex">
                   <Link to={`/shop/preview/${data.shop._id}`} className="flex">
@@ -300,7 +300,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                 <h5 className="text-[16px] text-[red] mt-5">(50) Sold out</h5>
               </div>
 
-              <div className="w-full 800px:w-[50%] pt-5 pl-[5px] pr-[5px]">
+              <div className="w-full 800:w-[50%] pt-5 pl-[5px] pr-[5px]">
                 <h1 className={`${styles.productTitle} text-[20px]`}>
                   {data.name}
                 </h1>
@@ -308,10 +308,10 @@ const ProductDetailsCard = ({ setOpen, data }) => {
 
                 <div className="flex pt-3">
                   <h4 className={`${styles.productDiscountPrice}`}>
-                    {data.discountPrice}$
+                    {data.discountPrice}
                   </h4>
                   <h3 className={`${styles.price}`}>
-                    {data.originalPrice ? data.originalPrice + "$" : null}
+                    {data.originalPrice ? data.originalPrice + "" : null}
                   </h3>
                 </div>
                 <div className="flex items-center mt-12 justify-between pr-3">

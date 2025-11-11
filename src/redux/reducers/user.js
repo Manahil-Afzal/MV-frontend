@@ -8,6 +8,8 @@ const initialState = {
     error: null,
     loading: false,
    addressloading: false, 
+    message: null,
+  updateAddressSuccessMessage: null,
 };
 //builder callback notation
 export const userReducer = createReducer(initialState, (builder) => {
@@ -65,7 +67,20 @@ export const userReducer = createReducer(initialState, (builder) => {
           state.error= action.payload;
       })
 
-     .addCase("clearErrors", (state) => {
+     // update user password
+  .addCase("updateUserPasswordRequest", (state) => {
+    state.loading = true;
+  })
+  .addCase("updateUserPasswordSuccess", (state, action) => {
+    state.loading = false;
+    state.message = action.payload; 
+  })
+  .addCase("updateUserPasswordFailed", (state, action) => {
+    state.loading = false;
+    state.error = action.payload; 
+  })
+
+   .addCase("clearErrors", (state) => {
       state.error = null;
     })
      .addCase("clearMessages", (state) => {
