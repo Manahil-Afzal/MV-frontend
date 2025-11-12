@@ -173,7 +173,7 @@ const ProfileContent = ({ active }) => {
       {/* order page */}
       {active === 2 && (
         <div>
-          <AllOrders />
+          <UserAllOrders />
         </div>
       )}
 
@@ -208,15 +208,14 @@ const ProfileContent = ({ active }) => {
   );
 };
 
-const AllOrders = () => {
+const UserAllOrders = () => {
     const {user} = useSelector((state) => state.user);
-    const {orders} = useSelector((state) => state.order);
+    const {allOrders} = useSelector((state) => state.order);
     const dispatch = useDispatch();
 
     useEffect(() => {
         dispatch(getAllOrdersOfUser(user._id));
     }, [dispatch, user]);
-
   const columns = [
     {
       field: "id",
@@ -268,16 +267,25 @@ const AllOrders = () => {
     },
   ];
 
+  // const row = [];
+  //  allOrders && allOrders.forEach((item) => {
+  //      row.push({
+  //         id: item._id,
+  //         itemsQty: item.orderItems.length,
+  //         total: "US$" + item.totalPrice,
+  //         status: item.orderStatus,
+  //      });
+  //  });
   const row = [];
-   orders && orders.forEach((item) => {
-       row.push({
-          id: item._id,
-          itemsQty: item.orderItems.length,
-          total: "US$" + item.totalPrice,
-          status: item.orderStatus,
-       });
-   });
-  
+
+allOrders && allOrders.forEach((item) => {
+  row.push({
+    id: item._id,
+    itemsQty: item.cart?.length || 0,          
+    total: "US$" + item.totalPrice,           
+    status: item.status || "Processing",      
+  });
+});
 
   return (
     <div className="pl-8 pt-1">
@@ -294,7 +302,7 @@ const AllOrders = () => {
 
 const AllRefundOrders = () => {
   const { user } = useSelector((state) => state.user);
-  const { orders } = useSelector((state) => state.order);
+  const { allOrders } = useSelector((state) => state.order);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -302,7 +310,7 @@ const AllRefundOrders = () => {
   }, []);
 
   const eligibleOrders =
-    orders && orders.filter((item) => item.status === "Processing refund");
+    allOrders?.filter((item) => item.status === "Processing refund") || [];
 
   const columns = [
     { field: "id", headerName: "Order ID", minWidth: 150, flex: 0.7 },
@@ -312,10 +320,8 @@ const AllRefundOrders = () => {
       headerName: "Status",
       minWidth: 130,
       flex: 0.7,
-      cellClassName: (params) => {
-        return params.getValue(params.id, "status") === "Delivered"
-          ? "greenColor"
-          : "redColor";
+       cellClassName: (params) => {
+        return params.value === "Delivered" ? "greenColor" : "redColor";
       },
     },
     {
@@ -355,17 +361,16 @@ const AllRefundOrders = () => {
     },
   ];
 
-  const row = [];
 
-  eligibleOrders &&
-    eligibleOrders.forEach((item) => {
-      row.push({
-        id: item._id,
-        itemsQty: item.cart.length,
-        total: "US$ " + item.totalPrice,
-        status: item.status,
-      });
-    });
+const row = [];
+allOrders && allOrders.forEach((item) => {
+  row.push({
+    id: item._id,
+    itemsQty: item.cart?.length || 0,          
+    total: "US$" + item.totalPrice,           
+    status: item.status || "Processing",      
+  });
+});
 
   return (
     <div className="pl-8 pt-1">
@@ -382,7 +387,7 @@ const AllRefundOrders = () => {
 
 const TrackOrder = () => {
   const { user } = useSelector((state) => state.user);
-  const { orders } = useSelector((state) => state.order);
+  const { allOrders } = useSelector((state) => state.order);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -392,16 +397,15 @@ const TrackOrder = () => {
   const columns = [
     { field: "id", headerName: "Order ID", minWidth: 150, flex: 0.7 },
 
-    {
+     {
       field: "status",
-      headerName: "Status",
-      minWidth: 130,
+      headerName: "status",
+      minwidth: 130,
       flex: 0.7,
       cellClassName: (params) => {
-        return params.getValue(params.id, "status") === "Delivered"
-          ? "greenColor"
-          : "redColor";
+        return params.value === "Delivered" ? "greenColor" : "redColor";
       },
+  
     },
     {
       field: "itemsQty",
@@ -442,15 +446,14 @@ const TrackOrder = () => {
 
   const row = [];
 
-  orders &&
-    orders.forEach((item) => {
-      row.push({
-        id: item._id,
-        itemsQty: item.cart.length,
-        total: "US$ " + item.totalPrice,
-        status: item.status,
-      });
-    });
+  allOrders && allOrders.forEach((item) => {
+  row.push({
+    id: item._id,
+    itemsQty: item.cart?.length || 0,          
+    total: "US$" + item.totalPrice,           
+    status: item.status || "Processing",      
+  });
+});
 
   return (
     <div className="pl-8 pt-1">

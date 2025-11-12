@@ -56,10 +56,10 @@ const Checkout = () => {
     }
   };
 
-  const subTotalPrice = cart.reduce(
-    (acc, item) => acc + item.qty * item.discountPrice,
-    0
-  );
+  const subTotalPrice = cart.reduce((acc, item) => {
+  const price = Number(String(item.discountPrice).replace(/\$/g, '')) || 0;
+  return acc + price * item.qty;
+}, 0);
 
   // this is shipping cost variable
   const shipping = subTotalPrice * 0.1;
@@ -102,7 +102,8 @@ const Checkout = () => {
     ? (subTotalPrice + shipping - discountPercentenge).toFixed(2)
     : (subTotalPrice + shipping).toFixed(2);
 
-  console.log(discountPercentenge);
+  // console.log(discountPercentenge);
+  console.log(user);
 
   return (
     <div className="w-full flex flex-col  bg-[#fff] items-center py-8">
@@ -280,7 +281,7 @@ const ShippingInfo = ({
       >
         Choose From saved address
       </h5>
-      {userInfo && (
+     
         <div>
           {user &&
             user.addresses.map((item, index) => (
@@ -302,7 +303,6 @@ const ShippingInfo = ({
               </div>
             ))}
         </div>
-      )}
     </div>
   );
 };

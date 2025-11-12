@@ -22,14 +22,19 @@ const ProductDetailsPage = () => {
   useEffect(() => {
     if (eventData !== null) {
       const data = allEvents && allEvents.find((i) => i._id === id);
+      console.log(data);
       setData(data);
-    } else{
-      const data = allProducts.find((i) => i._id === id);
+    } else {  
+      if(allProducts ){
+         const data = allProducts.find((i) => i._id === id);
+      console.log(data);
          setData(data);
+      }
+     
     }
   }, [allProducts, allEvents]);
-
-  return (
+console.log(id);
+  return ( 
     <div>
       <Header />
       <ProductDetails data={data} />

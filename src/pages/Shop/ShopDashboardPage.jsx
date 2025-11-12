@@ -7,12 +7,12 @@ import DashboardHero from "../../components/Shop/DashboardHero";
 const ShopDashboardPage = () => {
   return (
     <div>
-      <DashboardHeader  />
+      <DashboardHeader />
       <div className="flex item-center justify-between w-full">
-         <div className='w-[80px] 800:w-[330px]'>
-                 <DashboardSideBar active={1}/>
-         </div>
-         <DashboardHero/>
+        <div className='w-[80px] 800:w-[330px]'>
+          <DashboardSideBar active={1} />
+        </div>
+        <DashboardHero />
       </div>
     </div>
   )

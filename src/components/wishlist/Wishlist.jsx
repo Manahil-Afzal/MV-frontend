@@ -10,7 +10,7 @@ import { removeFromWishlist } from "../../redux/actions/wishlist";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../../redux/actions/cart";
 import { backend_url } from "../../server";
-
+import { toast } from "react-toastify";
 
 
 const Wishlist = ({ setOpenWishlist }) => {
@@ -20,6 +20,12 @@ const Wishlist = ({ setOpenWishlist }) => {
   const removeFromWishlistHandler = (data) => {
     dispatch(removeFromWishlist(data));
   };
+
+  const totalPrice = wishlist.reduce((acc, item) => {
+  const price = Number(String(item.discountPrice).replace(/\$/g, '')) || 0;
+  return acc + price * item.qty;
+}, 0);
+
 
   const addToCartHandler = (data) =>{
      const newData = {...data, qty:5};
@@ -57,7 +63,7 @@ const Wishlist = ({ setOpenWishlist }) => {
                 {/* items length */}
                 <div className={`${styles.normalFlex} p-4`}>
                   <AiOutlineHeart size={25} />
-                  <h5 className="pl-2 text-[20px] font-[500] ">{wishlist && wishlist.length}</h5>
+                  <h5 className="pl-2 text-[20px] font-[500] ">{wishlist && wishlist.length} items</h5>
                 </div>
                 {/* cart single items */}
                 <br />
@@ -80,7 +86,31 @@ const Wishlist = ({ setOpenWishlist }) => {
 
 const CartSingle = ({ data, removeFromWishlistHandler, addToCartHandler}) => {
   const [value, setValue] = useState(1);
-  const totalPrice = data.discountPrice * value;
+  // const totalPrice = data.discountPrice * value;
+
+  const price = Number(String(data.discountPrice).replace(/\$/g, '')) || 0;
+  const totalPrice = price * value;
+  
+    const increment = (data) => {
+      if (data.stock < value) {
+        toast.error("Product stock limited!");
+      } else {
+        setValue(value + 1);
+        const updateCartData = { ...data, qty: value + 1 };
+        quantityChangeHandler(updateCartData);
+      }
+  
+    };
+  
+    const decrement = (data) => {
+      setValue(value === 1 ? 1 : value - 1);
+      const updateCartData = {
+        ...data, qty:
+          value === 1 ? 1 : value - 1
+      };
+      removeFromCartHandler(updateCartData);
+    }
+
 
   return (
     <div className=" border p-4 ">

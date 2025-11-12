@@ -2,18 +2,24 @@ import React from "react";
 import styles from "../../styles/styles";
 import ShopInfo from "../../components/Shop/ShopInfo";
 import ShopProfileData from "../../components/Shop/ShopProfileData";
+import { useParams } from "react-router-dom";
+import {useSelector} from "react-redux";
+
 
 
 const ShopHomePage = () => {
+       const {seller} = useSelector((state) => state.seller );
+       const {id} = useParams();
+   console.log(seller);    
   return (
     <div>
       <h1 className={`${styles.section} bg-[#f5f5f5]`}>
         <div className="w-full flex py-10 justify-between">
           <div className="w-[25%] bg-[#fff] rounded-[4px] shadow-sm overflow-y-scroll h-[95vh]  sticky top-10 left-0 z-10">
-            <ShopInfo isOwner={true} />
+            <ShopInfo isOwner={seller._id=== id} />
           </div>
            <div className="w-[72%] rounded-[4px]">
-              <ShopProfileData isOwner={true} />
+              <ShopProfileData isOwner={seller._id=== id} />
            </div>
         </div>
       </h1>

@@ -77,22 +77,16 @@ const handleSearchChange = (e) => {
 
   // Filter by category
   const handleCategoryClick = (category) => {
-  console.log("Clicked category:", category);
-  console.log("All products:", allProducts);
-
   const filteredProducts =
     allProducts?.filter((product) => {
-      console.log("Product category:", product.category);
       return (
         product.category &&
         product.category.toLowerCase() === category.toLowerCase()
       );
     }) || [];
-
-  console.log("Filtered products:", filteredProducts);
   setDropDownProducts(filteredProducts);
 };
-console.log(user);
+
   return (
     <>
       {/* Top Header */}

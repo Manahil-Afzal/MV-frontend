@@ -24,7 +24,7 @@ const ShopInfo = ({ isOwner }) => {
     dispatch(getAllProductsShop(id));
     setIsLoading(true);
     axios
-      .get(`${server}/shop/get-shop/info/${id}`)
+      .get(`${server}/shop/get-shop-info/${id}`)
       .then((res) => {
         setData(res.data.shop);
         setIsLoading(false);

@@ -135,8 +135,7 @@ const Payment = () => {
       const config = {
         headers: {
           "Content-Type": "application/json",
-        },
-      };
+        },  withCredentials: true};
 
       const { data } = await axios.post(
         `${server}/payment/process`,
@@ -187,17 +186,18 @@ const Payment = () => {
     e.preventDefault();
 
     const config = {
-      headers: {
+      headers: {    
         "Content-Type": "application/json",
-      },
-    };
+      },withCredentials: true};
 
     order.paymentInfo = {
       type: "Cash On Delivery",
     };
 
     await axios
-      .post(`${server}/order/create-order`, order, config)
+      .post(`${server}/order/create-order`, order, config 
+        
+      )
       .then((res) => {
         setOpen(false);
         navigate("/order/success");

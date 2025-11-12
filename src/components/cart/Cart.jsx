@@ -1,3 +1,5 @@
+
+
 import React, { useState } from "react";
 import { IoBagHandleOutline } from "react-icons/io5";
 import { RxCross1 } from "react-icons/rx";
@@ -8,6 +10,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { addToCart, removeFromCart } from "../../redux/actions/cart";
 import { backend_url } from "../../server";
 import { toast } from "react-toastify";
+import '../../index.css';
+
+
+
 const Cart = ({ setOpenCart }) => {
   const { cart } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
@@ -16,13 +22,10 @@ const Cart = ({ setOpenCart }) => {
     dispatch(removeFromCart(data));
   };
 
-  // const totalPrice = cart.reduce((acc, item) => acc + item.qty * item.discountPrice, 0)
-
-  // convert discountPrice to number safely
-const totalPrice = cart.reduce((acc, item) => {
-  const price = Number(String(item.discountPrice).replace(/\$/g, '')) || 0;
-  return acc + price * item.qty;
-}, 0);
+  const totalPrice = cart.reduce((acc, item) => {
+    const price = Number(String(item.discountPrice).replace(/\$/g, '')) || 0;
+    return acc + price * item.qty;
+  }, 0);
 
   const quantityChangeHandler = (data) => {
     dispatch(addToCart(data));
@@ -37,13 +40,13 @@ const totalPrice = cart.reduce((acc, item) => {
           cart && cart.length === 0 ? (
             <div className="w-full h-screen flex items-center justify-center">
               <div className="flex w-full justify-end pt-5 pr-5 fixed top-3 right-3">
-                     <RxCross1
-                    size={25}
-                    className="cursor-pointer"
-                    onClick={() => setOpenCart(false)}
-                  />
+                <RxCross1
+                  size={25}
+                  className="cursor-pointer"
+                  onClick={() => setOpenCart(false)}
+                />
               </div>
-               <h5>Cart Items is empty!</h5>
+              <h5>Cart Items is empty!</h5>
             </div>
           ) : (
             <>
@@ -93,29 +96,30 @@ const totalPrice = cart.reduce((acc, item) => {
 
 const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
   const [value, setValue] = useState(data.qty);
-  // const totalPrice = data.discountPrice * value;
-const price = Number(String(data.discountPrice).replace(/\$/g, '')) || 0;
-const totalPrice = price * value;
+  const price = Number(String(data.discountPrice).replace(/\$/g, '')) || 0;
+  const totalPrice = price * value;
 
   const increment = (data) => {
-    if (data.stock < value) {
+    if (data.stock <= value) {
       toast.error("Product stock limited!");
     } else {
-      setValue(value + 1);
-      const updateCartData = { ...data, qty: value + 1 };
+      const newQty = value + 1;
+      setValue(newQty);
+      const updateCartData = { ...data, qty: newQty };
       quantityChangeHandler(updateCartData);
     }
-
   };
 
   const decrement = (data) => {
-    setValue(value === 1 ? 1 : value - 1);
-    const updateCartData = {
-      ...data, qty:
-        value === 1 ? 1 : value - 1
-    };
-    removeFromCartHandler(updateCartData);
-  }
+    if (value > 1) {
+      const newQty = value - 1;
+      setValue(newQty);
+      const updateCartData = { ...data, qty: newQty };
+      quantityChangeHandler(updateCartData);
+    } else {
+      toast.info("Minimum quantity is 1!");
+    }
+  };
 
   return (
     <div className=" border p-4 ">
@@ -143,7 +147,7 @@ const totalPrice = price * value;
 
         <div className="pl-[5px]">
           <h1>{data.name}</h1>
-          <h4 className="font-[400] text-[15px] text-[#00000082]">{data.discountPrice } * {value}</h4>
+          <h4 className="font-[400] text-[15px] text-[#00000082]">{data.discountPrice} * {value}</h4>
           <h4 className="font-[600] text-[17px] pt-[3px] bg-[#F2A533] font-Roboto">
             USD${totalPrice}
           </h4>
