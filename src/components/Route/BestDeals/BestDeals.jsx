@@ -5,26 +5,28 @@ import ProductCard from "../ProductCard/ProductCard";
 import { useSelector } from "react-redux";
 
 const BestDeals = () => {
-    const { allProducts } = useSelector((state) => state.products);
+  const { allProducts } = useSelector((state) => state.products);
   const [data, setData] = useState(allProducts);
 
 
   useEffect(() => {
-    if (allProducts.length > 0 ) {
+    if (allProducts.length > 0) {
       console.log(allProducts);
       const firstFive = allProducts.slice(0, 5);
       setData(firstFive);
     }
-  }, [ allProducts]);
+  }, [allProducts]);
 
 
   return (
     <div>
       <div className={`${styles.section}`}>
         <div className={`${styles.heading}`}>
-          <h1>Best Deals</h1>
+          <h1 className="text-[#417fa0] font-bold text-3xl">
+            Best Deals
+          </h1>
         </div>
-        <div className="grid grid-cols-1 gap-[20px] md:grid-cols-2 md:gap-[25px] lg:grid-cols-4 lg:gap-[25px] xl:grid-cols-5 xl:gap-[30px] mb-12 border-0 ">
+        <div className="grid grid-cols-1 gap-[20px] md:grid-cols-2 md:gap-[25px] lg:grid-cols-4 lg:gap-[25px] xl:grid-cols-5 xl:gap-[10px] mb-12 border-0 ">
           {data && data.map((i, index) => (
             <ProductCard data={i} key={index} />
           ))}

@@ -1,31 +1,43 @@
-import React, { useEffect, useState } from "react";
+
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { getAllProducts } from "../redux/actions/product";
 import Header from "../components/Layout/Header";
-import styles from "../styles/styles";
-import { productData } from "../static/data";
-import { useSearchParams } from "react-router-dom";
-import ProductCard from "../components/Route/ProductCard/ProductCard";
 import Footer from "../components/Layout/Footer";
+import ProductCard from "../components/Route/ProductCard/ProductCard";
 
 const BestSellingPage = () => {
-  const [data, setData] = useState([]);
+  const dispatch = useDispatch();
+  const { allProducts } = useSelector((state) => state.products);
 
   useEffect(() => {
-    const d =
-      productData && productData.sort((a, b) => b.total_sell - a.total_sell);
-    setData(d);
-    window.scrollTo(0, 0);
-  }, []);
+    if (!allProducts || allProducts.length === 0) {
+      dispatch(getAllProducts());
+    }
+  }, [dispatch, allProducts]);
+
+  const bestSellingProducts = allProducts
+    ? [...allProducts].sort((a, b) => b.total_sell - a.total_sell)
+    : [];
 
   return (
     <div>
-      <Header activeHeading={2} />
-      <br />
-      <br />
-      <div className={`${styles.section}`}>
-        <div className="grid grid-cols-1 gap-[20px] md:grid-cols-2 md:gap-[25px] lg:grid-cols-4 lg:gap-[25px] xl:grid-cols-5 xl:grid-[30px]  mb-12">
-          {data && data.map((i, index) => <ProductCard data={i} key={index} />)}
-        </div>
+      <Header />
+
+      <div className="w-[90%] 800:w-[80%] mx-auto py-8">
+        <h1 className="text-4xl text-[#417fa0] font-bold mb-8">Best Selling Products</h1>
+
+        {bestSellingProducts.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+            {bestSellingProducts.map((product) => (
+              <ProductCard key={product._id} data={product} />
+            ))}
+          </div>
+        ) : (
+          <p className="text-center text-gray-500">No products found</p>
+        )}
       </div>
+
       <Footer />
     </div>
   );

@@ -12,14 +12,14 @@
 
 /* 🔶 Toast background and text color */
 .Toastify__toast {
-  background: #123243 !important; /* same as toastOptions.style.background */
-  color: #fff !important;      /* same as toastOptions.style.color */
+  background: #fff !important; /* same as toastOptions.style.background */
+  color: #417fa0 !important;      /* same as toastOptions.style.color */
   font-weight: bold !important;    /* same as toastOptions.style.fontWeight */
 }
 
 /* 🔶 Toast progress bar color */
 .Toastify__progress-bar {
-  background: #fff !important; /* same as toastOptions.progressStyle.background */
+  background: #417fa0 !important; /* same as toastOptions.progressStyle.background */
 }
 
 /* 🔶 Toast icons color for colored theme */
@@ -27,5 +27,5 @@
 .Toastify__toast--success .Toastify__toast-icon,
 .Toastify__toast--error .Toastify__toast-icon,
 .Toastify__toast--warning .Toastify__toast-icon {
-  fill: #F2A533 !important; /* matches text color */
+  fill: #417fa0 !important; /* matches text color */
 }

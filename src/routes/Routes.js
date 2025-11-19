@@ -1,20 +1,22 @@
-import LoginPage from "../pages/Login.jsx";
-import SignupPage from "../pages/SignupPages.jsx";
-import ActivationPage from "../pages/ActivationPage.jsx";
-import HomePage from "../pages/HomePage.jsx";
-import ProductsPage from "../pages/ProductsPage.jsx";
-import BestSellingPage from "../pages/BestSellingPage.jsx";
-import EventsPage from "../pages/EventsPage.jsx"
-import FAQPage from "../pages/FAQPage.jsx";
-import OrderSuccessPage from "../pages/OrderSuccessPage.jsx";
-import ProductDetailsPage from "../pages/ProductDetailsPage.jsx";
-import CheckoutPage from "../pages/CheckoutPage.jsx";
-import PaymentPage from "../pages/PaymentPage.jsx";
-import ProfilePage from "../pages/ProfilePage.jsx";
-import ShopCreatePage from "../pages/ShopCreate.jsx";
+import LoginPage from "../pages/Login";
+import SignupPage from "../pages/SignupPages";
+import ActivationPage from "../pages/ActivationPage";
+import HomePage from "../pages/HomePage";
+import ProductsPage from "../pages/ProductsPage";
+import BestSellingPage from "../pages/BestSellingPage";
+import EventsPage from "../pages/EventsPage"
+import FAQPage from "../pages/FAQPage";
+import OrderSuccessPage from "../pages/OrderSuccessPage";
+import ProductDetailsPage from "../pages/ProductDetailsPage";
+import CheckoutPage from "../pages/CheckoutPage";
+import PaymentPage from "../pages/PaymentPage";
+import ProfilePage from "../pages/ProfilePage";
+import ShopCreatePage from "../pages/ShopCreate";
 import SellerActivationPage from "../pages/SellerActivationPage.jsx";
-import ShopLoginPage from "../pages/ShopLoginPage.jsx";
-import OrderDetailsPage from "../pages/OrderDetailsPage.jsx";
+import ShopLoginPage from "../pages/ShopLoginPage";
+import OrderDetailsPage from "../pages/OrderDetailsPage";
+import TrackOrderPage from "../pages/TrackOrderPage";
+import UserInbox from "../components/Inbox/UserInbox.jsx";
 
 export {
    LoginPage,
@@ -33,5 +35,7 @@ export {
    ShopCreatePage,
    SellerActivationPage,
    ShopLoginPage,
-   OrderDetailsPage
+    OrderDetailsPage,
+    TrackOrderPage,
+    UserInbox
 };

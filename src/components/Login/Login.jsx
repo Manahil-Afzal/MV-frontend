@@ -38,8 +38,9 @@ const Login = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+       <div className="sm:mx-auto sm:w-full sm:max-w-md">
+    <h2 className="mt-6 text-center text-3xl font-extrabold text-[#417fa0]">
+
           Login to your account
         </h2>
       </div>
@@ -50,7 +51,7 @@ const Login = () => {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-medium text-[#417fa0]"
               >
                 Email address
               </label>
@@ -71,7 +72,7 @@ const Login = () => {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-medium text-[#417fa0]"
               >
                 Password
               </label>
@@ -112,7 +113,7 @@ const Login = () => {
                 />
                 <label
                   htmlFor="remember-me"
-                  className="ml-2 text-sm text-gray-900"
+                  className="ml-2 text-sm text-[#417fa0]"
                 >
                   Remember me
                 </label>
@@ -120,7 +121,7 @@ const Login = () => {
               <div>
                 <a
                   href="/forgot-password"
-                  className="text-sm font-medium text-blue-600 hover:text-blue-500"
+                  className="text-sm font-medium text-[#417fa0] hover:text-[#417fa0]"
                 >
                   Forget Your Password?
                 </a>
@@ -132,16 +133,16 @@ const Login = () => {
                 type="submit"
                 className="group relative w-full h-[40px]
                  flex justify-center py-2 px-4 border border-transparent
-                  text-sm font-med rounded-md text-white bg-blue-600
-                   hover:bg-blue-700 "
+                  text-sm font-med rounded-md text-white bg-[#417fa0]
+                   hover:bg-[#417fa0] "
               >
                 {" "}
                 Submit
               </button>
             </div>
             <div className={`${styles.normalFlex} w-full `}>
-              <h4>Not have any account?</h4>
-              <Link to="/sign-up" className="text-blue-600 pl-2 ">
+              <h4 className="text-[#417fa0]">Not have any account?</h4>
+              <Link to="/sign-up" className="text-[#417fa0] pl-2 ">
                 Sign Up
               </Link>
             </div>

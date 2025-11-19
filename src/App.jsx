@@ -49,8 +49,11 @@ import ShopPreviewPage from "./pages/Shop/ShopPreviewPage.jsx";
 import OrderDetails from "./components/Shop/OrderDetails.jsx";
 import TrackOrderPage from "./pages/TrackOrderPage";
 import UserInbox from "./components/Inbox/UserInbox";
-import ShopAllRefunds from "./pages/Shop/ShopAllRefunds.jsx";
+import ShopAllRefunds from "./pages/Shop/ShopAllRefunds";
 import ShopSettingsPage from "./pages/Shop/ShopSettingsPage"
+import ShopWithDrawMoneyPage from "./pages/Shop/ShopWithDrawMoneyPage.jsx";
+import ShopInboxPage from "./pages/Shop/ShopInboxPage.jsx";
+
 
 
 const App = () => {
@@ -76,14 +79,14 @@ const App = () => {
     <>
 
       <Routes>
-         <Route
-              path="/payment"
-              element={
-                <ProtectedRoute  isAuthenticated={isAuthenticated}>
-                  <PaymentPage />
-                </ProtectedRoute>
-              }
-            />
+        <Route
+          path="/payment"
+          element={
+            <ProtectedRoute isAuthenticated={isAuthenticated}>
+              <PaymentPage />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/sign-up" element={<SignupPage />} />
@@ -118,7 +121,7 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-          <Route
+        <Route
           path="/inbox"
           element={
             <ProtectedRoute>
@@ -126,7 +129,7 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-          <Route
+        <Route
           path="/user/order/:id"
           element={
             <ProtectedRoute isAuthenticated={isAuthenticated}>
@@ -134,7 +137,7 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-             <Route
+        <Route
           path="/user/track/order/:id"
           element={
             <ProtectedRoute>
@@ -156,7 +159,7 @@ const App = () => {
             </SellerProtectedRoute>
           }
         />
-           <Route
+        <Route
           path="/settings"
           element={
             <SellerProtectedRoute isSeller={isSeller}>
@@ -180,7 +183,7 @@ const App = () => {
             </SellerProtectedRoute>
           }
         />
-         <Route
+        <Route
           path="/dashboard-orders"
           element={
             <SellerProtectedRoute>
@@ -188,7 +191,7 @@ const App = () => {
             </SellerProtectedRoute>
           }
         />
-         <Route
+        <Route
           path="/dashboard-refunds"
           element={
             <SellerProtectedRoute>
@@ -196,7 +199,7 @@ const App = () => {
             </SellerProtectedRoute>
           }
         />
-          <Route
+        <Route
           path="/order/:id"
           element={
             <SellerProtectedRoute>
@@ -238,14 +241,29 @@ const App = () => {
             </SellerProtectedRoute>
           }
         />
-
-
+      <Route
+          path="/dashboard-withdraw-money"
+          element={
+            <SellerProtectedRoute>
+              <ShopWithDrawMoneyPage />
+            </SellerProtectedRoute>
+          }
+        />
+          <Route
+          path="/dashboard-messages"
+          element={
+            <SellerProtectedRoute>
+              <ShopInboxPage />
+            </SellerProtectedRoute>
+          }
+        />
+ 
       </Routes>
 
-      {/* Toast Notifications */}
-      {/* <ToastContainer
+
+      <ToastContainer
         position="bottom-center"
-        autoClose={5000}
+        autoClose={3000}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick
@@ -253,21 +271,8 @@ const App = () => {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="dark"
-      /> */}
-      <ToastContainer
-  position="bottom-center"
-  autoClose={3000}
-  hideProgressBar={false}
-  newestOnTop={false}
-  closeOnClick
-  rtl={false}
-  pauseOnFocusLoss
-  draggable
-  pauseOnHover
-  theme="colored" // important
-/>
-
+        theme="colored"
+      />
     </>
   );
 };

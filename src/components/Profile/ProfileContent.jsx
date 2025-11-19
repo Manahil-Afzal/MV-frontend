@@ -78,7 +78,7 @@ const ProfileContent = ({ active }) => {
             <div className="relative">
               <img
                 src={`${backend_url}${user?.avatar.url}`}
-                className="w-[150px] h-[150px] rounded-full object-cover border-[3px] border-[#3ad132]"
+                className="w-[150px] h-[150px] rounded-full object-cover border-[3px] border-[#417fa0]"
                 alt=""
               />
               <div className="w-[30px] h-[30px] bg-[#E3E9EE] rounded-ful  flex items-center justify-center cursor-pointer absolute bottom-[5px] right-[5px]">
@@ -105,27 +105,27 @@ const ProfileContent = ({ active }) => {
             >
               <div className="w-full flex pb-3  gap-x-4">
                 <div className="w-[50%] flex flex-col">
-                  <label className="mb-1 text-gray-800 font-medium">
+                  <label className="mb-1 text-[#417fa0] font-medium">
                     Full Name
                   </label>
                   <input
                     type="text"
                     className="w-full  *:px-3 py-1 border border-gray-600 rounded-md outline-none"
                     required
-                    value={""}
+                    value={name}
                     onChange={(e) => setName(e.target.value)}
                   />
                 </div>
 
                 <div className="w-[50%] flex flex-col  gap-x-4">
-                  <label className="mb-1 text-gray-800 font-medium">
+                  <label className="mb-1 text-[#417fa0] font-medium">
                     Email Address
                   </label>
                   <input
                     type="text"
                     className="w-full  px-3 py-1 border border-gray-600 rounded-md outline-none"
                     required
-                    value={""}
+                    value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
@@ -133,7 +133,7 @@ const ProfileContent = ({ active }) => {
 
               <div className="flex flex-row w-full gap-3">
                 <div className="w-[50%] flex flex-col">
-                  <label className="mb-1 text-gray-800 font-medium">
+                  <label className="mb-1 text-[#417fa0] font-medium">
                     Phone Numbers
                   </label>
                   <input
@@ -146,7 +146,7 @@ const ProfileContent = ({ active }) => {
                 </div>
 
                 <div className="w-[50%] flex flex-col">
-                  <label className="mb-1 text-gray-800 font-medium">
+                  <label className="mb-1 text-[#417fa0] font-medium">
                     Enter Your Password
                   </label>
                   <input
@@ -160,7 +160,7 @@ const ProfileContent = ({ active }) => {
               </div>
 
               <input
-                className={`w-[250px] h-[40px] border border-[#3a24db] text-center text-[#3a24db] rounded-[3px] mt-8 cursor-pointer`}
+                className={`w-[250px] h-[40px] border border-[#417fa0] text-center text-[#417fa0] rounded-[3px] mt-8 cursor-pointer`}
                 required
                 value="Update"
                 type="submit"

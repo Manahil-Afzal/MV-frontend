@@ -12,12 +12,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllProductsShop } from "../../redux/actions/product";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { removeFromWishlist } from "../../redux/actions/wishlist";
-import toast from "react-hot-toast";
+import { addToWishlist, removeFromWishlist } from "../../redux/actions/wishlist";
+import { toast } from "react-toastify";
+import Ratings from "./Ratings";
+import { addToCart } from "../../redux/actions/cart";
+import { server } from "../../server";
+import "../../index.css";
 
 const ProductDetails = ({ data }) => {
   const { wishlist } = useSelector((state) => state.wishlist);
   const { cart } = useSelector((state) => state.cart);
+  const { user, isAuthenticated } = useSelector((state) => state.user);
   const { allProducts } = useSelector((state) => state.products);
   const [count, setCount] = useState(1);
   const [click, setClick] = useState(false);
@@ -25,7 +30,10 @@ const ProductDetails = ({ data }) => {
   const navigate = useNavigate();
   const { id } = useParams();
   const dispatch = useDispatch();
-  
+    const searchParams = new URLSearchParams(location.search); // ✅ define searchParams
+  const isEvent = searchParams.get("isEvent");
+ 
+
   useEffect(() => {
     dispatch(getAllProductsShop(data && data?.shop._id));
     if (wishlist && wishlist.find((i) => i._id === data?._id)) {
@@ -34,7 +42,7 @@ const ProductDetails = ({ data }) => {
       setClick(false);
     }
 
-  }, []);
+  }, [data, wishlist]);
 
   const removeFromWishlistHandler = (data) => {
     setClick(!click);
@@ -46,22 +54,34 @@ const ProductDetails = ({ data }) => {
     dispatch(addToWishlist(data));
   }
 
+const handleWishlistToggle = (product) => {
+  const isInWishlist = wishlist && wishlist.find((i) => i._id === product._id);
 
-  const addToCartHandler = (id) => {
-    const isItemExists = cart && cart.find((i) => i._id === id);
+  if (isInWishlist) {
+    dispatch(removeFromWishlist(product));
+  } else {
+    dispatch(addToWishlist(product));
+  }
+};
+
+
+
+  const addToCartHandler = (data) => {
+    const isItemExists = cart && cart.find((i) => i._id === data._id);
     if (isItemExists) {
-      toast.error("Item already in cart!")
-    }
-    else {
-      if (data.stock < count) {
+      toast.error("Item already in cart!");
+    } else {
+      if (data.stock < 1) {
         toast.error("Product stock limited!");
       } else {
-        const cartData = { ...data, qty: count }
+        const cartData = { ...data, qty: 1 };
         dispatch(addToCart(cartData));
-        toast.success("Item added to cart successfully!")
+        toast.success("Item added to cart successfully!");
       }
     }
-  };
+  }
+
+
 
 
   const incrementCount = () => {
@@ -74,23 +94,41 @@ const ProductDetails = ({ data }) => {
     }
   };
 
-const totalReviewsLength = allProducts?.reduce(
-  (acc, product) => acc + (product.reviews?.length || 0),
-  0
-);
+  const totalReviewsLength = allProducts?.reduce(
+    (acc, product) => acc + (product.reviews?.length || 0),
+    0
+  );
 
-const totalRatings = allProducts?.reduce(
-  (acc, product) => acc + (product.reviews?.reduce((sum, review) => sum + review.rating, 0) || 0),
-  0
-); 
+  const totalRatings = allProducts?.reduce(
+    (acc, product) => acc + (product.reviews?.reduce((sum, review) => sum + review.rating, 0) || 0),
+    0
+  );
 
-const averageRating = totalReviewsLength > 0 ? totalRatings / totalReviewsLength : 0;
+  const averageRating = totalReviewsLength > 0 ? totalRatings / totalReviewsLength : 0;
 
 
-
-  const handleMessageSubmit = () => {
-    navigate("/inbox?conversation=507ebjver884ehfdjeriv84");
+  const handleMessageSubmit = async () => {
+    if (isAuthenticated) {
+      const groupTitle = data._id + user._id;
+      const userId = user._id;
+      const sellerId = data.shop._id;
+      await axios
+        .post(`${server}/conversation/create-new-conversation`, {
+          groupTitle,
+          userId,
+          sellerId,
+        })
+        .then((res) => {
+          navigate(`/inbox?${res.data.conversation._id}`);
+        })
+        .catch((error) => {
+          toast.error(error.response.data.message);
+        });
+    } else {
+      toast.error("Please login to create a conversation");
+    }
   };
+
 
 
   return (
@@ -101,8 +139,7 @@ const averageRating = totalReviewsLength > 0 ? totalRatings / totalReviewsLength
             <div className="block w-full 800:flex">
               <div className="w-[50%] 800:w-[50%]">
                 <img
-                  // src={data.image_Url[select].url}
-                  src={`${backend_url}/${data && data.images[select]}`}
+                  src={`${backend_url}/uploads/${data?.images?.[select] || data?.images?.[0]}`}
                   alt=""
                   className="w-[80%]"
                 />
@@ -113,8 +150,7 @@ const averageRating = totalReviewsLength > 0 ? totalRatings / totalReviewsLength
                       } cursor-pointer `}
                   >
                     <img
-                      // src={data?.image_Url[0].url}
-                      src={`${backend_url}/${data.images && data.images[0]}`}
+                      src={`${backend_url}/uploads/${data?.images && data?.images[0]}`}
                       alt=""
                       className="h-[150px]"
                       onClick={() => setSelect(0)}
@@ -125,8 +161,7 @@ const averageRating = totalReviewsLength > 0 ? totalRatings / totalReviewsLength
                       } cursor-pointer`}
                   >
                     <img
-                      // src={data?.image_Url[1].url}
-                      src={`${backend_url}${data.images && data.images[0]}`}
+                      src={`${backend_url}/uploads/${data?.images && data?.images[0]}`}
                       alt=""
                       className="h-[150px]"
                       onClick={() => setSelect(1)}
@@ -139,10 +174,10 @@ const averageRating = totalReviewsLength > 0 ? totalRatings / totalReviewsLength
                 <p>{data.description}</p>
                 <div className="flex pt-3">
                   <h4 className={`${styles.productDiscountPrice}`}>
-                    {data.discountPrice}$
+                    {data.discountPrice}
                   </h4>
                   <h3 className={`${styles.price}`}>
-                    {data.originalPrice ? data.originalPrice + "$" : null}
+                    {data.originalPrice ? data.originalPrice + "" : null}
                   </h3>
                 </div>
                 <div className="flex items-center mt-12 justify-between pr-3">
@@ -164,7 +199,7 @@ const averageRating = totalReviewsLength > 0 ? totalRatings / totalReviewsLength
                     </button>
                   </div>
                   <div>
-                    {click ? (
+                    {/* {click ? (
                       <AiFillHeart
                         size={30}
                         className="cursor-pointer "
@@ -180,29 +215,48 @@ const averageRating = totalReviewsLength > 0 ? totalRatings / totalReviewsLength
                         color={click ? "red" : "#333"}
                         title="Add to wishlist"
                       />
-                    )}
+                    )} */}
+
+{click ? (
+  <AiFillHeart
+    size={30}
+    className="cursor-pointer"
+    onClick={() => handleWishlistToggle(data)}
+    color="red"
+    title="Remove From wishlist"
+  />
+) : (
+  <AiOutlineHeart
+    size={30}
+    className="cursor-pointer"
+    onClick={() => handleWishlistToggle(data)}
+    color="#333"
+    title="Add to wishlist"
+  />
+)}
+
+
                   </div>
                 </div>
 
                 <div
-                  className={`${styles.button}, !mt-6 !rounded !h-11 flex items-center`}
-                  onClick={() => addToCartHandler(data._id)}
+                  className={`${styles.button} !mt-6 !rounded  cursor-pointer !h-11 flex items-center`}
+                  onClick={() => addToCartHandler(data)}
                 >
                   <span className="text-white flex items-center">
                     Add to Cart <AiOutlineShoppingCart className="ml-1" />
                   </span>
                 </div>
                 <div className=" flex items-center pt-8">
-                  <Link to={`/shop/preview/${data?.shop._id}`}>
+                  <Link to={`/shop/${data?.shop._id}`}>
                     <img
-                      src={`${backend_url}${data?.shop.avatar}`}
-                      // src={data.shop.shop_avatar.url}
-                      alt=""
+                      src={`${backend_url}/uploads/${data?.shop?.avatar}`}
+                        alt={data?.shop?.name || "Shop Avatar"}
                       className="w-[50px] h-[50px] rounded-full mr-2"
                     />
                   </Link>
                   <div className="pr-8">
-                    <Link to={`/shop/preview/${data?.shop._id}`}>
+                    <Link to={`/shop/${data?.shop._id}`}>
                       <h3 className={`${styles.shop_name} pb-1 pt-1`}>
                         {data.shop.name}
                       </h3>
@@ -223,14 +277,15 @@ const averageRating = totalReviewsLength > 0 ? totalRatings / totalReviewsLength
               </div>
             </div>
           </div>
-          <ProductDetailsInfo data={data} products={allProducts} totalReviewsLength={totalReviewsLength}/>
+          <ProductDetailsInfo data={data} products={allProducts} totalReviewsLength={totalReviewsLength} averageRating={averageRating} />
         </div>
       ) : null}
     </div>
   );
 };
 
-const ProductDetailsInfo = ({ data, products, totalReviewsLength, totalRatings}) => {
+
+const ProductDetailsInfo = ({ data, products, totalReviewsLength, totalRatings, averageRating }) => {
   const [active, setActive] = useState(1);
   return (
     <div className="bg-[#f5f6fb] px-3 800px:px-10 py-2 rounded ">
@@ -281,32 +336,16 @@ const ProductDetailsInfo = ({ data, products, totalReviewsLength, totalRatings})
       {active === 1 ? (
         <>
           <p className="py-2 text-[18px] leading-8 pb-10 whitespace-pre-line">
-            This product is made with premium quality materials, designed to
-            provide durability, performance, and comfort. Each item is carefully
-            crafted to meet customer expectations and deliver the best value for
-            your money.
-          </p>
-
-          <p className="py-2 text-[18px] leading-8 pb-10 whitespace-pre-line">
-            Whether you are using it for personal, professional, or daily
-            lifestyle needs, this product ensures reliability and ease of use.
-            It goes through multiple quality checks before being delivered to
-            our customers.
-          </p>
-
-          <p className="py-2 text-[18px] leading-8 pb-10 whitespace-pre-line">
-            Please review the specifications, pricing, and available variants to
-            find the perfect fit for your requirements. For any further details,
-            you can contact the seller directly through our platform.
+            {data.description}
           </p>
         </>
       ) : null}
 
       {active === 2 ? (
         <div className="w-full  min-h-[40vh] flex flex-col items-center py-3 overflow-y-scroll">
-          {
-            data && data.reviews.map((item, index) => (
-              <div className="w-full flex my-2">
+          {(
+            data?.reviews || []).map((item, index) => (
+              <div className="w-full flex my-2" key={index}>
                 <img src={`${backend_url}/uploads/${item.user.avatar}`}
                   alt=""
                   className="w-[50px] h-[50px] rounded-full"
@@ -325,12 +364,11 @@ const ProductDetailsInfo = ({ data, products, totalReviewsLength, totalRatings})
           }
 
           <div className="w-full flex justify-center">
-            {
-              data && data.reviews.length === 0 && (
-                <h5>
-                  No reviews have for this product
-                </h5>
-              )
+            {data?.reviews?.length === 0 && (
+              <h5>
+                No reviews have for this product
+              </h5>
+            )
             }
           </div>
         </div>
@@ -339,14 +377,19 @@ const ProductDetailsInfo = ({ data, products, totalReviewsLength, totalRatings})
       {active === 3 && (
         <div className="w-full block 800:flex p-5">
           <div className="w-full 800:w-[50%]">
-            <Link to={`/shop/preview/${data.shop._id}`}>
+            <Link to={`/shop/${data.shop._id}`}>
               <div className="flex items-center">
                 <img
-                  // src={data.shop.shop_avatar.url}
-                  src={`${data?.shop?.avatar?.url}`}
+                  src={
+                    data?.shop?.avatar
+                      ? `${backend_url}/uploads/${data.shop.avatar}`
+                      : "/default-avatar.png"
+                  }
                   className="w-[50px] h-[50px] rounded-full"
-                  alt=""
+                  alt={data?.shop?.name || "Seller Avatar"}
                 />
+
+
                 <div className="pl-3">
                   <h3 className={`${styles.shop_name}`}>{data.shop.name}</h3>
                   <h5 className="pb-2 text-[15px]">
@@ -356,22 +399,18 @@ const ProductDetailsInfo = ({ data, products, totalReviewsLength, totalRatings})
               </div>
             </Link>
             <p className="pt-2">
-              "This seller is reliable and committed to providing high-quality
-              products and excellent customer service. All items are carefully
-              checked to ensure customer satisfaction."
+              {data.shop.description}
             </p>
           </div>
           <div className="w-full 800:w-[50%] mt-5 800:mt-0 800:flex flex-col items-end">
             <div className="text-left">
               <h5 className="font-[600]">
                 Joined on : <span className="font-[500]">
-                  {/* 14 March, 2024 */}
                   {data?.shop?.createdAt?.slice(0, 10)}
                 </span>
               </h5>
               <h5 className="font-[600]">
                 Total Products : <span className="font-[500]">
-                  {/* 1,332 */}
                   {products && products.length}
                 </span>
               </h5>

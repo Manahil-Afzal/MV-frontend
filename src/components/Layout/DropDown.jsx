@@ -23,26 +23,22 @@ const DropDown = ({
         </div>
       ))}
 
-      {/* Products inside same block */}
-      {dropDownProducts.length > 0 && (
-        <div className="border-t max-h-[300px] overflow-y-auto">
-          {dropDownProducts.map((product) => (
-            <Link
-              key={product.id}
-              to={`/product/${product.name.replace(/\s+/g, "-")}`}
-            >
-              <div className="flex items-center gap-2 p-2 hover:bg-gray-50">
-                <img
-                  src={product.image_Url[0].url}
-                  alt={product.name}
-                  className="w-10 h-10 rounded"
-                />
-                <span>{product.name}</span>
-              </div>
-            </Link>
-          ))}
-        </div>
-      )}
+    {dropDownProducts.map((product) => (
+  <Link
+    key={product.id}
+    to={`/product/${product.name.replace(/\s+/g, "-")}`}
+  >
+    <div className="flex items-center gap-2 p-2 hover:bg-gray-50">
+      <img
+        src={product.image_Url?.[0]?.url || "/placeholder.png"}
+        alt={product.name}
+        className="w-10 h-10 rounded"
+      />
+      <span>{product.name}</span>
+    </div>
+  </Link>
+))}
+
     </div>
   );
 };

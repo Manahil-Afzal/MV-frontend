@@ -12,7 +12,7 @@ import { addToWishlist, removeFromWishlist } from "../../../redux/actions/wishli
 import Ratings from "../../Products/Ratings";
 
 
-const ProductCard = ({ data }) => {
+const ProductCard = ({ data, isEvent }) => {
 
   const [click, setClick] = useState(false);
   const [open, setOpen] = useState(false);
@@ -61,7 +61,7 @@ const { Wishlist } = useSelector((state) => state.wishlist);
     <>
       <div className="w-full h-[370px] bg-white rounded-lg shadow-sm p-3 relative cursor-pointer">
         <div className="flex justify-end"></div>
-        <Link to={`/product/${data._id}`}>
+        <Link to={`${isEvent === true ? `/product/${data._id}?isEvent=true` : `/product/${data._id}`}`}>
           <img
             // src={data.image_Url[0].url}
             src={`${backend_url}/uploads/${data?.images[0]}`}
@@ -70,7 +70,7 @@ const { Wishlist } = useSelector((state) => state.wishlist);
           />
 
         </Link>
-         <Link to={`/shop/preview/${data?.shop._id}`}>
+        <Link to={`${isEvent === true ? `/product/${data._id}?isEvent=true` : `/product/${data._id}`}`}>
           <h5 className={`${styles.shop_name}`}>{data.shop.name}</h5>
         </Link>
         <Link to={`/product/${data._id}`}>

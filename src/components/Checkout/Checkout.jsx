@@ -138,7 +138,7 @@ const Checkout = () => {
         </div>
       </div>
       <div
-        className={`${styles.button} w-[150px] 800:w-[280px] mt-10 !bg-[#123243] border border-[#123243]`}
+        className={`${styles.button} w-[150px] 800:w-[280px] mt-10 !bg-[#F2A533] border border-[#F2A533]`}
         onClick={paymentSubmit}
       >
         <h5 className="text-white">Go to Payment</h5>
@@ -164,7 +164,7 @@ const ShippingInfo = ({
   setZipCode,
 }) => {
   return (
-    <div className="w-full 800:w-[95%] border border-[#123243] bg-white rounded-1xl shadow-sm p-6">
+    <div className="w-full 800:w-[95%] border  border-[#123243] bg-white text-[#417fa0] rounded-xl shadow-sm p-6">
       <h5 className="text-[18px] font-[500]">Shipping Address</h5>
       <br />
       <form>
@@ -173,7 +173,7 @@ const ShippingInfo = ({
             <label className="block pb-2">Full Name</label>
             <input
               type="text"
-              // value={user && user.name}
+              value={user && user.name}
               required
               className={`${styles.input} !w-[95%]`}
             />
@@ -317,19 +317,19 @@ const CartData = ({
   discountPercentenge,
 }) => {
   return (
-    <div className="w-full 800:w-[95%] border border-[#123243] bg-white rounded-1xl shadow-lg p-6">
+    <div className="w-full 800:w-[95%] border border-[#123243] bg-white text-[#417fa0] rounded-1xl shadow-lg p-6">
       <div className="flex justify-between">
-        <h3 className="text-[16px] font-[400] text-[#000000a4]">subtotal:</h3>
+        <h3 className="text-[16px] font-[400] text-[#417fa0]">subtotal:</h3>
         <h5 className="text-[18px] font-[600]">${subTotalPrice}</h5>
       </div>
       <br />
       <div className="flex justify-between">
-        <h3 className="text-[16px] font-[400] text-[#000000a4]">shipping:</h3>
+        <h3 className="text-[16px] font-[400] text-[#417fa0]">shipping:</h3>
         <h5 className="text-[18px] font-[600]">${shipping.toFixed(2)}</h5>
       </div>
       <br />
       <div className="flex justify-between border-b pb-3">
-        <h3 className="text-[16px] font-[400] text-[#000000a4]">Discount:</h3>
+        <h3 className="text-[16px] font-[400] text-[#417fa0]">Discount:</h3>
         <h5 className="text-[18px] font-[600]">
           - {discountPercentenge ? "$" + discountPercentenge.toString() : null}
         </h5>

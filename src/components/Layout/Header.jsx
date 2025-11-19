@@ -25,9 +25,9 @@ import { RxCross1 } from "react-icons/rx";
 const Header = ({ activeHeading }) => {
   const dispatch = useDispatch();
   const { isAuthenticated, user } = useSelector((state) => state.user);
-    const { isSeller} = useSelector((state) => state.seller);
-  const {wishlist} = useSelector((state) => state.wishlist)
-  const {cart} = useSelector((state) => state.cart);
+  const { isSeller } = useSelector((state) => state.seller);
+  const { wishlist } = useSelector((state) => state.wishlist)
+  const { cart } = useSelector((state) => state.cart);
   const { allProducts } = useSelector((state) => state.products);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchData, setSearchData] = useState([]);
@@ -38,20 +38,22 @@ const Header = ({ activeHeading }) => {
   const [openWishlist, setOpenWishlist] = useState(false);
   const [openSidebar, setOpenSidebar] = useState(false);
 
-  
 
 
-const shopId = user?._id;
 
-useEffect(() => {
-  if (!user) return; 
-  const shopId = user.shopId || user._id;
-  if (shopId) dispatch(getAllProductsShop(shopId));
-}, [dispatch, user]);
+  const shopId = user?._id;
 
-useEffect(() => {
-  console.log("All Products:", allProducts);
-}, [allProducts]);
+  useEffect(() => {
+    if (!user) return;
+    const shopId = user.shopId || user._id;
+      console.log("Shop ID used for fetching products:", shopId);
+    if (shopId) dispatch(getAllProductsShop(shopId));
+  }, [dispatch, user]);
+
+
+  useEffect(() => {
+    console.log("All Products:", allProducts);
+  }, [allProducts, categoriesData]);
 
   // Header scroll effect
   useEffect(() => {
@@ -61,31 +63,40 @@ useEffect(() => {
   }, []);
 
   // Search input
-const handleSearchChange = (e) => {
-  const term = e.target.value;
-  setSearchTerm(term);
+  const handleSearchChange = (e) => {
+    const term = e.target.value;
+    setSearchTerm(term);
 
-  const filteredProducts =
-    allProducts &&
-    allProducts.filter((product) =>
-      product.name?.toLowerCase().includes(term.toLowerCase())
-    );
+  if (!allProducts || allProducts.length === 0) {
+    setSearchData([]);
+    return;
+  }
 
-  setSearchData(filteredProducts);
-};
+    const filteredProducts =
+      allProducts &&
+      allProducts.filter((product) =>
+        product.name?.toLowerCase().includes(term.toLowerCase())
+      );
+console.log(filteredProducts);
+
+    setSearchData(filteredProducts);
+  };
 
 
   // Filter by category
   const handleCategoryClick = (category) => {
-  const filteredProducts =
-    allProducts?.filter((product) => {
-      return (
-        product.category &&
-        product.category.toLowerCase() === category.toLowerCase()
-      );
-    }) || [];
-  setDropDownProducts(filteredProducts);
-};
+    const filteredProducts =
+      allProducts?.filter((product) => {
+        return (
+          product.category &&
+          product.category.toLowerCase() === category.toLowerCase()
+        );
+      }) || [];
+    setDropDownProducts(filteredProducts);
+  };
+
+
+
 
   return (
     <>
@@ -100,19 +111,21 @@ const handleSearchChange = (e) => {
             />
           </Link>
 
-          {/* Search */}
-          <div className="w-[50%] relative hidden sm:block">
+
+          <div className="relative w-full max-w-sm">
             <input
               type="text"
-              placeholder="Search Product..."
+              placeholder="Search Product......"
               value={searchTerm}
               onChange={handleSearchChange}
-              className="h-[35px] w-full px-2 bg-white border-2 border-[#123243] rounded-md text-[#123243]"
+              className="h-[35px] w-full px-4 pr-20 bg-white border-2 border-[#417fa0] rounded-md text-[#123243] placeholder-[#417fa0] focus:outline-none"
             />
-            <AiOutlineSearch
-              size={28}
-              className="absolute right-2 top-1 cursor-pointer"
-            />
+            <button
+              className="absolute right-0 top-0  h-[35px] px-5 bg-[#417fa0] text-white rounded-md font-medium hover:bg-[#2f6280] transition-colors"
+            >
+              Search
+            </button>
+
 
             {searchData && searchData.length > 0 && (
               <div className="absolute bg-white shadow-md w-full z-10 p-3 max-h-60 overflow-y-scroll">
@@ -121,10 +134,10 @@ const handleSearchChange = (e) => {
                     <Link to={`/product/${i._id}`} key={index}>
                       <div className="flex items-center gap-2 py-2 hover:bg-gray-100 rounded-md cursor-pointer">
                         <img
-                          src={`${backend_url}${i.images[0]}`}
+                          src={`${backend_url}/uploads/${i.images[0]}`}
                           alt={i.name}
                           className="w-[40px] h-[40px] mr-[10px]"
-                         />
+                        />
                         <h1>{i.name}</h1>
                       </div>
                     </Link>
@@ -137,7 +150,7 @@ const handleSearchChange = (e) => {
           <div className={`${styles.button}`}>
             <Link to="/shop-create">
               <button className="flex items-center gap-1 bg-[#F2A533] text-white cursor-pointer px-3 py-1 rounded-md">
-         {isSeller ? " Dashboard" : "Become Seller"} <IoArrowForward />
+                {isSeller ? " Dashboard" : "Become Seller"} <IoArrowForward />
               </button>
             </Link>
           </div>
@@ -151,7 +164,7 @@ const handleSearchChange = (e) => {
             />
             <BiMenuAltLeft
               size={30}
-              className="cursor-pointer text-gray-700"
+              className="cursor-pointer text-[#417fa0]"
               onClick={() => setOpenSidebar(true)}
             />
           </div>
@@ -160,9 +173,8 @@ const handleSearchChange = (e) => {
 
       {/* Desktop Navbar */}
       <div
-        className={`hidden md:flex items-center w-full bg-[#123243] h-[60px] px-11 rounded-md relative ${
-          active ? "shadow-sm top-0 left-0 z-10" : ""
-        }`}
+        className={`hidden md:flex items-center w-full bg-[#417fa0] h-[60px] px-11  relative ${active ? "shadow-sm top-0 left-0 z-10" : ""
+          }`}
       >
         {/* Categories */}
         <div className="relative">
@@ -175,9 +187,8 @@ const handleSearchChange = (e) => {
             <img
               src="https://cdn-icons-png.flaticon.com/128/7996/7996254.png"
               alt="Dropdown Arrow"
-              className={`w-4 h-4 transition-transform duration-200 ${
-                dropDown ? "rotate-180" : ""
-              }`}
+              className={`w-4 h-4 transition-transform duration-200 ${dropDown ? "rotate-180" : ""
+                }`}
             />
           </button>
 
@@ -202,8 +213,8 @@ const handleSearchChange = (e) => {
             onClick={() => setOpenWishlist(true)}
           >
             <AiOutlineHeart size={28} color="white" />
-            <span className="absolute -top-1 -right-1 bg-[#3bc177] w-4 h-4 text-[12px] text-white flex items-center justify-center rounded-full">
-                 {wishlist && wishlist.length}
+            <span className="absolute -top-1 -right-1 bg-[#F2A533] w-4 h-4 text-[12px] text-white flex items-center justify-center rounded-full">
+              {wishlist && wishlist.length}
             </span>
           </div>
 
@@ -212,8 +223,8 @@ const handleSearchChange = (e) => {
             onClick={() => setOpenCart(true)}
           >
             <AiOutlineShoppingCart size={28} color="white" />
-            <span className="absolute -top-1 -right-1 bg-[#3bc177] w-4 h-4 text-[12px] text-white flex items-center justify-center rounded-full">
-               {cart && cart.length}
+            <span className="absolute -top-1 -right-1 bg-[#F2A533] w-4 h-4 text-[12px] text-white flex items-center justify-center rounded-full">
+              {cart && cart.length}
             </span>
           </div>
 
@@ -237,40 +248,28 @@ const handleSearchChange = (e) => {
           <div className="w-[50%] bg-white h-full shadow-md p-5 relative overflow-y-scroll">
             <RxCross1
               size={25}
-              className="absolute top-4 right-4 cursor-pointer text-gray-700"
+              className="absolute top-4 right-4 cursor-pointer text-[#417fa0]"
               onClick={() => setOpenSidebar(false)}
             />
-
-            {/* Search */}
-            <div className="w-full mt-10 mb-4 relative">
-              <input
-                type="text"
-                placeholder="Search Product..."
-                className="h-[40px] w-full px-2 border-[#3957db] border-[2px] rounded-md"
-                value={searchTerm}
-                onChange={handleSearchChange}
-              />
-              <AiOutlineSearch
-                size={25}
-                className="absolute right-2 top-2 cursor-pointer text-gray-600"
-              />
-            </div>
-
+            <div className="mb-11 mt-20 ">
+         <h2 className="text-xl font-bold ">Menu</h2>
             <Navbar active={activeHeading} />
+            </div>
+    
 
             <div className="flex items-center justify-between mt-6">
               <div
                 className="absolute top-4 right-14 cursor-pointer"
                 onClick={() => setOpenWishlist(true)}
               >
-                <AiOutlineHeart size={25} className="text-gray-700" />
-                <span className="absolute -top-1 -right-2 bg-[#3bc177] w-4 h-4 text-[10px] text-white flex items-center justify-center rounded-full">
-                    {cart && cart.length}
+                <AiOutlineHeart size={25} className="text-[#417fa0]" />
+                <span className="absolute -top-1 -right-2 bg-[#417fa0] w-4 h-4 text-[10px] text-white flex items-center justify-center rounded-full">
+                  {cart && cart.length}
                 </span>
               </div>
 
               <Link to="/shop-create">
-                <button className="bg-[#3bc177] text-white px-4 py-2 rounded-md flex items-center gap-2">
+                <button className="bg-[#417fa0] text-white px-4 py-2  ml-13 rounded-md flex items-center gap-2">
                   Become Seller <IoArrowForward />
                 </button>
               </Link>
@@ -283,14 +282,14 @@ const handleSearchChange = (e) => {
               >
                 {isAuthenticated && user?.avatar ? (
                   <img
-                    src={`${backend_url}${user.avatar}`}
-                    className="w-[60px] h-[60px] rounded-full border-[3px] border-[#3bc177]"
+                    src={`${backend_url}${user.avatar.url}`}
+                    className="w-[60px] h-[60px] rounded-full border-[3px] border-[#417fa0]"
                     alt="Profile"
                   />
                 ) : (
                   <CgProfile size={40} />
                 )}
-                <span className="text-gray-700 text-sm mt-2">
+                <span className="text-[#417fa0] text-sm mt-2">
                   {isAuthenticated ? "Go to Profile" : "Login / Sign Up"}
                 </span>
               </Link>
@@ -307,3 +306,6 @@ const handleSearchChange = (e) => {
 };
 
 export default Header;
+
+
+
