@@ -7,10 +7,18 @@ import { useNavigate } from "react-router-dom";
 import { AiOutlineArrowRight, AiOutlineSend } from "react-icons/ai";
 import styles from "../../styles/styles";
 import { TfiGallery } from "react-icons/tfi";
-// import socketIO from "socket.io-client";
-// import { format } from "timeago.js";
-// const ENDPOINT = "https://socket-ecommerce-tu68.onrender.com/";
-// // const socketId = socketIO(ENDPOINT, { transports: ["websocket"] });
+import { format } from "timeago.js";
+import { io } from "socket.io-client";
+const ENDPOINT = "https://socket-ecommerce-tu68.onrender.com/";
+
+const socket = io("http://localhost:4000", {
+  transports: ["polling"],      
+  withCredentials: true,
+  reconnection: true,
+  reconnectionAttempts: 10,
+  reconnectionDelay: 1000,
+});
+
 
 const DashboardMessages = () => {
   const { seller,isLoading } = useSelector((state) => state.seller);
@@ -25,51 +33,78 @@ const DashboardMessages = () => {
   const [images, setImages] = useState();
   const [open, setOpen] = useState(false);
   const scrollRef = useRef(null);
+  const [user, setUser] = useState(null);
+
 
   useEffect(() => {
-    socketId.on("getMessage", (data) => {
-      setArrivalMessage({
-        sender: data.senderId,
-        text: data.text,
-        createdAt: Date.now(),
-      });
+  const handleMessage = (data) => {
+    setArrivalMessage({
+      sender: data.senderId,
+      text: data.text,
+      createdAt: Date.now(),
     });
-  }, []);
+  };
+  socket.on("getMessage", handleMessage);
+  return () => socket.off("getMessage", handleMessage);
+}, []);
+
+
+useEffect(() => {
+  if (!seller) return;
+  
+  socket.emit("addUser", seller._id);
+
+  const handleUsers = (data) => setOnlineUsers(data);
+  socket.on("getUsers", handleUsers);
+
+  return () => socket.off("getUsers", handleUsers);
+}, [seller]);
+
+
 
   useEffect(() => {
     arrivalMessage &&
       currentChat?.members.includes(arrivalMessage.sender) &&
       setMessages((prev) => [...prev, arrivalMessage]);
   }, [arrivalMessage, currentChat]);
+console.log(arrivalMessage);
 
-  useEffect(() => {
-    const getConversation = async () => {
-      try {
-        const response = await axios.get(
-          `${server}/conversation/get-all-conversation-seller/${seller?._id}`,
-          {
-            withCredentials: true,
-          }
-        );
+  // useEffect(() => {
+  //   const getConversation = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         `${server}/conversation/get-all-conversation-seller/${seller?._id}`,
+  //         {
+  //           withCredentials: true,
+  //         }
+  //       );
 
-        setConversations(response.data.conversations);
-      } catch (error) {
-        // console.log(error);
-      }
-    };
-    getConversation();
-  }, [seller, messages]);
+  //       setConversations(response.data.conversations);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   getConversation();
+  // }, [seller, messages]);
+useEffect(() => {
+  if (!seller?._id) return; // wait until seller is loaded
 
-  useEffect(() => {
-    if (seller) {
-      const sellerId = seller?._id;
-      socketId.emit("addUser", sellerId);
-      socketId.on("getUsers", (data) => {
-        setOnlineUsers(data);
-      });
+  const getConversation = async () => {
+    try {
+      const response = await axios.get(
+        `${server}/conversation/get-all-conversation-seller/${seller._id}`,
+        { withCredentials: true }
+      );
+      setConversations(response.data.conversations);
+    } catch (error) {
+      console.log(error);
     }
-  }, [seller]);
+  };
+  getConversation();
+}, [seller]);
 
+  
+  
   const onlineCheck = (chat) => {
     const chatMembers = chat.members.find((member) => member !== seller?._id);
     const online = onlineUsers.find((user) => user.userId === chatMembers);
@@ -78,19 +113,39 @@ const DashboardMessages = () => {
   };
 
   // get messages
-  useEffect(() => {
-    const getMessage = async () => {
-      try {
-        const response = await axios.get(
-          `${server}/message/get-all-messages/${currentChat?._id}`
-        );
-        setMessages(response.data.messages);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getMessage();
-  }, [currentChat]);
+  // useEffect(() => {
+  //   const getMessage = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         `${server}/message/get-all-messages/${currentChat?._id}`
+  //       );
+  //       setMessages(response.data.messages);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   getMessage();
+  // }, [currentChat]);
+
+useEffect(() => {
+  if (!currentChat?._id) return;
+
+  const getMessage = async () => {
+    try {
+      const response = await axios.get(
+        `${server}/message/get-all-messages/${currentChat._id}`
+      );
+      setMessages(response.data.messages);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  getMessage();
+}, [currentChat]);
+
+
+
+
 
   // create new message
   const sendMessageHandler = async (e) => {
@@ -102,11 +157,9 @@ const DashboardMessages = () => {
       conversationId: currentChat._id,
     };
 
-    const receiverId = currentChat.members.find(
-      (member) => member.id !== seller._id
-    );
+  const receiverId = currentChat.members.find((member) => member !== seller._id);
 
-    socketId.emit("sendMessage", {
+    socket.emit("sendMessage", {
       senderId: seller._id,
       receiverId,
       text: newMessage,
@@ -114,6 +167,7 @@ const DashboardMessages = () => {
 
     try {
       if (newMessage !== "") {
+        console.log("Seller ID:", seller?._id);
         await axios
           .post(`${server}/message/create-new-message`, message)
           .then((res) => {
@@ -130,7 +184,7 @@ const DashboardMessages = () => {
   };
 
   const updateLastMessage = async () => {
-    socketId.emit("updateLastMessage", {
+    socket.emit("updateLastMessage", {
       lastMessage: newMessage,
       lastMessageId: seller._id,
     });
@@ -167,7 +221,7 @@ const DashboardMessages = () => {
       (member) => member !== seller._id
     );
 
-    socketId.emit("sendMessage", {
+    socket.emit("sendMessage", {
       senderId: seller._id,
       receiverId,
       images: e,
@@ -202,9 +256,10 @@ const DashboardMessages = () => {
   };
 
   useEffect(() => {
-    scrollRef.current?.scrollIntoView({ behaviour: "smooth" });
+    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+console.log(currentChat);
   return (
     <div className="w-[90%] bg-white m-5 h-[85vh] overflow-y-scroll rounded">
       {!open && (
@@ -213,7 +268,7 @@ const DashboardMessages = () => {
             All Messages
           </h1>
           {/* All messages list */}
-          {conversations &&
+          {/* {conversations &&
             conversations.map((item, index) => (
               <MessageList
                 data={item}
@@ -228,7 +283,32 @@ const DashboardMessages = () => {
                 setActiveStatus={setActiveStatus}
                 isLoading={isLoading}
               />
-            ))}
+            ))} */}
+
+
+
+
+
+            {conversations.length > 0 ? (
+  conversations.map((item, index) => (
+    <MessageList
+      data={item}
+      key={index}
+      index={index}
+      setOpen={setOpen}
+      setCurrentChat={setCurrentChat}
+      me={seller._id}
+      setUserData={setUserData}
+      userData={userData}
+      online={onlineCheck(item)}
+      setActiveStatus={setActiveStatus}
+      isLoading={isLoading}
+    />
+  ))
+) : (
+  <p className="text-center py-5">No conversations found</p>
+)}
+
         </>
       )}
 
@@ -442,3 +522,10 @@ const SellerInbox = ({
 };
 
 export default DashboardMessages;
+
+
+
+
+
+
+

@@ -99,7 +99,9 @@ const WithdrawMoney = () => {
     }
   };
 
-  const availableBalance = seller?.availableBalance.toFixed(2);
+const availableBalance = seller?.availableBalance
+  ? Number(seller.availableBalance.toFixed(2))
+  : 0;
 
   return (
     <div className="w-full h-[90vh] p-8">
@@ -117,7 +119,7 @@ const WithdrawMoney = () => {
       {open && (
         <div className="w-full h-screen z-[9999] fixed top-0 left-0 flex items-center justify-center bg-[#0000004e]">
           <div
-            className={`w-[95%] 800px:w-[50%] bg-white shadow rounded ${
+            className={`w-[95%] 800:w-[50%] bg-white shadow rounded ${
               paymentMethod ? "h-[80vh] overflow-y-scroll" : "h-[unset]"
             } min-h-[40vh] p-3`}
           >

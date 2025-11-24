@@ -8,8 +8,8 @@ const ShopSettingsPage = () => {
   return (
     <div>
       <DashboardHeader />
-      <div className="flex items-start justify-between w-full">
-        <div className="w-[80px] 800px:w-[330px]">
+      <div className="flex items-start h-screen justify-between w-full">
+        <div className="w-[80px] 800:w-[330px]">
           <DashboardSideBar active={11} />
         </div>
         <ShopSettings />

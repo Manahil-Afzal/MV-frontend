@@ -7,7 +7,6 @@ import { backend_url } from '../../server';
 
 const Events = () => {
   const { allEvents, isLoading } = useSelector((state) => state.event);
-  console.log(allEvents);
 
   return (
     <div>

@@ -46,13 +46,11 @@ const Header = ({ activeHeading }) => {
   useEffect(() => {
     if (!user) return;
     const shopId = user.shopId || user._id;
-      console.log("Shop ID used for fetching products:", shopId);
     if (shopId) dispatch(getAllProductsShop(shopId));
   }, [dispatch, user]);
 
 
   useEffect(() => {
-    console.log("All Products:", allProducts);
   }, [allProducts, categoriesData]);
 
   // Header scroll effect
@@ -77,7 +75,7 @@ const Header = ({ activeHeading }) => {
       allProducts.filter((product) =>
         product.name?.toLowerCase().includes(term.toLowerCase())
       );
-console.log(filteredProducts);
+// console.log(filteredProducts);
 
     setSearchData(filteredProducts);
   };

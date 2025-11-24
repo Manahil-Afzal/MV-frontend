@@ -15,6 +15,7 @@ const ProductsPage = () => {
   const [product, setProduct] = useState(null); 
   const [searchParams] = useSearchParams();
   const categoryData = searchParams.get("category");
+  const { slug } = useParams();
 
 
   // Fetch all products if not already fetched

@@ -102,8 +102,8 @@ const Checkout = () => {
     ? (subTotalPrice + shipping - discountPercentenge).toFixed(2)
     : (subTotalPrice + shipping).toFixed(2);
 
-  // console.log(discountPercentenge);
-  console.log(user);
+  
+  
 
   return (
     <div className="w-full flex flex-col  bg-[#fff] items-center py-8">
@@ -164,25 +164,25 @@ const ShippingInfo = ({
   setZipCode,
 }) => {
   return (
-    <div className="w-full 800:w-[95%] border  border-[#123243] bg-white text-[#417fa0] rounded-xl shadow-sm p-6">
-      <h5 className="text-[18px] font-[500]">Shipping Address</h5>
+    <div className="w-full 800:w-[95%] border  border-[#F2A533]  bg-white text-[#417fa0]  shadow-sm p-6">
+      <h5 className="text-[18px] font-[500]">𝐒𝐡𝐢𝐩𝐩𝐢𝐧𝐠 𝐀𝐝𝐝𝐫𝐞𝐬𝐬</h5>
       <br />
       <form>
-        <div className="w-full flex pb-3">
+        <div className="w-full  flex pb-3">
           <div className="w-[50%]">
             <label className="block pb-2">Full Name</label>
             <input
               type="text"
               value={user && user.name}
               required
-              className={`${styles.input} !w-[95%]`}
+              className={`${styles.input} !w-[95%] `}
             />
           </div>
           <div className="w-[50%]">
             <label className="block pb-2">Email Address</label>
             <input
               type="email"
-              // value={user && user.email}
+              value={user && user.email}
               required
               className={`${styles.input}`}
             />
@@ -317,7 +317,7 @@ const CartData = ({
   discountPercentenge,
 }) => {
   return (
-    <div className="w-full 800:w-[95%] border border-[#123243] bg-white text-[#417fa0] rounded-1xl shadow-lg p-6">
+    <div className="w-full 800:w-[95%] border border-[#F2A533] bg-white text-[#417fa0] rounded-1xl shadow-lg p-6">
       <div className="flex justify-between">
         <h3 className="text-[16px] font-[400] text-[#417fa0]">subtotal:</h3>
         <h5 className="text-[18px] font-[600]">${subTotalPrice}</h5>

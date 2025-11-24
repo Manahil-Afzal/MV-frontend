@@ -77,7 +77,8 @@ const ShopSettings = () => {
         <div className="w-full flex items-center justify-center">
         <div className="relative">
   <img
-    src={avatar ? avatar : `${seller.avatar?.url}`}
+    // src={avatar ? avatar : `${seller.avatar?.url}`}
+    src={`${backend_url}/uploads/${seller.avatar}`}
     alt=""
     className="w-[200px] h-[200px] rounded-full cursor-pointer border-4 border-[#154753]" // <-- added border
   />

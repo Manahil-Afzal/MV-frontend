@@ -69,6 +69,8 @@ const OrderDetails = () => {
       });
   }
 
+console.log(data);
+
   return (
     <div className={`py-4 min-h-screen ${styles.section}`}>
       <div className="w-full flex items-center justify-between">
@@ -193,10 +195,11 @@ const OrderDetails = () => {
       </select>
       <div
         className={`${styles.button} mt-5 !bg-[#FCE1E6] !rounded-[4px] text-[#E94560] font-[600] !h-[45px] text-[18px]`}
-        onClick={order?.status !== "Processing Refund" ? orderUpdateHandler : refundOrderUpdateHandler}
+        onClick={data?.status !== "Processing Refund" ? orderUpdateHandler : refundOrderUpdateHandler}
       >
         Update Status
       </div>
+
     </div>
   );
 };

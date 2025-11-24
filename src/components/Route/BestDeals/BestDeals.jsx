@@ -11,7 +11,6 @@ const BestDeals = () => {
 
   useEffect(() => {
     if (allProducts.length > 0) {
-      console.log(allProducts);
       const firstFive = allProducts.slice(0, 5);
       setData(firstFive);
     }

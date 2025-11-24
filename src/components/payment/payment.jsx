@@ -207,7 +207,7 @@ const Payment = () => {
   };
 
   return (
-    <div className="w-full flex flex-col items-center py-8">
+    <div className="w-full flex flex-col items-center py-10">
       <div className="w-[90%] 100:w-[70%] block 800:flex">
         <div className="w-full 800:w-[65%]">
           <PaymentInfo

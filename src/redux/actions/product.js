@@ -59,7 +59,6 @@ export const getAllProductsShop = (id) => async (dispatch) => {
       type: "getAllProductsShopSuccess",
       payload: data.products,
     });
-    console.log(data);
   } catch (error) {
       
     dispatch({

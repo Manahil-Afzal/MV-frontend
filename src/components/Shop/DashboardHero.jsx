@@ -104,7 +104,7 @@ const availableBalance = seller?.availableBalance
               <span className="text-[16px]">(with 10% service charge)</span>
             </h3>
           </div>
-          <h5 className="pt-2 pl-[30px] text-[22px] font-[500]">${100}</h5>
+          <h5 className="pt-2 pl-[30px] text-[22px] font-[500]">${availableBalance}</h5>
           <Link to="/dashboard-withdraw-money">
             <h5 className="pt-4  text-[#077f9c] inline-flex">Withdraw Money</h5>
           </Link>
@@ -115,15 +115,14 @@ const availableBalance = seller?.availableBalance
             <MdBorderClear size={30} className="mr-2" fill="#00000085" />
             <h3
               className={`${styles.productTitle} !text-[18px] leading-5 !font-[400] text-[#00000085]`}
-            >
-            
+            > 
               All Orders
             </h3>
           </div>
           <h5 className="pt-2 pl-[36px] text-[22px] font-[500]">{orders && orders.length}</h5>
           <Link to="/dashboard-orders">
 
-              <span className="text-[20px]"> <b> 10</b></span>
+              {/* <span className="text-[20px]"> <b> 10</b></span> */}
             <h5 className="pt-6  text-[#077f9c] cursor-pointer">View Orders</h5>
           </Link>
         </div>
@@ -143,7 +142,7 @@ const availableBalance = seller?.availableBalance
           </div>
           <h5 className="pt-2 pl-[30px] text-[22px] font-[500]">{products && products.length}</h5>
           <Link to="/dashboard-products">
-                          <span className="text-[20px]"> <b> 12</b></span>
+                          {/* <span className="text-[20px]"> <b> 12</b></span> */}
             <h5 className="pt-6 text-[#077f9c] cursor-pointer">View Products</h5>
           </Link>
         </div>

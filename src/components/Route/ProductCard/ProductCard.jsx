@@ -14,7 +14,7 @@ import Ratings from "../../Products/Ratings";
 
 const ProductCard = ({ data, isEvent }) => {
 
-  const [click, setClick] = useState(false);
+  const [click, setClick] = useState(false);  
   const [open, setOpen] = useState(false);
   const [count, setCount] = useState(1);
   const dispatch = useDispatch();
@@ -56,7 +56,6 @@ const { Wishlist } = useSelector((state) => state.wishlist);
         }
       }
     };
-  console.log(data.images[0]);
   return (
     <>
       <div className="w-full h-[370px] bg-white rounded-lg shadow-sm p-3 relative cursor-pointer">
