@@ -4,8 +4,7 @@ import { createReducer } from "@reduxjs/toolkit";
 
 const initialState = {
       isLoading: false,
-  allEvents: [],
-  shopEvents: [],
+  allevents: [],
   error: null,
   success: false,
   message: null,
@@ -56,15 +55,13 @@ export const eventReducer = createReducer(initialState, (builder) => {
   state.success = false;
 })
 
-
-
      // get all events of shop
      .addCase("getAlleventsRequest", (state) => {
           state.isLoading = true; 
      })
     .addCase("getAlleventsSuccess", (state,action) => {
           state.isLoading = false; 
-          state.allEvents = action.payload;
+          state.allevents = action.payload;
      })
     .addCase("getAlleventsFailed", (state, action)=>{
           state.isLoading = false; 

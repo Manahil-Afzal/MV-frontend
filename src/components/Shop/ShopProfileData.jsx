@@ -14,7 +14,7 @@ import { backend_url } from "../../server";
 
 const ShopProfileData = ({ isOwner }) => {
   const { shopProducts } = useSelector((state) => state.products);
-  const { shopEvents} = useSelector((state) => state.event);
+  const { allevents} = useSelector((state) => state.event);
   const {seller} = useSelector((state) => state.seller);
   const { id } = useParams();
   const dispatch = useDispatch();  
@@ -30,7 +30,9 @@ const ShopProfileData = ({ isOwner }) => {
   const allReviews =
     shopProducts && shopProducts.map((product) => product.reviews).flat();
 
-console.log(shopProducts);
+console.log(shopProducts, "shopProducts");
+
+console.log(allevents, "shopEvents");
 
   return (
     <div className="w-full">
@@ -91,8 +93,8 @@ console.log(shopProducts);
       {active === 2 && (
         <div className="w-full">
           <div className="grid grid-cols-1 gap-[20px] md:grid-cols-2 md:gap-[25px] lg:grid-cols-3 lg:gap-[25px] xl:grid-cols-4 xl:gap-[20px] mb-12 border-0">
-            {shopEvents &&
-              shopEvents.map((i, index) => (
+            {allevents &&
+              allevents.map((i, index) => (
                 <ProductCard
                   data={i}
                   key={index}
@@ -102,7 +104,7 @@ console.log(shopProducts);
               ))}
           </div>
 
-          {shopEvents && shopEvents.length === 0 && (
+          {allevents && allevents.length === 0 && (
             <h5 className="w-full text-center py-5 text-[18px]">
               No Events have for this shop!
             </h5>

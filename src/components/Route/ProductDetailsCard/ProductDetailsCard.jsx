@@ -32,10 +32,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
     const [select, setSelect] = useState(false);
     const navigate = useNavigate();
 
-  const handleMessageSubmit = () => {
-    setOpen(false); 
-    navigate("/"); 
-  };
+
 
   const decrementCount = () => {
     if (count > 1) {
@@ -79,6 +76,29 @@ const ProductDetailsCard = ({ setOpen, data }) => {
     setClick(!click);
     dispatch(addToWishlist(data));
   };
+
+ const handleMessageSubmit = async () => {
+    if (isAuthenticated) {
+      const groupTitle = data._id + user._id;
+      const userId = user._id;
+      const sellerId = data.shop._id;
+      await axios
+        .post(`${server}/conversation/create-new-conversation`, {
+          groupTitle,
+          userId,
+          sellerId,
+        })
+        .then((res) => {
+          navigate(`/inbox?${res.data.conversation._id}`);
+        })
+        .catch((error) => {
+          toast.error(error.response.data.message);
+        });
+    } else {
+      toast.error("Please login to create a conversation");
+    }
+  };
+
 
   return (
     <div className="bg-[#fff]">

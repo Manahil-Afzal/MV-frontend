@@ -75,11 +75,11 @@ export const productReducer = createReducer(initialState, (builder) => {
 });
 
 
-export const getProductsByCategory = (categorySlug) => async (dispatch) => {
+export const getProductsByCategory = (categoryId) => async (dispatch) => {
   try {
     dispatch({ type: "getProductsByCategoryRequest" });
 
-    const { data } = await axios.get(`${server}/product/category/${categorySlug}`);
+    const { data } = await axios.get(`${server}/product/category/${categoryId}`);
 
     dispatch({
       type: "getProductsByCategorySuccess",

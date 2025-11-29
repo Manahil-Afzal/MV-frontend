@@ -10,10 +10,10 @@ import { AiOutlineStar } from "react-icons/ai";
 import axios from "axios";
 import { server } from "../server";
 import { toast } from "react-hot-toast";
-
+import { RxCross1 } from "react-icons/rx";
 
 const UserOrderDetails = () => {
-  const { allOrders } = useSelector((state) => state.order);
+  const { orders } = useSelector((state) => state.order);
   const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
@@ -31,7 +31,7 @@ const UserOrderDetails = () => {
     }
   }, [dispatch, user?._id]);
 
-  const data = allOrders && allOrders.find((item) => item._id === id);
+  const data = orders && orders.find((item) => item._id === id);
 
 
   const reviewHandler = async (e) => {
@@ -92,7 +92,7 @@ const UserOrderDetails = () => {
       });
   };
 
-console.log(allOrders)
+console.log(orders);
 
 
 return (
@@ -131,7 +131,7 @@ return (
                   US${item.discountPrice} * {item.qty}{" "}
                 </h5>
               </div>
-              {!item.isReviewed && item.status === "Delivered" && (
+              {item.isReviewed || data.status !== "Delivered" ? null: (
                 <div className={`${styles.button} text-white`}
                   onClick={() => { setSelectedItem(item); setOpen(true); }}
                 >
@@ -158,14 +158,13 @@ return (
         ))}
 
 
-
       {/* review popup */}
       {
         open && (
           <div className="w-full fixed top-0 left-0 h-screen bg-[#0005] z-50 flex items-center justify-center">
             <div className="w-[50%] h-min bg-[#fff] shadow rounded-md p-3">
               <div className="w-full flex justify-end p-3">
-                <RxCrossl size={30} onClick={() => setOpen(false)}
+                <RxCross1 size={30} onClick={() => setOpen(false)}
                   className="cursor-pointer" />
               </div>
               <h2>

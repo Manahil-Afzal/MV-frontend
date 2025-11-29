@@ -210,7 +210,7 @@ const ProfileContent = ({ active }) => {
 
 const UserAllOrders = () => {
     const {user} = useSelector((state) => state.user);
-    const {allOrders} = useSelector((state) => state.order);
+    const {orders} = useSelector((state) => state.order);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -278,7 +278,7 @@ const UserAllOrders = () => {
   //  });
   const row = [];
 
-allOrders && allOrders.forEach((item) => {
+orders && orders.forEach((item) => {
   row.push({
     id: item._id,
     itemsQty: item.cart?.length || 0,          
@@ -302,7 +302,7 @@ allOrders && allOrders.forEach((item) => {
 
 const AllRefundOrders = () => {
   const { user } = useSelector((state) => state.user);
-  const { allOrders } = useSelector((state) => state.order);
+  const { orders } = useSelector((state) => state.order);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -310,7 +310,7 @@ const AllRefundOrders = () => {
   }, []);
 
   const eligibleOrders =
-    allOrders?.filter((item) => item.status === "Processing refund") || [];
+    orders?.filter((item) => item.status === "Processing refund") || [];
 
   const columns = [
     { field: "id", headerName: "Order ID", minWidth: 150, flex: 0.7 },
@@ -363,7 +363,7 @@ const AllRefundOrders = () => {
 
 
 const row = [];
-allOrders && allOrders.forEach((item) => {
+orders && orders.forEach((item) => {
   row.push({
     id: item._id,
     itemsQty: item.cart?.length || 0,          
@@ -387,7 +387,7 @@ allOrders && allOrders.forEach((item) => {
 
 const TrackOrder = () => {
   const { user } = useSelector((state) => state.user);
-  const { allOrders } = useSelector((state) => state.order);
+  const { orders } = useSelector((state) => state.order);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -446,7 +446,7 @@ const TrackOrder = () => {
 
   const row = [];
 
-  allOrders && allOrders.forEach((item) => {
+  orders && orders.forEach((item) => {
   row.push({
     id: item._id,
     itemsQty: item.cart?.length || 0,          

@@ -15,37 +15,22 @@ import { useNavigate } from "react-router-dom";
 
 
 const OrderDetails = () => {
-  const {  allOrders, isLoading } = useSelector((state) => state.order);
+  const { orders, isLoading } = useSelector((state) => state.order);
   const { seller } = useSelector((state) => state.seller);
   const dispatch = useDispatch();
   const [status, setStatus] = React.useState("");
   const navigate = useNavigate();
   const { id } = useParams();
   
-  // useEffect(() => {
-  //   if (seller?._id) {
-  //     dispatch(getAllOrdersOfShop(seller._id));
-  //   }
-  // }, [dispatch, seller?._id]);
-const data =  allOrders &&  allOrders.find((item) => item._id === id);
+ 
+const data =  orders &&  orders.find((item) => item._id === id);
 useEffect(() => {
   if (seller?._id) {
     dispatch(getAllOrdersOfShop(seller._id));
   }
 }, [dispatch, seller?._id]);
 
-
-useEffect(() => {
-  if ( allOrders &&  allOrders.length > 0) {
-    const data =  allOrders.find((item) => item._id === id);
-    console.log("All orders:",  allOrders);
-    console.log("Selected order:", data);
-    console.log("Shipping Address:", data?.shippingAddress);
-    console.log("Payment Info:", data?.paymentInfo);
-    console.log("Order Status:", data?.status);
-    console.log("User Info:", data?.user);
-  }
-}, [ allOrders, id]);
+console.log(data);
 
   const orderUpdateHandler = async (e) => {
     await axios

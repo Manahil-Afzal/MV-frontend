@@ -154,7 +154,7 @@ const App = () => {
         <Route
           path="/shop/:id"
           element={
-            <SellerProtectedRoute isSeller={isSeller}>
+            <SellerProtectedRoute>
               <ShopHomePage />
             </SellerProtectedRoute>
           }
@@ -257,6 +257,8 @@ const App = () => {
             </SellerProtectedRoute>
           }
         />
+       {/* <Route path="/admin/dashboard" element={<AdminDashboardPage />} /> */}
+
  
       </Routes>
 

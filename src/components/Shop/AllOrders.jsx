@@ -8,8 +8,8 @@ import { getAllOrdersOfShop } from "../../redux/actions/order";
 import { AiOutlineArrowRight } from "react-icons/ai";
 
 
-const AllOrders = () => {
-  const {allOrders: orders, isLoading} = useSelector((state) => state.order);
+const orders = () => {
+  const {orders, isLoading} = useSelector((state) => state.order);
   const { seller } = useSelector((state) => state.seller);
 
   const dispatch = useDispatch();
@@ -102,4 +102,4 @@ useEffect(() => {
   );
 };
 
-export default AllOrders;
+export default orders;

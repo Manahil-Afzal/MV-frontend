@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom";
 import Loader from "../Layout/Loader";
 import { getAllProductsShop } from "../../redux/actions/product";
 import { Link } from "react-router-dom";
+import { getAlleventsShop } from "../../redux/actions/event";
 
 
 const ShopInfo = ({ isOwner }) => {
@@ -21,7 +22,9 @@ const ShopInfo = ({ isOwner }) => {
   
 
   useEffect(() => {
-    dispatch(getAllProductsShop(id));
+      dispatch(getAllProductsShop(id));
+      dispatch(getAlleventsShop(id));
+
     setIsLoading(true);
     axios
       .get(`${server}/shop/get-shop-info/${id}`)
@@ -42,7 +45,7 @@ const logoutHandler = async () => {
       withCredentials: true,
     });
 
-    navigate("/");    // redirect to homepage
+    navigate("/");   
   } catch (error) {
     console.log("Logout failed:", error);
   }

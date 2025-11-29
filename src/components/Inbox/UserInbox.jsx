@@ -11,9 +11,8 @@ import { TfiGallery } from "react-icons/tfi";
 import styles from "../../styles/styles";
 import { backend_url } from "../../server";
 
-const ENDPOINT = "https://localhost:4000";
+const ENDPOINT = "http://localhost:4000";
 
-// const ENDPOINT = "https://socket-ecommerce-tu68.onrender.com/";
 const socketId = socketIO(ENDPOINT, { transports: ["websocket"] });
 
 const UserInbox = () => {

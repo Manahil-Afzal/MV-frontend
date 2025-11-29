@@ -4,7 +4,7 @@ import { createReducer } from "@reduxjs/toolkit";
 const initialState = {
   // isLoading: true,
    isLoading: false,
-  allOrders: [],
+  orders: [],
   product: null,
   error: null,
   success: false, 
@@ -18,7 +18,7 @@ export const orderReducer = createReducer(initialState, (builder) => {
     })
     .addCase("getAllOrdersUserSuccess", (state, action) => {
       state.isLoading = false;
-      state.allOrders = action.payload;
+      state.orders = action.payload;
     })
     .addCase("getAllOrdersUserFail", (state, action) => {
       state.isLoading = false;
@@ -31,7 +31,7 @@ export const orderReducer = createReducer(initialState, (builder) => {
     })
     .addCase("getAllOrdersShopSuccess", (state, action) => {
       state.isLoading = false;
-      state.allOrders = action.payload;
+      state.orders = action.payload;
     })
     .addCase("getAllOrdersShopFail", (state, action) => {
       state.isLoading = false;

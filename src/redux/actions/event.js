@@ -49,12 +49,12 @@ export const getAlleventsShop = (id) => async (dispatch) => {
 };
 
 
-export const deleteEvent = (slug) => async (dispatch) => {
+export const deleteEvent = (id) => async (dispatch) => {
   try {
     dispatch({ type: "deleteEventRequest" });
 
     const { data } = await axios.delete(
-      `${server}/event/delete-shop-event/${slug}`,
+      `${server}/event/delete-shop-event/${id}`,
       { withCredentials: true }
     );
 

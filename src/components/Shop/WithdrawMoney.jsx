@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllOrdersOfShop } from "../../redux/actions/order";
+import { getAllOrdersOfShop} from "../../redux/actions/order";
 import styles from "../../styles/styles";
 import { RxCross1 } from "react-icons/rx";
 import axios from "axios";
@@ -11,10 +11,12 @@ import { AiOutlineDelete } from "react-icons/ai";
 
 const WithdrawMoney = () => {
   const [open, setOpen] = useState(false);
+   const { orders } = useSelector((state) => state.order);
   const dispatch = useDispatch();
   const { seller } = useSelector((state) => state.seller);
   const [paymentMethod, setPaymentMethod] = useState(false);
   const [withdrawAmount, setWithdrawAmount] = useState(50);
+  const [deliveredOrder, setDeliveredOrder] = useState(null);
   const [bankInfo, setBankInfo] = useState({
     bankName: "",
     bankCountry: "",
@@ -23,10 +25,21 @@ const WithdrawMoney = () => {
     bankHolderName: "",
     bankAddress: "",
   });
+  
 
   useEffect(() => {
+   
     dispatch(getAllOrdersOfShop(seller._id));
-  }, [dispatch]);
+     const orderData = orders && orders.filter((item) => item.status.toLowerCase() === "delivered");
+    setDeliveredOrder(orderData);
+}, [dispatch]);
+
+const totalEarningWithoutTax = deliveredOrder
+  ? deliveredOrder.reduce((acc, item) => acc + Number(item.totalPrice), 0)
+  : 0;
+const serviceCharge = totalEarningWithoutTax * 0.1;
+const availableBalance = totalEarningWithoutTax - serviceCharge;
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -99,9 +112,8 @@ const WithdrawMoney = () => {
     }
   };
 
-const availableBalance = seller?.availableBalance
-  ? Number(seller.availableBalance.toFixed(2))
-  : 0;
+
+
 
   return (
     <div className="w-full h-[90vh] p-8">

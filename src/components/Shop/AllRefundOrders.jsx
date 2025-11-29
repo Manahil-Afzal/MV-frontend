@@ -9,7 +9,7 @@ import { AiOutlineArrowRight } from "react-icons/ai";
 
 
 const AllRefundOrders = () => {
-  const { allOrders: orders, isLoading } = useSelector((state) => state.order);
+  const { orders, isLoading } = useSelector((state) => state.order);
   const { seller } = useSelector((state) => state.seller);
 
   const dispatch = useDispatch();

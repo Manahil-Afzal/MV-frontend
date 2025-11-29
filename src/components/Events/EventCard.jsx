@@ -160,7 +160,7 @@ const EventCard = ({ active, data }) => {
         <CountDown data={data} />
 
         <div className="flex items-center mt-4">
-          <Link to={`/product/${data.slug}?isEvent=true`}>
+          <Link to={`/product/${data._id}?isEvent=true`}>
             <div className={`${styles.button} text-[#fff]`}>See Details</div>
           </Link>
           <div
