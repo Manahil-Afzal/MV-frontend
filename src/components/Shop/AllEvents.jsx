@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@mui/material";
 import { AiOutlineEye, AiOutlineDelete } from "react-icons/ai";
@@ -9,23 +9,41 @@ import toast from "react-hot-toast";
 import { getAlleventsShop, deleteEvent } from "../../redux/actions/event";
 import { backend_url } from "../../server";
 
-
 const AllEvents = () => {
-  const { events, isLoading } = useSelector((state) => state.event);
+const { shopEvents, isLoading } = useSelector((state) => state.event);
   const { seller } = useSelector((state) => state.seller);
   const dispatch = useDispatch();
+   const {id} = useState();
    
 useEffect(() => {
+   
   if (seller && seller._id) {
     dispatch(getAlleventsShop(seller._id));
   }
 }, [dispatch, seller]);
 
-  
-const handleDelete = (id) => {
-  dispatch(deleteEvent(id));
-  toast.success("Event Deleted Successfully!");
+
+const handleDelete = async (id) => {
+  const confirmed = window.confirm(
+    "Are you sure you want to delete this event?"
+  );
+  if (!confirmed) return;
+
+  try {
+    await dispatch(deleteEvent(id)); 
+    toast.success("Event deleted successfully!");
+
+    // Refetch the events to update UI
+    if (seller && seller._id) {
+      dispatch(getAlleventsShop(seller._id));
+    }
+  } catch (error) {
+    toast.error("Failed to delete event");
+  }
 };
+
+ console.log(id);
+
 
 
   const columns = [
@@ -59,8 +77,11 @@ const handleDelete = (id) => {
     {
     field: "Preview",
     renderCell: (params) => {
+       const d = params.row.name;
+        const product_name = d.replace(/\s+/g, "-");
       return (
         <Link to={`/event/${params.row.id}`}>
+         {/* <Link to={`/product/${params.row.slug}`}> */}
           <Button>
             <AiOutlineEye size={20} />
           </Button>
@@ -81,16 +102,18 @@ const handleDelete = (id) => {
 ];
 
   const row = [];
-  events &&
-    events.forEach((item) => {
+  shopEvents  &&
+    shopEvents .forEach((item) => {
       row.push({
         id: item._id,
         name: item.name,
-        price: "US$" + item.discountPrice,
+        price: "US" + item.discountPrice,
         Stock: item.stock,
-        sold: item.soldOut,
+       sold: item.sold_out, 
+
       });
     });
+console.log("shopEvents:", shopEvents);
 
   return (
     <>

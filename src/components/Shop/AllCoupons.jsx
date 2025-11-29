@@ -14,27 +14,27 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 
-const AllCoupouns = () => {
+const AllCoupons = () => {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [isLoading, setIsLoading] = useState("");
-  const [coupouns, setCoupouns] = useState([]);
+  const [coupons, setCoupons] = useState([]);
   const [value, setValue] = useState("");
   const [minAmount, setMinAmount] = useState("");
   const [maxAmount, setMaxAmount] = useState("");
   const [selectedProducts, setSelectedProducts] = useState("");
   const { seller } = useSelector((state) => state.seller);
-  const {products} = useSelector((state) => (state.products));
+  const {allProducts} = useSelector((state) => (state.products));
   const dispatch = useDispatch();
 
   useEffect(() => {
   const fetchCoupons = async () => {
     setIsLoading(true);
     try {
-      const { data } = await axios.get(`${server}/coupoun/get-coupoun/${seller._id}`, {
+      const { data } = await axios.get(`${server}/coupon/get-coupon/${seller._id}`, {
         withCredentials: true,
       });
-      setCoupouns(data.coupounCodes);
+      setCoupons(data.couponCodes);
       setIsLoading(false);
     } catch (error) {
       toast.error("Failed to fetch coupons");
@@ -50,19 +50,19 @@ const AllCoupouns = () => {
   e.preventDefault();
   try {
     const { data } = await axios.post(
-      `${server}/coupoun/create-coupoun-code`,
+      `${server}/coupon/create-coupon-code`,
       {
         name,
         value: Number(value),
         minAmount: Number(minAmount),
         maxAmount: Number(maxAmount),
-        selectedProducts: selectedProducts || "", // send string
+        selectedProducts: selectedProducts || "", 
         shopId: seller._id,
       },
       { withCredentials: true }
     );
 
-    setCoupouns([...coupouns, data.coupounCode]); // update UI instantly
+    setCoupons([...coupons, data.couponCode]); 
     toast.success("Coupon code created successfully!");
     setOpen(false);
     setName(""); setValue(""); setMinAmount(""); setMaxAmount(""); setSelectedProducts("");
@@ -74,8 +74,8 @@ const AllCoupouns = () => {
 
 const handleDelete = async (id) => {
   try {
-    const { data } = await axios.delete(`${server}/coupoun/delete-coupoun/${id}`, { withCredentials: true });
-    setCoupouns(coupouns.filter((item) => item._id !== id));
+    const { data } = await axios.delete(`${server}/coupon/delete-coupon/${id}`, { withCredentials: true });
+    setCoupons(coupons.filter((item) => item._id !== id));
     toast.success(data.message || "Coupon deleted successfully!");
   } catch (error) {
     toast.error(error.response?.data?.message || "Failed to delete coupon");
@@ -119,8 +119,8 @@ const handleDelete = async (id) => {
   ];
 
   const row = [];
-  coupouns &&
-    coupouns.forEach((item) => {
+  coupons &&
+    coupons.forEach((item) => {
       row.push({
         id: item._id,
         name: item.name,
@@ -140,7 +140,7 @@ const handleDelete = async (id) => {
               className={`${styles.button} !w-max !h-[46px] px-3 !rounded-[5px]`}
               onClick={() => setOpen(true)}
             >
-              <span className="text-white">Create Coupoun Code</span>
+              <span className="text-white">Create Coupon Code</span>
             </div>
           </div>
           <DataGrid
@@ -163,7 +163,7 @@ const handleDelete = async (id) => {
                 <h5 className="text-[30px] font-Poppins text-center">
                   Create Coupon Code
                 </h5>
-                {/* create coupoun code */}
+                {/* create coupon code */}
                 <form onSubmit={handleSubmit} aria-required={true}>
                   <br />
                   <div>
@@ -178,7 +178,7 @@ const handleDelete = async (id) => {
                       value={name}
                       className="mt-2 appearance-none block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 sm:text-sm"
                       onChange={(e) => setName(e.target.value)}
-                      placeholder="Enter your Coupoun Code  name..."
+                      placeholder="Enter your Coupon Code  name..."
                     ></input>
                   </div>
 
@@ -195,7 +195,7 @@ const handleDelete = async (id) => {
                       required
                       className="mt-2 appearance-none block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 sm:text-sm"
                       onChange={(e) => setValue(e.target.value)}
-                      placeholder="Enter your Coupoun Code  value..."
+                      placeholder="Enter your Coupon Code  value..."
                     ></input>
                   </div>
 
@@ -208,7 +208,7 @@ const handleDelete = async (id) => {
                       value={minAmount}
                       className="mt-2 appearance-none block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 sm:text-sm"
                       onChange={(e) => setMinAmount(e.target.value)}
-                      placeholder="Enter your Coupoun Code  min amount..."
+                      placeholder="Enter your Coupon Code  min amount..."
                     ></input>
                   </div>
 
@@ -221,7 +221,7 @@ const handleDelete = async (id) => {
                       value={maxAmount}
                       className="mt-2 appearance-none block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 sm:text-sm"
                       onChange={(e) => setMaxAmount(e.target.value)}
-                      placeholder="Enter your Coupoun Code  max amount..."
+                      placeholder="Enter your Coupon Code  max amount..."
                     ></input>
                   </div>
 
@@ -237,8 +237,8 @@ const handleDelete = async (id) => {
                       <option value="Choose your selected products">
                         Choose a selected product
                       </option>
-                      {products &&
-                        products.map((i) => (
+                      {allProducts &&
+                        allProducts.map((i) => (
                           <option value={i.name} key={i.name}>
                             {i.name}
                           </option>
@@ -265,7 +265,7 @@ const handleDelete = async (id) => {
   );
 };
 
-export default AllCoupouns;
+export default AllCoupons;
 
 
 

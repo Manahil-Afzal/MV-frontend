@@ -9,10 +9,12 @@ import styles from "../../styles/styles";
 import { TfiGallery } from "react-icons/tfi";
 import { format } from "timeago.js";
 import { io } from "socket.io-client";
-const ENDPOINT = "https://socket-ecommerce-tu68.onrender.com/";
+import { backend_url } from "../../server";
+// const ENDPOINT = "https://socket-ecommerce-tu68.onrender.com/";
+const ENDPOINT = "https://localhost:4000";
 
 const socket = io("http://localhost:4000", {
-  transports: ["polling"],      
+  transports: ["polling"],
   withCredentials: true,
   reconnection: true,
   reconnectionAttempts: 10,
@@ -21,7 +23,7 @@ const socket = io("http://localhost:4000", {
 
 
 const DashboardMessages = () => {
-  const { seller,isLoading } = useSelector((state) => state.seller);
+  const { seller, isLoading } = useSelector((state) => state.seller);
   const [conversations, setConversations] = useState([]);
   const [arrivalMessage, setArrivalMessage] = useState(null);
   const [currentChat, setCurrentChat] = useState();
@@ -37,28 +39,28 @@ const DashboardMessages = () => {
 
 
   useEffect(() => {
-  const handleMessage = (data) => {
-    setArrivalMessage({
-      sender: data.senderId,
-      text: data.text,
-      createdAt: Date.now(),
-    });
-  };
-  socket.on("getMessage", handleMessage);
-  return () => socket.off("getMessage", handleMessage);
-}, []);
+    const handleMessage = (data) => {
+      setArrivalMessage({
+        sender: data.senderId,
+        text: data.text,
+        createdAt: Date.now(),
+      });
+    };
+    socket.on("getMessage", handleMessage);
+    return () => socket.off("getMessage", handleMessage);
+  }, []);
 
 
-useEffect(() => {
-  if (!seller) return;
-  
-  socket.emit("addUser", seller._id);
+  useEffect(() => {
+    if (!seller) return;
 
-  const handleUsers = (data) => setOnlineUsers(data);
-  socket.on("getUsers", handleUsers);
+    socket.emit("addUser", seller._id);
 
-  return () => socket.off("getUsers", handleUsers);
-}, [seller]);
+    const handleUsers = (data) => setOnlineUsers(data);
+    socket.on("getUsers", handleUsers);
+
+    return () => socket.off("getUsers", handleUsers);
+  }, [seller]);
 
 
 
@@ -67,44 +69,27 @@ useEffect(() => {
       currentChat?.members.includes(arrivalMessage.sender) &&
       setMessages((prev) => [...prev, arrivalMessage]);
   }, [arrivalMessage, currentChat]);
-console.log(arrivalMessage);
 
-  // useEffect(() => {
-  //   const getConversation = async () => {
-  //     try {
-  //       const response = await axios.get(
-  //         `${server}/conversation/get-all-conversation-seller/${seller?._id}`,
-  //         {
-  //           withCredentials: true,
-  //         }
-  //       );
 
-  //       setConversations(response.data.conversations);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   getConversation();
-  // }, [seller, messages]);
-useEffect(() => {
-  if (!seller?._id) return; // wait until seller is loaded
+  useEffect(() => {
+    if (!seller?._id) return;
 
-  const getConversation = async () => {
-    try {
-      const response = await axios.get(
-        `${server}/conversation/get-all-conversation-seller/${seller._id}`,
-        { withCredentials: true }
-      );
-      setConversations(response.data.conversations);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  getConversation();
-}, [seller]);
+    const getConversation = async () => {
+      try {
+        const response = await axios.get(
+          `${server}/conversation/get-all-conversation-seller/${seller._id}`,
+          { withCredentials: true }
+        );
+        setConversations(response.data.conversations);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getConversation();
+  }, [seller]);
 
-  
-  
+
+
   const onlineCheck = (chat) => {
     const chatMembers = chat.members.find((member) => member !== seller?._id);
     const online = onlineUsers.find((user) => user.userId === chatMembers);
@@ -112,38 +97,22 @@ useEffect(() => {
     return online ? true : false;
   };
 
-  // get messages
-  // useEffect(() => {
-  //   const getMessage = async () => {
-  //     try {
-  //       const response = await axios.get(
-  //         `${server}/message/get-all-messages/${currentChat?._id}`
-  //       );
-  //       setMessages(response.data.messages);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   getMessage();
-  // }, [currentChat]);
 
-useEffect(() => {
-  if (!currentChat?._id) return;
+  useEffect(() => {
+    if (!currentChat?._id) return;
 
-  const getMessage = async () => {
-    try {
-      const response = await axios.get(
-        `${server}/message/get-all-messages/${currentChat._id}`
-      );
-      setMessages(response.data.messages);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  getMessage();
-}, [currentChat]);
-
-
+    const getMessage = async () => {
+      try {
+        const response = await axios.get(
+          `${server}/message/get-all-messages/${currentChat._id}`
+        );
+        setMessages(response.data.messages);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getMessage();
+  }, [currentChat]);
 
 
 
@@ -157,7 +126,7 @@ useEffect(() => {
       conversationId: currentChat._id,
     };
 
-  const receiverId = currentChat.members.find((member) => member !== seller._id);
+    const receiverId = currentChat.members.find((member) => member !== seller._id);
 
     socket.emit("sendMessage", {
       senderId: seller._id,
@@ -167,7 +136,6 @@ useEffect(() => {
 
     try {
       if (newMessage !== "") {
-        console.log("Seller ID:", seller?._id);
         await axios
           .post(`${server}/message/create-new-message`, message)
           .then((res) => {
@@ -259,7 +227,15 @@ useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-console.log(currentChat);
+  useEffect(() => {
+    if (userData) {
+      console.log("User Data:", userData);
+      console.log("User Avatar:", userData.avatar);
+      console.log("Full Avatar URL:", `${backend_url}/uploads/${userData.avatar}`);
+    }
+  }, [userData]);
+
+
   return (
     <div className="w-[90%] bg-white m-5 h-[85vh] overflow-y-scroll rounded">
       {!open && (
@@ -267,8 +243,9 @@ console.log(currentChat);
           <h1 className="text-center text-[30px] py-3 font-Poppins">
             All Messages
           </h1>
-          {/* All messages list */}
-          {/* {conversations &&
+
+
+          {conversations.length > 0 ? (
             conversations.map((item, index) => (
               <MessageList
                 data={item}
@@ -283,32 +260,10 @@ console.log(currentChat);
                 setActiveStatus={setActiveStatus}
                 isLoading={isLoading}
               />
-            ))} */}
-
-
-
-
-
-            {conversations.length > 0 ? (
-  conversations.map((item, index) => (
-    <MessageList
-      data={item}
-      key={index}
-      index={index}
-      setOpen={setOpen}
-      setCurrentChat={setCurrentChat}
-      me={seller._id}
-      setUserData={setUserData}
-      userData={userData}
-      online={onlineCheck(item)}
-      setActiveStatus={setActiveStatus}
-      isLoading={isLoading}
-    />
-  ))
-) : (
-  <p className="text-center py-5">No conversations found</p>
-)}
-
+            ))
+          ) : (
+            <p className="text-center py-5">No conversations found</p>
+          )}
         </>
       )}
 
@@ -338,12 +293,13 @@ const MessageList = ({
   setCurrentChat,
   me,
   setUserData,
+  userData,
   online,
   setActiveStatus,
   isLoading
 }) => {
-  console.log(data);
-  const [user, setUser] = useState([]);
+  // const [user, setUser] = useState([]);
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
   const handleClick = (id) => {
     navigate(`/dashboard-messages?${id}`);
@@ -351,25 +307,50 @@ const MessageList = ({
   };
   const [active, setActive] = useState(0);
 
-  useEffect(() => {
-    const userId = data.members.find((user) => user != me);
+  // useEffect(() => {
+  //   const userId = data.members.find((user) => user != me);
 
-    const getUser = async () => {
-      try {
-        const res = await axios.get(`${server}/user/user-info/${userId}`);
-        setUser(res.data.user);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getUser();
-  }, [me, data]);
+  //   const getUser = async () => {
+  //     try {
+  //       const res = await axios.get(`${server}/user/user-info/${userId}`);
+  //       setUser(res.data.user);
+  //       console.log("USER DATA:", res.data.user);
+  //       console.log("USER AVATAR:", res.data.user?.avatar);
+
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   getUser();
+  // }, [me, data]);
+
+ useEffect(() => {
+  const userId = data.members.find((member) => member !== me);
+
+  const getUser = async () => {
+    try {
+      const token = localStorage.getItem("token"); 
+
+      const res = await axios.get(`${server}/user/user-info/${userId}`, {
+        withCredentials: true, 
+        headers: {
+          Authorization: `Bearer ${token}`, 
+        },
+      });
+      setUser(res.data.user || null);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  getUser();
+}, [me, data]);
+
 
   return (
     <div
-      className={`w-full flex p-3 px-3 ${
-        active === index ? "bg-[#00000010]" : "bg-transparent"
-      }  cursor-pointer`}
+      className={`w-full flex p-3 px-3 ${active === index ? "bg-[#00000010]" : "bg-transparent"
+        }  cursor-pointer`}
       onClick={(e) =>
         setActive(index) ||
         handleClick(data._id) ||
@@ -380,22 +361,25 @@ const MessageList = ({
     >
       <div className="relative">
         <img
-          src={`${user?.avatar?.url}`}
+          src={user?.avatar ? `${backend_url}/uploads/${user.avatar}` : "/default-avatar.png"}
           alt=""
           className="w-[50px] h-[50px] rounded-full"
         />
+
+
         {online ? (
           <div className="w-[12px] h-[12px] bg-green-400 rounded-full absolute top-[2px] right-[2px]" />
         ) : (
-          <div className="w-[12px] h-[12px] bg-[#c7b9b9] rounded-full absolute top-[2px] right-[2px]" />
+          <div className="w-[12px] h-[12px] bg-[#F2A533] rounded-full absolute top-[2px] right-[2px]" />
         )}
       </div>
       <div className="pl-3">
         <h1 className="text-[18px]">{user?.name}</h1>
+        {/* <h1 className="text-[18px]">Manahil</h1> */}
         <p className="text-[16px] text-[#000c]">
           {!isLoading && data?.lastMessageId !== user?._id
             ? "You:"
-            : user?.name.split(" ")[0] + ": "}{" "}
+            : data.groupTitle}
           {data?.lastMessage}
         </p>
       </div>
@@ -421,12 +405,13 @@ const SellerInbox = ({
       <div className="w-full flex p-3 items-center justify-between bg-slate-200">
         <div className="flex">
           <img
-            src={`${userData?.avatar?.url}`}
+            src={userData?.avatar ? `${backend_url}/uploads/${userData.avatar}` : "/default-avatar.png"}
             alt=""
             className="w-[60px] h-[60px] rounded-full"
           />
           <div className="pl-3">
             <h1 className="text-[18px] font-[600]">{userData?.name}</h1>
+             {/* <h1 className="text-[18px]">Manahil</h1> */}
             <h1>{activeStatus ? "Active Now" : ""}</h1>
           </div>
         </div>
@@ -443,30 +428,36 @@ const SellerInbox = ({
           messages.map((item, index) => {
             return (
               <div
-                className={`flex w-full my-2 ${
-                  item.sender === sellerId ? "justify-end" : "justify-start"
-                }`}
+                className={`flex w-full my-2 ${item.sender === sellerId ? "justify-end" : "justify-start"
+                  }`}
                 ref={scrollRef}
               >
                 {item.sender !== sellerId && (
                   <img
-                    src={`${userData?.avatar?.url}`}
+                    src={
+                      userData?.avatar
+                        ? `${backend_url}/uploads/${userData.avatar}`
+                        : "/default-avatar.png"
+                    }
                     className="w-[40px] h-[40px] rounded-full mr-3"
                     alt=""
                   />
                 )}
                 {item.images && (
                   <img
-                    src={`${item.images?.url}`}
+                    src={
+                      userData?.avatar
+                        ? `${backend_url}/uploads/${userData.avatar}`
+                        : "/default-avatar.png"
+                    }
                     className="w-[300px] h-[300px] object-cover rounded-[10px] mr-2"
                   />
                 )}
                 {item.text !== "" && (
                   <div>
                     <div
-                      className={`w-max p-2 rounded ${
-                        item.sender === sellerId ? "bg-[#000]" : "bg-[#38c776]"
-                      } text-[#fff] h-min`}
+                      className={`w-max p-2 rounded ${item.sender === sellerId ? "bg-[#000]" : "bg-[#38c776]"
+                        } text-[#fff] h-min`}
                     >
                       <p>{item.text}</p>
                     </div>

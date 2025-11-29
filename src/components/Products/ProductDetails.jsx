@@ -28,11 +28,12 @@ const ProductDetails = ({ data }) => {
   const [click, setClick] = useState(false);
   const [select, setSelect] = useState(0);
   const navigate = useNavigate();
-  const { id } = useParams();
+  // const { id } = useParams();
+  const { slug } = useParams();
   const dispatch = useDispatch();
-    const searchParams = new URLSearchParams(location.search); // ✅ define searchParams
+  const searchParams = new URLSearchParams(location.search); 
   const isEvent = searchParams.get("isEvent");
- 
+
 
   useEffect(() => {
     dispatch(getAllProductsShop(data && data?.shop._id));
@@ -54,15 +55,15 @@ const ProductDetails = ({ data }) => {
     dispatch(addToWishlist(data));
   }
 
-const handleWishlistToggle = (product) => {
-  const isInWishlist = wishlist && wishlist.find((i) => i._id === product._id);
+  const handleWishlistToggle = (product) => {
+    const isInWishlist = wishlist && wishlist.find((i) => i._id === product._id);
 
-  if (isInWishlist) {
-    dispatch(removeFromWishlist(product));
-  } else {
-    dispatch(addToWishlist(product));
-  }
-};
+    if (isInWishlist) {
+      dispatch(removeFromWishlist(product));
+    } else {
+      dispatch(addToWishlist(product));
+    }
+  };
 
 
 
@@ -80,8 +81,6 @@ const handleWishlistToggle = (product) => {
       }
     }
   }
-
-
 
 
   const incrementCount = () => {
@@ -199,41 +198,24 @@ const handleWishlistToggle = (product) => {
                     </button>
                   </div>
                   <div>
-                    {/* {click ? (
+
+                    {click ? (
                       <AiFillHeart
                         size={30}
-                        className="cursor-pointer "
-                        onClick={() => addToWishlistHandler(data)}
-                        color={click ? "red" : "#333"}
+                        className="cursor-pointer"
+                        onClick={() => handleWishlistToggle(data)}
+                        color="red"
                         title="Remove From wishlist"
                       />
                     ) : (
                       <AiOutlineHeart
                         size={30}
                         className="cursor-pointer"
-                        onClick={() => addToWishlistHandler(data)}
-                        color={click ? "red" : "#333"}
+                        onClick={() => handleWishlistToggle(data)}
+                        color="#333"
                         title="Add to wishlist"
                       />
-                    )} */}
-
-{click ? (
-  <AiFillHeart
-    size={30}
-    className="cursor-pointer"
-    onClick={() => handleWishlistToggle(data)}
-    color="red"
-    title="Remove From wishlist"
-  />
-) : (
-  <AiOutlineHeart
-    size={30}
-    className="cursor-pointer"
-    onClick={() => handleWishlistToggle(data)}
-    color="#333"
-    title="Add to wishlist"
-  />
-)}
+                    )}
 
 
                   </div>
@@ -248,15 +230,15 @@ const handleWishlistToggle = (product) => {
                   </span>
                 </div>
                 <div className=" flex items-center pt-8">
-                  <Link to={`/shop/${data?.shop._id}`}>
+                  <Link to={`/shop/${data?.shop.slug}`}>
                     <img
                       src={`${backend_url}/uploads/${data?.shop?.avatar}`}
-                        alt={data?.shop?.name || "Shop Avatar"}
+                      alt={data?.shop?.name || "Shop Avatar"}
                       className="w-[50px] h-[50px] rounded-full mr-2"
                     />
                   </Link>
                   <div className="pr-8">
-                    <Link to={`/shop/${data?.shop._id}`}>
+                    <Link to={`/shop/${data?.shop.slug}`}>
                       <h3 className={`${styles.shop_name} pb-1 pt-1`}>
                         {data.shop.name}
                       </h3>
@@ -377,7 +359,7 @@ const ProductDetailsInfo = ({ data, products, totalReviewsLength, totalRatings, 
       {active === 3 && (
         <div className="w-full block 800:flex p-5">
           <div className="w-full 800:w-[50%]">
-            <Link to={`/shop/${data.shop._id}`}>
+            <Link to={`/shop/${data.shop.slug}`}>
               <div className="flex items-center">
                 <img
                   src={

@@ -60,19 +60,18 @@ const { Wishlist } = useSelector((state) => state.wishlist);
     <>
       <div className="w-full h-[370px] bg-white rounded-lg shadow-sm p-3 relative cursor-pointer">
         <div className="flex justify-end"></div>
-        <Link to={`${isEvent === true ? `/product/${data._id}?isEvent=true` : `/product/${data._id}`}`}>
+        <Link to={`${isEvent === true ? `/product/${data.slug}?isEvent=true` : `/product/${data.slug}`}`}>
           <img
-            // src={data.image_Url[0].url}
             src={`${backend_url}/uploads/${data?.images[0]}`}
             alt=""
             className="w-full h-[170px] object-contain"
           />
 
         </Link>
-        <Link to={`${isEvent === true ? `/product/${data._id}?isEvent=true` : `/product/${data._id}`}`}>
+        <Link to={`${isEvent === true ? `/product/${data.slug}?isEvent=true` : `/product/${data.slug}`}`}>
           <h5 className={`${styles.shop_name}`}>{data.shop.name}</h5>
         </Link>
-        <Link to={`/product/${data._id}`}>
+        <Link to={`/product/${data.slug}`}>
           <h4 className="pb-3 font-[500] ">
             {data.name.length > 40 ? data.name.slice(0, 40) + "..." : data.name}
           </h4>

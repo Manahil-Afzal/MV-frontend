@@ -5,6 +5,7 @@ const initialState = {
   // isLoading: true,
    isLoading: false,
   allProducts: [],
+  shopProducts: [],
   product: null,
   error: null,
   success: false,
@@ -60,13 +61,34 @@ export const productReducer = createReducer(initialState, (builder) => {
      })
      .addCase("deleteProductSuccess", (state,action) => {
           state.isLoading = false;
+           state.success = true;
           state.message = action.payload; 
      })
        .addCase("deleteProductFail", (state, action) => {
           state.isLoading = false;
           state.error = action.payload; 
+          
      })
     .addCase("clearErrors", (state) => {
       state.error = null;
     });
 });
+
+
+export const getProductsByCategory = (categorySlug) => async (dispatch) => {
+  try {
+    dispatch({ type: "getProductsByCategoryRequest" });
+
+    const { data } = await axios.get(`${server}/product/category/${categorySlug}`);
+
+    dispatch({
+      type: "getProductsByCategorySuccess",
+      payload: data.products,
+    });
+  } catch (error) {
+    dispatch({
+      type: "getProductsByCategoryFail",
+      payload: error.response?.data?.message || error.message,
+    });
+  }
+};

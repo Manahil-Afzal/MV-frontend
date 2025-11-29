@@ -13,7 +13,7 @@ const ShopAllProducts=()=> {
              <div className="w-full justify-center flex">
                 <AllProducts />
              </div>
-        </div>
+         </div>
     </div>
   )
 }

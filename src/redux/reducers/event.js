@@ -3,8 +3,13 @@
 import { createReducer } from "@reduxjs/toolkit";
 
 const initialState = {
-  isLoading: true,
-   allEvents: [],
+      isLoading: false,
+  allEvents: [],
+  shopEvents: [],
+  error: null,
+  success: false,
+  message: null,
+     
 };
 
 export const eventReducer = createReducer(initialState, (builder) => {
@@ -14,7 +19,7 @@ export const eventReducer = createReducer(initialState, (builder) => {
     })
     .addCase("eventCreateSuccess", (state, action) => {
       state.isLoading = false;
-      state.event = action.payload;
+      state.events = action.payload;
       state.success = true;
     })
     .addCase("eventCreateFail", (state, action) => {
@@ -37,15 +42,15 @@ export const eventReducer = createReducer(initialState, (builder) => {
      })
 
        // delete all events of shop
-    .addCase("deleteeventRequest", (state) => {
+    .addCase("deleteEventRequest", (state) => {
           state.isLoading = true;
      })
-   .addCase("deleteeventSuccess", (state, action) => {
+   .addCase("deleteEventSuccess", (state, action) => {
   state.isLoading = false;
   state.success = true;
-  state.message = action.payload; // message from backend
+  state.message = action.payload; 
 })
-.addCase("deleteeventFailed", (state, action) => {
+.addCase("deleteEventFailed", (state, action) => {
   state.isLoading = false;
   state.error = action.payload;
   state.success = false;

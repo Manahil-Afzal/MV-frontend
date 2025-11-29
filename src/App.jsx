@@ -35,7 +35,7 @@ import ShopPage from "./pages/Shop/ShopHomePage.jsx";
 import ShopAllProducts from "./pages/Shop/ShopAllProducts.jsx";
 import ShopCreateEvents from "./pages/Shop/ShopCreateEvents.jsx";
 import ShopAllEvents from "./pages/Shop/ShopAllEvents.jsx";
-import ShopAllCoupouns from "./pages/Shop/ShopAllCoupouns.jsx";
+import ShopAllCoupons from "./pages/Shop/ShopAllCoupons.jsx";
 import { getAllEvents } from "./redux/actions/event.js";
 import { getAllProducts } from "./redux/actions/product";
 import { useDispatch } from "react-redux";
@@ -99,7 +99,7 @@ const App = () => {
           element={<SellerActivationPage />}
         />
         <Route path="/products" element={<ProductsPage />} />
-        <Route path="/product/:id" element={<ProductDetailsPage />} />
+        <Route path="/product/:slug" element={<ProductDetailsPage />} />
         <Route path="/best-selling" element={<BestSellingPage />} />
         <Route path="/events" element={<EventsPage />} />
         <Route path="/faq" element={<FAQPage />} />
@@ -124,7 +124,7 @@ const App = () => {
         <Route
           path="/inbox"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute isAuthenticated={isAuthenticated}>
               <UserInbox />
             </ProtectedRoute>
           }
@@ -140,7 +140,7 @@ const App = () => {
         <Route
           path="/user/track/order/:id"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute isAuthenticated={isAuthenticated}>
               <TrackOrderPage />
             </ProtectedRoute>
           }
@@ -170,7 +170,7 @@ const App = () => {
         <Route
           path="/dashboard"
           element={
-            <SellerProtectedRoute>
+            <SellerProtectedRoute isAuthenticated={isAuthenticated}>
               <ShopDashboardPage />
             </SellerProtectedRoute>
           }
@@ -178,7 +178,7 @@ const App = () => {
         <Route
           path="/dashboard-create-product"
           element={
-            <SellerProtectedRoute>
+            <SellerProtectedRoute isAuthenticated={isAuthenticated}>
               <ShopCreateProduct />
             </SellerProtectedRoute>
           }
@@ -186,7 +186,7 @@ const App = () => {
         <Route
           path="/dashboard-orders"
           element={
-            <SellerProtectedRoute>
+            <SellerProtectedRoute isAuthenticated={isAuthenticated}>
               <ShopAllOrders />
             </SellerProtectedRoute>
           }
@@ -194,7 +194,7 @@ const App = () => {
         <Route
           path="/dashboard-refunds"
           element={
-            <SellerProtectedRoute>
+            <SellerProtectedRoute isAuthenticated={isAuthenticated}>
               <ShopAllRefunds />
             </SellerProtectedRoute>
           }
@@ -202,7 +202,7 @@ const App = () => {
         <Route
           path="/order/:id"
           element={
-            <SellerProtectedRoute>
+            <SellerProtectedRoute isAuthenticated={isAuthenticated}>
               <ShopOrderDetails />
             </SellerProtectedRoute>
           }
@@ -210,7 +210,7 @@ const App = () => {
         <Route
           path="/dashboard-products"
           element={
-            <SellerProtectedRoute>
+            <SellerProtectedRoute isAuthenticated={isAuthenticated}>
               <ShopAllProducts />
             </SellerProtectedRoute>
           }
@@ -218,7 +218,7 @@ const App = () => {
         <Route
           path="/dashboard-create-event"
           element={
-            <SellerProtectedRoute>
+            <SellerProtectedRoute isAuthenticated={isAuthenticated}>
               <ShopCreateEvents />
             </SellerProtectedRoute>
           }
@@ -227,7 +227,7 @@ const App = () => {
         <Route
           path="/dashboard-events"
           element={
-            <SellerProtectedRoute>
+            <SellerProtectedRoute isAuthenticated={isAuthenticated}>
               <ShopAllEvents />
             </SellerProtectedRoute>
           }
@@ -236,15 +236,15 @@ const App = () => {
         <Route
           path="/dashboard-coupouns"
           element={
-            <SellerProtectedRoute>
-              <ShopAllCoupouns />
+            <SellerProtectedRoute isAuthenticated={isAuthenticated}>
+              <ShopAllCoupons />
             </SellerProtectedRoute>
           }
         />
       <Route
           path="/dashboard-withdraw-money"
           element={
-            <SellerProtectedRoute>
+            <SellerProtectedRoute isAuthenticated={isAuthenticated}>
               <ShopWithDrawMoneyPage />
             </SellerProtectedRoute>
           }
@@ -252,7 +252,7 @@ const App = () => {
           <Route
           path="/dashboard-messages"
           element={
-            <SellerProtectedRoute>
+            <SellerProtectedRoute isAuthenticated={isAuthenticated}>
               <ShopInboxPage />
             </SellerProtectedRoute>
           }

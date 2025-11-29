@@ -46,7 +46,7 @@ const ProfileContent = ({ active }) => {
     dispatch(updateUserInformation(name, email, phoneNumber, password));
   };
 
-  console.log(user?.avatar?.url);
+ 
   const handleImage = async (e) => {
     const file = e.target.files[0];
     setAvatar(file);

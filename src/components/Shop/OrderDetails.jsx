@@ -10,35 +10,48 @@ import { server } from "../../server.js";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
+ 
+
 
 
 const OrderDetails = () => {
-  const { orders, isLoading } = useSelector((state) => state.order);
+  const {  allOrders, isLoading } = useSelector((state) => state.order);
   const { seller } = useSelector((state) => state.seller);
   const dispatch = useDispatch();
   const [status, setStatus] = React.useState("");
   const navigate = useNavigate();
   const { id } = useParams();
+  
+  // useEffect(() => {
+  //   if (seller?._id) {
+  //     dispatch(getAllOrdersOfShop(seller._id));
+  //   }
+  // }, [dispatch, seller?._id]);
+const data =  allOrders &&  allOrders.find((item) => item._id === id);
+useEffect(() => {
+  if (seller?._id) {
+    dispatch(getAllOrdersOfShop(seller._id));
+  }
+}, [dispatch, seller?._id]);
 
-  useEffect(() => {
-    if (seller?._id) {
-      dispatch(getAllOrdersOfShop(seller._id));
-    }
-  }, [dispatch, seller?._id]);
 
-
-  const data = orders && orders.find((item) => item._id === id);
-
-
+useEffect(() => {
+  if ( allOrders &&  allOrders.length > 0) {
+    const data =  allOrders.find((item) => item._id === id);
+    console.log("All orders:",  allOrders);
+    console.log("Selected order:", data);
+    console.log("Shipping Address:", data?.shippingAddress);
+    console.log("Payment Info:", data?.paymentInfo);
+    console.log("Order Status:", data?.status);
+    console.log("User Info:", data?.user);
+  }
+}, [ allOrders, id]);
 
   const orderUpdateHandler = async (e) => {
     await axios
-      .put(
+      .post(
         `${server}/order/update-order-status/${id}`,
-        {
-          status,
-
-        },
+        { status },
         { withCredentials: true }
       )
       .then((res) => {
@@ -52,12 +65,9 @@ const OrderDetails = () => {
 
   const refundOrderUpdateHandler = async (e) => {
     await axios
-      .put(
-        `${server}/order/update-order-status/${id}`,
-        {
-          status,
-
-        },
+      .post(
+        `${server}/order/update-order-status/${IDBCursor}`,
+        {status},
         { withCredentials: true }
       )
       .then((res) => {
@@ -69,22 +79,26 @@ const OrderDetails = () => {
       });
   }
 
-console.log(data);
 
   return (
-    <div className={`py-4 min-h-screen ${styles.section}`}>
+    <div className={`py-1 min-h-screen ${styles.section}`}>
       <div className="w-full flex items-center justify-between">
-        <div className="items-center">
-          <BsFillBagFill size={30} color="crimson" />
-          <h1 className="pl-2 text-[25px]">Order Details</h1>
-          <Link to="/dashboard-orders">
+        <div className="flex ml-100 justify-end">
+          <h3 className="text-[45px] text-[#F2A533] font-[600]">
+            O̳r̳d̳e̳r̳ ̳D̳e̳t̳a̳i̳l̳s̳
+          </h3>
+        </div>
+                <Link to="/dashboard-orders">
+          <div className="flex items-center gap-3">
+            <BsFillBagFill size={40} color="#F2A533" />
+
             <div
-              className={`${styles.button} !bg-[#fce1e6] !rounded-[4px] text-[#e94560] font-[600] !h-[45px] text-[18px]`}
+              className={`${styles.button} !bg-[#417fa0] !rounded-[4px] text-[#F2A533] font-[600] !h-[45px] text-[18px]`}
             >
               Order List
             </div>
-          </Link>
-        </div>
+          </div>
+        </Link>
       </div>
 
       <div className="w-full flex items-center justify-between pt-6">
@@ -104,7 +118,7 @@ console.log(data);
         data.cart.map((item, index) => (
           <div className="w-full flex items-start mb-5">
             <img
-              src={`${backend_url}/${item.images[0]}`}
+              src={`${backend_url}/uploads/${item.images[0]}`}
               alt=""
               className="w-[80px] h-[80px] "
             />
@@ -123,9 +137,9 @@ console.log(data);
       </div>
       <br />
       <br />
-      <div className="w-full 800px:flex items-center">
-        <div className="w-full 800px:w-[60%]">
-          <h4 className="pt-3 text-[20px] font-[600]">Shipping Address</h4>
+      <div className="w-full 800:flex items-start gap-6">
+        <div className="w-full 800:w-[60%]">
+          <h4 className="pt-3 text-[20px] font-[600]">𝐒𝐡𝐢𝐩𝐩𝐢𝐧𝐠 𝐀𝐝𝐝𝐫𝐞𝐬𝐬</h4>
           <h4 className="pt-3 text-[20px] ">
             {data?.shippingAddress?.address1 +
               " " +
@@ -135,16 +149,16 @@ console.log(data);
           <h4 className="text-[20px]">{data?.shippingAddress?.city}</h4>
           <h4 className="text-[20px]">{data?.user?.phoneNumber}</h4>
         </div>
-        <div className="w-full 800px:w[40%]">
-          <h4 className="pt-3 text-[20px] ">Payment Info:</h4>
+        <div className="w-full 800:w[40%]">
+          <h4 className="pt-3 text-[20px] ">𝐏𝐚𝐲𝐦𝐞𝐧𝐭 𝐈𝐧𝐟𝐨:</h4>
           <h4>Status:{data?.paymentInfo?.status ? data?.paymentInfo?.status : "Not Paid"}</h4>
         </div>
       </div>
       <br />
       <br />
-      <h4 className="pt-3 text-[20px] font-[600]">Order Status:</h4>
+      <h4 className="pt-3 text-[20px] font-[600]">𝐎𝐫𝐝𝐞𝐫 𝐒𝐭𝐚𝐭𝐮𝐬:</h4>
       {
-        data?.status !== "Processing refund" || data?.status !== "Refund Success" && (
+        data?.status !== "Processing refund" && data?.status !== "Refund Success" && (
           <select value={status} onChange={(e) => setStatus(e.target.value)}
             className="w-[200px] mt-2 border h-[35px] rounded-[5px] "
           >
@@ -194,12 +208,11 @@ console.log(data);
           ))}
       </select>
       <div
-        className={`${styles.button} mt-5 !bg-[#FCE1E6] !rounded-[4px] text-[#E94560] font-[600] !h-[45px] text-[18px]`}
+        className={`${styles.button} mt-5 !bg-[#417fa0] !rounded-[4px] text-[#F2A533] font-[600] !h-[45px] text-[18px]`}
         onClick={data?.status !== "Processing Refund" ? orderUpdateHandler : refundOrderUpdateHandler}
       >
         Update Status
       </div>
-
     </div>
   );
 };

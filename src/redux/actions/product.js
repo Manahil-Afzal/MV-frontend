@@ -54,13 +54,11 @@ export const getAllProductsShop = (id) => async (dispatch) => {
     const { data } = await axios.get(
       `${server}/product/get-all-product-shop/${id}`
     );
-      
     dispatch({
       type: "getAllProductsShopSuccess",
       payload: data.products,
     });
   } catch (error) {
-      
     dispatch({
       type: "getAllProductsShopFailed",
       payload: error.response.data.message,
@@ -72,24 +70,23 @@ export const getAllProductsShop = (id) => async (dispatch) => {
 // delete product of a shop
 export const deleteProduct = (id) => async (dispatch) => {
   try {
-    dispatch({
-      type: "deleteProductRequest",
-    });
+    dispatch({ type: "deleteProductRequest" });
+
     const { data } = await axios.delete(
       `${server}/product/delete-shop-product/${id}`,
-      {
-        withCredentials: true,
-      }
+      { withCredentials: true }
     );
 
-    dispatch({
-      type: "deleteProductSuccess",
-      payload: data.message,
-    });
+    dispatch({ type: "deleteProductSuccess", payload: data.message });
+
+    return data; 
   } catch (error) {
     dispatch({
-      type: "getAllProductsFailed",
-      payload: error.response.data.message,
+      type: "deleteProductFail",
+      payload: error.response?.data?.message || error.message,
     });
+    throw error; 
   }
 };
+
+

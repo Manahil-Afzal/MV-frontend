@@ -13,33 +13,33 @@ import { useDispatch } from "react-redux";
 const ProductDetailsPage = () => {
   const { allProducts } = useSelector((state) => state.products);
   const { allEvents } = useSelector((state) => state.event);
-  const { id } = useParams();
+  // const { id } = useParams();
   const [data, setData] = useState(null);
   const [searchParams] = useSearchParams();
   const eventData = searchParams.get("isEvent");
+  const isEvent = searchParams.get("isEvent");
   const dispatch = useDispatch(); 
-  useEffect(() => {
-    if (eventData !== null) {
-      const data = allEvents && allEvents.find((i) => i._id === id);
-      setData(data);
+  const { slug } = useParams();
+
+// useEffect(() => {
+//   if (eventData !== null) {
+//     const data = allEvents && allEvents.find((i) => i.slug === slug);
+//     setData(data);
+//   } else {
+//     const data = allProducts && allProducts.find((i) => i.slug === slug);
+//     setData(data);
+//   }
+// }, [allProducts, allEvents, slug]);
+
+ useEffect(() => {
+    if (isEvent === "true") {
+      const eventData = allEvents && allEvents.find((i) => i.slug === slug);
+      setData(eventData);
     } else {
-      const data = allProducts && allProducts.find((i) => i._id === id);
-      setData(data);
+      const productData = allProducts && allProducts.find((i) => i.slug === slug);
+      setData(productData);
     }
-  }, [allProducts, allEvents]);
-
-//  useEffect(() => {
-//     if (!allProducts || allProducts.length === 0) {
-//       dispatch(getAllProducts());
-//     }
-//   }, [allProducts, dispatch]);
-
-//   useEffect(() => {
-//     if (allProducts && allProducts.length > 0) {
-//       const product = allProducts.find((i) => i._id === id);
-//       setData(product);
-//     }
-//   }, [allProducts, id]);
+  }, [allProducts, allEvents, slug, isEvent]);
 
 console.log(allProducts);
 

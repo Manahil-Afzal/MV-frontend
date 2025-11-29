@@ -6,43 +6,51 @@ import { useParams, Link } from "react-router-dom";
 import { backend_url } from "../server";
 import styles from "../styles/styles";
 import { AiFillStar } from "react-icons/ai";
+import { AiOutlineStar } from "react-icons/ai";
+import axios from "axios";
+import { server } from "../server";
+import { toast } from "react-hot-toast";
+
 
 const UserOrderDetails = () => {
-  const { orders } = useSelector((state) => state.order);
+  const { allOrders } = useSelector((state) => state.order);
   const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [ratings, setRatings] = useState(1);
   const [comment, setComment] = useState("");
-  // const { id } = useParams();
-  // const [status, setStatus] = React.useState("");
+  const { id } = useParams();
+  const [status, setStatus] = React.useState("");
+
 
 
   useEffect(() => {
-    dispatch(getAllOrdersOfUser(user._id));
-  }, [dispatch]);
+    if (user?._id) {
+      dispatch(getAllOrdersOfUser(user._id));
+    }
+  }, [dispatch, user?._id]);
 
-  const data = orders && orders.find((item) => item._id === id);
+  const data = allOrders && allOrders.find((item) => item._id === id);
 
 
   const reviewHandler = async (e) => {
     await axios.put(`${server}/product/create-new-review`, {
       user,
-      ratings,
+      rating: ratings,
       comment,
       productId: selectedItem._id,
       orderId: id,
     }, { withCredentials: true }
     )
       .then((res) => {
-        Toast.success(res.data.message);
-        dispatch("");
-        setComment(getAllOrdersOfUser(user._id));
-        setRatings(null);
+        toast.success(res.data.message);
+        dispatch(getAllOrdersOfUser(user._id));
+        setComment("");
+        setRatings(1);
         setOpen(false);
       }).catch((error) => {
-        Toast.error(error);
+        toast.error(error);
       });
 
   }
@@ -50,13 +58,16 @@ const UserOrderDetails = () => {
   const refundHandler = async () => {
     await axios.put(`${server}/order/order-refund/${id}`, {
       status: "Processing refund"
-    }).then((res) => {
-      toast.success(res.data.message);
-      dispatch(getAllOrdersOfUser(user._id));
-    }).catch((error) => {
-      toast.error(error.response.data.message);
-    })
+    }, { withCredentials: true })
+      .then((res) => {
+        toast.success(res.data.message);
+        dispatch(getAllOrdersOfUser(user._id));
+      })
+      .catch((error) => {
+        toast.error(error.response.data.message);
+      });
   };
+
 
 
   const refundOrderUpdateHandler = async (e) => {
@@ -70,22 +81,27 @@ const UserOrderDetails = () => {
       )
       .then((res) => {
         toast.success("order updated");
-        dispatch(getAllOrdersOfShop(user._id));
+        dispatch(getAllOrdersOfUser(user._id));
+        setComment("");
+        setRatings(1);
+        setOpen(false);
+
       })
       .catch((error) => {
         toast.error(error.response.data.message);
       });
   };
 
-  
+console.log(allOrders)
 
-  return (
-    <div className={`py-4 min-h-screen ${styles.section}`}>
-      <div className="w-full flex-items-center justify-between">
-        <div className="items-center">
-          <BsFillBagFill size={30} color="crimson" />
-          <h1 className="pl-2 text-[25px]">Order Details</h1>
-        </div>
+
+return (
+    <div className={`py-2  ${styles.section}`}>
+      <div className="  ml-99 flex items-center justify-start">
+        <BsFillBagFill size={50} color="#417fa0" className="mr-4" />
+        <h1 className="text-[45px] text-[#F2A533] font-[600]">
+          O̳r̳d̳e̳r̳ ̳D̳e̳t̳a̳i̳l̳s̳
+        </h1>
       </div>
 
       <div className="w-full flex items-center justify-between pt-6">
@@ -97,39 +113,50 @@ const UserOrderDetails = () => {
           Placed on: <span>{data?.createdAt?.slice(0, 10)}</span>
         </h5>
       </div>
-
       <br />
       <br />
 
       {data &&
         data.cart.map((item, index) => (
-          <div className="w-full flex items-start mb-5">
-            <img
-              src={`${backend_url}/${item.images[0]}`}
-              alt=""
-              className="w-[80px] h-[80px] "
-            />
-            <div className="w-full">
-              <h5 className="pl-3 text-[20px]">{item.name}</h5>
-              <h5 className="pl-3 text-[20px] text-[#00000091] ">
-                US${item.discountPrice} * {item.qty}{" "}
-              </h5>
-            </div>
-            {
-              item.isReviewed || item.status !== "delivered" ? (
-                null
-              ) : (
+          <div key={item._id || index} className="w-full flex flex-col items-start mb-5">
+            <div className="w-full flex items-start">
+              <img
+                src={`${backend_url}/uploads/${item.images[0]}`}
+                alt=""
+                className="w-[80px] h-[80px]"
+              />
+              <div className="w-full">
+                <h5 className="pl-3 text-[20px]">{item.name}</h5>
+                <h5 className="pl-3 text-[20px] text-[#00000091] ">
+                  US${item.discountPrice} * {item.qty}{" "}
+                </h5>
+              </div>
+              {!item.isReviewed && item.status === "Delivered" && (
                 <div className={`${styles.button} text-white`}
-                  onClick={() => {
-                    setOpen(true) || setSelectedItem(item)
-                  }}
+                  onClick={() => { setSelectedItem(item); setOpen(true); }}
                 >
                   Write a review
                 </div>
-              )
-            }
-          </div >
+              )}
+
+            </div>
+
+            {/* ✅ Reviews for this product */}
+            {item.reviews?.length > 0 && (
+              <div className="reviews-section mt-2 ml-3 w-full">
+                <h4 className="font-semibold">Reviews:</h4>
+                {item.reviews.map((rev, i) => (
+                  <div key={i} className="border p-2 mb-2 rounded">
+                    <p><strong>{rev.user?.name || "User"}</strong></p>
+                    <p>Rating: {rev.rating} / 5</p>
+                    <p>{rev.comment}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         ))}
+
 
 
       {/* review popup */}
@@ -146,7 +173,8 @@ const UserOrderDetails = () => {
               </h2>
               <br />
               <div className="w-full flex">
-                <img src={`${backend_url}/${selectedItem?.images[0]}`} alt="" className="w-[80px] h-[80px]" />
+                <img src={`${backend_url}/uploads/${selectedItem?.images[0]}`}
+                  alt="" className="w-[80px] h-[80px]" />
                 <div>
                   <div className="pl-3 text-[20px]">
                     {selectedItem?.name}
@@ -184,22 +212,16 @@ const UserOrderDetails = () => {
               <div className="w-full ml-3">
                 <label className="block text-[20px] font-[500]">
                   Write a comment
-                  <span className="ml-1 font-[400] text-[16px] text-[#00000052]">
-                    (optional)
-                  </span>
+                  <span className="ml-1 font-[400] text-[16px] text-[#00000052]">(optional)</span>
                 </label>
                 <textarea
-                  name="comment"
-                  id=""
-                  cols="30"
-                  rows="5"
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
-                  placeholder="How was your Product? write your expression about it! "
+                  placeholder="How was your Product? write your expression about it!"
                   className="ml-2 w-[95%] border p-2 outline-none"
-                >
-                </textarea>
+                ></textarea>
               </div>
+
               <div className={`${styles.button} text-white text-[20px] ml-3`}
                 onClick={ratings > 1 ? reviewHandler : null}
               > Submit</div>
@@ -215,9 +237,9 @@ const UserOrderDetails = () => {
       </div>
       <br />
       <br />
-      <div className="w-full 800px:flex items-center">
-        <div className="w-full 800px:w-[60%]">
-          <h4 className="pt-3 text=[20px] font-[600]">Shipping Address</h4>
+      <div className="w-full 800:flex items-center">
+        <div className="w-full 800:w-[60%]">
+          <h4 className="pt-3 text-[20px] font-[600]">Shipping Address</h4>
           <h4 className="pt-3 text-[20px] ">
             {data?.shippingAddress?.address1 +
               " " +
@@ -229,16 +251,21 @@ const UserOrderDetails = () => {
         </div>
         <div className="w-full 800px:w[40%]">
           <h4 className="pt-3 text-[20px] ">Payment Info:</h4>
-          <h4>Status:{data?.paymentInfo?.status ? data?.paymentInfo?.status : "Not Paid"}</h4>
+          <h4>Status: {data?.paymentInfo?.status ? data?.paymentInfo?.status : "Not Paid"}</h4>
           <br />
+
+          {/* Refund Button (Fixed) */}
           {
             data?.status === "Delivered" && (
               <div className={`${styles.button} text-white`}
                 onClick={refundHandler}
-              >Give a Refund</div>
+              >
+                Give a Refund
+              </div>
             )
           }
         </div>
+
       </div>
       <br />
       <Link to="/">
@@ -253,3 +280,4 @@ const UserOrderDetails = () => {
 };
 
 export default UserOrderDetails;
+

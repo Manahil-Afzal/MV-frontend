@@ -22,7 +22,7 @@ import Wishlist from "../wishlist/Wishlist";
 import { RxCross1 } from "react-icons/rx";
 
 
-const Header = ({ activeHeading }) => {
+const Header = ({ activeHeading , onSearchActive  }) => {
   const dispatch = useDispatch();
   const { isAuthenticated, user } = useSelector((state) => state.user);
   const { isSeller } = useSelector((state) => state.seller);
@@ -37,7 +37,7 @@ const Header = ({ activeHeading }) => {
   const [openCart, setOpenCart] = useState(false);
   const [openWishlist, setOpenWishlist] = useState(false);
   const [openSidebar, setOpenSidebar] = useState(false);
-
+  
 
 
 
@@ -48,6 +48,12 @@ const Header = ({ activeHeading }) => {
     const shopId = user.shopId || user._id;
     if (shopId) dispatch(getAllProductsShop(shopId));
   }, [dispatch, user]);
+
+ useEffect(() => {
+    if (onSearchActive) {
+      onSearchActive(searchData.length > 0); // true if search results exist
+    }
+  }, [searchData, onSearchActive]);
 
 
   useEffect(() => {
@@ -65,19 +71,15 @@ const Header = ({ activeHeading }) => {
     const term = e.target.value;
     setSearchTerm(term);
 
-  if (!allProducts || allProducts.length === 0) {
-    setSearchData([]);
-    return;
-  }
+    if (!allProducts || allProducts.length === 0) {
+      setSearchData([]);
+      return;
+    }
 
-    const filteredProducts =
-      allProducts &&
-      allProducts.filter((product) =>
-        product.name?.toLowerCase().includes(term.toLowerCase())
-      );
-// console.log(filteredProducts);
-
-    setSearchData(filteredProducts);
+    const filteredProducts = allProducts.filter((product) =>
+      product.name?.toLowerCase().includes(term.toLowerCase())
+    );
+    setSearchData(filteredProducts); // this triggers useEffect above
   };
 
 
@@ -125,28 +127,57 @@ const Header = ({ activeHeading }) => {
             </button>
 
 
-            {searchData && searchData.length > 0 && (
-              <div className="absolute bg-white shadow-md w-full z-10 p-3 max-h-60 overflow-y-scroll">
-                {searchData.map((i, index) => {
-                  return (
-                    <Link to={`/product/${i._id}`} key={index}>
-                      <div className="flex items-center gap-2 py-2 hover:bg-gray-100 rounded-md cursor-pointer">
-                        <img
-                          src={`${backend_url}/uploads/${i.images[0]}`}
-                          alt={i.name}
-                          className="w-[40px] h-[40px] mr-[10px]"
-                        />
-                        <h1>{i.name}</h1>
-                      </div>
-                    </Link>
-                  );
-                })}
-              </div>
-            )}
+             {searchData.length > 0 && (
+    <div className="absolute bg-white shadow-md w-full z-10 p-3 max-h-60 overflow-y-scroll">
+      {searchData.map((i, index) => (
+        <Link
+          to={`/product/${i.slug}`}
+          key={index}
+          onClick={() => setSearchData([])} 
+        >
+          <div className="flex items-center gap-2 py-2 hover:bg-gray-100 rounded-md cursor-pointer">
+            <img
+              src={`${backend_url}/uploads/${i.images[0]}`}
+              alt={i.name}
+              className="w-[40px] h-[40px] mr-[10px]"
+            />
+            <h1>{i.name}</h1>
+          </div>
+        </Link>
+      ))}
+    </div>
+  )}
+{/* {searchData && searchData.length > 0 && (
+  <div className="fixed top-[70px] left-0 w-full h-screen bg-white z-50 p-6 overflow-y-scroll">
+    <h2 className="text-2xl font-bold mb-4">Search Results ({searchData.length})</h2>
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      {searchData.map((i) => (
+        <Link to={`/product/${i.slug}`} key={i._id} onClick={() => setSearchData([])}>
+          <div className="border p-3 rounded-md hover:shadow-md cursor-pointer">
+            <img
+              src={`${backend_url}/uploads/${i.images[0]}`}
+              alt={i.name}
+              className="w-full h-40 object-cover mb-2"
+            />
+            <h1 className="text-lg font-medium">{i.name}</h1>
+            <p className="text-[#417fa0] font-semibold">{i.price ? `$${i.price}` : ''}</p>
+          </div>
+        </Link>
+      ))}
+    </div>
+    <button
+      className="absolute top-4 right-4 text-xl font-bold"
+      onClick={() => setSearchData([])}
+    >
+      ×
+    </button>
+  </div>
+)} */}
+
           </div>
 
           <div className={`${styles.button}`}>
-            <Link to="/shop-create">
+            <Link to={`${isSeller ? '/dashboard': 'shop-create'}`}>
               <button className="flex items-center gap-1 bg-[#F2A533] text-white cursor-pointer px-3 py-1 rounded-md">
                 {isSeller ? " Dashboard" : "Become Seller"} <IoArrowForward />
               </button>

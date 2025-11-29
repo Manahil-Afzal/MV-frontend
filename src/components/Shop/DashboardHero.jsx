@@ -12,18 +12,54 @@ import { DataGrid } from "@mui/x-data-grid";
 
 const DashboardHero = () => {
   const dispatch = useDispatch();
-  const { orders } = useSelector((state) => state.order);
+  const { allOrders, orders } = useSelector((state) => state.order);
   const { seller } = useSelector((state) => state.seller);
-  const { products } = useSelector((state) => state.products);
+  const { allProducts } = useSelector((state) => state.products);
+  const [deliveredOrder, setDeliveredOrder] = useState(null);
+  
 
-  useEffect(() => {
-     dispatch(getAllOrdersOfShop(seller._id));
-     dispatch(getAllProductsShop(seller._id));
-  }, [dispatch]);
+// 1. Fetch orders and products
+// useEffect(() => {
+//   if (seller && seller._id) {
+//     dispatch(getAllOrdersOfShop(seller._id));
+//     dispatch(getAllProductsShop(seller._id));
+//   }
+// }, [dispatch, seller]);
 
-const availableBalance = seller?.availableBalance
-  ? seller.availableBalance.toFixed(2)
-  : 0;
+// 2. Update delivered orders when allOrders changes
+// useEffect(() => {
+//   if (allOrders && allOrders.length > 0) {
+//     const orderData = allOrders.filter(
+//       (item) => item.status.toLowerCase() === "delivered" // safe case-insensitive match
+//     );
+//     setDeliveredOrder(orderData);
+//   }
+// }, [allOrders]);
+
+useEffect(() => {
+   dispatch(getAllOrdersOfShop(seller._id));
+   dispatch(getAllProductsShop(seller._id));
+
+   const orderData = orders && orders.filter((item)=> item.status === "Delievered");
+   setDeliveredOrder(orderData);
+}, [dispatch, seller, orders]);
+
+// const totalEarningWithoutTax = deliveredOrder && deliveredOrder.reduce((acc, item) => acc+ item.totalPrice, 0);
+const totalEarningWithoutTax = deliveredOrder?.reduce((acc, item) => acc + item.totalPrice, 0) || 0;
+
+
+const serviceCharge = totalEarningWithoutTax * 0.1;
+const availableBalance = totalEarningWithoutTax - serviceCharge;
+
+useEffect(() => {
+  console.log("Seller:", seller);
+  console.log("All Orders:", allOrders);
+  console.log("Delivered Orders:", deliveredOrder);
+  console.log("Available Balance:", availableBalance);
+}, [seller, allOrders, deliveredOrder, availableBalance]);
+
+
+ 
 
   const columns = [
     { field: "id", headerName: "Order ID", minWidth: 150, flex: 0.7 },
@@ -34,10 +70,9 @@ const availableBalance = seller?.availableBalance
       minWidth: 130,
       flex: 0.7,
       cellClassName: (params) => {
-        return params.getValue(params.id, "status") === "Delivered"
-          ? "greenColor"
-          : "redColor";
+        return params.value === "Delivered" ? "greenColor" : "redColor";
       },
+
     },
     {
       field: "itemsQty",
@@ -65,7 +100,8 @@ const availableBalance = seller?.availableBalance
       renderCell: (params) => {
         return (
           <>
-            <Link to={`/dashboard/order/${params.id}`}>
+            <Link to={`/order/${params.id}`}>
+               {/* <Link to={`/dashboard/order/${params.id}`}> */}
               <Button>
                 <AiOutlineArrowRight size={20} />
               </Button>
@@ -78,14 +114,16 @@ const availableBalance = seller?.availableBalance
 
   const row = [];
 
-  orders && orders.forEach((item) => {
+  allOrders && allOrders.forEach((item) => {
     row.push({
-        id: item._id,
-        itemsQty: item.cart.reduce((acc, item) => acc + item.qty, 0),
-        total: "US$ " + item.totalPrice,
-        status: item.status,
-      });
+      id: item._id,
+      itemsQty: item.cart.reduce((acc, item) => acc + item.qty, 0),
+      total: "US$ " + item.totalPrice,
+      status: item.status,
+    });
   });
+
+
   return (
     <div className="w-full p-8">
       <h3 className="text-[22px] font-Poppins pb-2">Overview</h3>
@@ -115,14 +153,14 @@ const availableBalance = seller?.availableBalance
             <MdBorderClear size={30} className="mr-2" fill="#00000085" />
             <h3
               className={`${styles.productTitle} !text-[18px] leading-5 !font-[400] text-[#00000085]`}
-            > 
+            >
               All Orders
             </h3>
           </div>
-          <h5 className="pt-2 pl-[36px] text-[22px] font-[500]">{orders && orders.length}</h5>
+          <h5 className="pt-2 pl-[36px] text-[22px] font-[500]">{allOrders && allOrders.length}</h5>
           <Link to="/dashboard-orders">
 
-              {/* <span className="text-[20px]"> <b> 10</b></span> */}
+            {/* <span className="text-[20px]"> <b> 10</b></span> */}
             <h5 className="pt-6  text-[#077f9c] cursor-pointer">View Orders</h5>
           </Link>
         </div>
@@ -140,9 +178,9 @@ const availableBalance = seller?.availableBalance
               All Products
             </h3>
           </div>
-          <h5 className="pt-2 pl-[30px] text-[22px] font-[500]">{products && products.length}</h5>
+          <h5 className="pt-2 pl-[30px] text-[22px] font-[500]">{allProducts && allProducts.length}</h5>
           <Link to="/dashboard-products">
-                          {/* <span className="text-[20px]"> <b> 12</b></span> */}
+            {/* <span className="text-[20px]"> <b> 12</b></span> */}
             <h5 className="pt-6 text-[#077f9c] cursor-pointer">View Products</h5>
           </Link>
         </div>
@@ -150,13 +188,13 @@ const availableBalance = seller?.availableBalance
       <br />
       <h3 className="text-[22px] font-Poppins pb-2">Latest Orders</h3>
       <div className="w-full min-h-[45vh] bg-white rounded">
-      <DataGrid
-        rows={row}
-        columns={columns}
-        pageSize={10}
-        disableSelectionOnClick
-        autoHeight
-      />
+        <DataGrid
+          rows={row}
+          columns={columns}
+          pageSize={10}
+          disableSelectionOnClick
+          autoHeight
+        />
       </div>
     </div>
   );
