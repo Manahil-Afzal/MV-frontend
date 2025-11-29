@@ -12,44 +12,41 @@ import { DataGrid } from "@mui/x-data-grid";
 
 const DashboardHero = () => {
   const dispatch = useDispatch();
-  const { allOrders, orders } = useSelector((state) => state.order);
+  const { allOrders } = useSelector((state) => state.order);
   const { seller } = useSelector((state) => state.seller);
   const { allProducts } = useSelector((state) => state.products);
   const [deliveredOrder, setDeliveredOrder] = useState(null);
   
 
 // 1. Fetch orders and products
-// useEffect(() => {
-//   if (seller && seller._id) {
-//     dispatch(getAllOrdersOfShop(seller._id));
-//     dispatch(getAllProductsShop(seller._id));
-//   }
-// }, [dispatch, seller]);
+useEffect(() => {
+  if (seller && seller._id) {
+    dispatch(getAllOrdersOfShop(seller._id));
+    dispatch(getAllProductsShop(seller._id));
+  }
+}, [dispatch, seller]);
 
 // 2. Update delivered orders when allOrders changes
-// useEffect(() => {
-//   if (allOrders && allOrders.length > 0) {
-//     const orderData = allOrders.filter(
-//       (item) => item.status.toLowerCase() === "delivered" // safe case-insensitive match
-//     );
-//     setDeliveredOrder(orderData);
-//   }
-// }, [allOrders]);
-
 useEffect(() => {
-   dispatch(getAllOrdersOfShop(seller._id));
-   dispatch(getAllProductsShop(seller._id));
+  if (allOrders && allOrders.length > 0) {
+    const orderData = allOrders.filter(
+      (item) => item.status.toLowerCase() === "delivered" // safe case-insensitive match
+    );
+    setDeliveredOrder(orderData);
+  }
+}, [allOrders]);
 
-   const orderData = orders && orders.filter((item)=> item.status === "Delievered");
-   setDeliveredOrder(orderData);
-}, [dispatch, seller, orders]);
+ 
 
-// const totalEarningWithoutTax = deliveredOrder && deliveredOrder.reduce((acc, item) => acc+ item.totalPrice, 0);
-const totalEarningWithoutTax = deliveredOrder?.reduce((acc, item) => acc + item.totalPrice, 0) || 0;
 
+const totalEarningWithoutTax = deliveredOrder
+  ? deliveredOrder.reduce((acc, item) => acc + Number(item.totalPrice), 0)
+  : 0;
 
 const serviceCharge = totalEarningWithoutTax * 0.1;
 const availableBalance = totalEarningWithoutTax - serviceCharge;
+
+
 
 useEffect(() => {
   console.log("Seller:", seller);
