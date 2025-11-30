@@ -9,9 +9,8 @@ import toast from "react-hot-toast";
 const CreateProduct = () => {
   const { seller } = useSelector((state) => state.seller);
   const { isLoading, success, error } = useSelector((state) => state.products);
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-
+  const navigate = useNavigate("");
+  const dispatch = useDispatch("");
   const [images, setImages] = useState([]);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -20,7 +19,7 @@ const CreateProduct = () => {
   const [OriginalPrice, setOriginalPrice] = useState("");
   const [discountPrice, setDiscountPrice] = useState("");
   const [stock, setStock] = useState("");
-        console.log(seller);
+
 
   useEffect(() => {
     if (error) {
@@ -35,8 +34,6 @@ const CreateProduct = () => {
 
   const handleImageChange = (e) => {
     e.preventDefault();
-
-
     let files = Array.from(e.target.files);
     setImages((prevImages) => [...prevImages, ...files]);
   };
@@ -44,7 +41,6 @@ const CreateProduct = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const newForm = new FormData();
-
     images.forEach((image) => {
       newForm.append("images", image);
     });
@@ -55,8 +51,7 @@ const CreateProduct = () => {
     newForm.append("originalPrice", OriginalPrice);
     newForm.append("discountPrice", discountPrice);
     newForm.append("stock", stock);
-    newForm.append("shopId", seller?._id);
-  console.log(seller)
+    newForm.append("shopId", seller._id);
     dispatch(createProduct(newForm));
   };
 
@@ -90,9 +85,9 @@ const CreateProduct = () => {
             <span className="text-red-500">*</span>
           </label>
           <textarea
-            cols= "30"
-             rows="8"
-             required
+            cols="30"
+            rows="8"
+            required
             name="description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
@@ -119,6 +114,13 @@ const CreateProduct = () => {
                   {i.title}
                 </option>
               ))}
+            {/* {Array.isArray(categoriesData) &&
+              categoriesData.map((i) => (
+                <option value={i.title} key={i.title}>
+                  {i.title}
+                </option>
+              ))} */}
+
           </select>
         </div>
         <br />
@@ -194,7 +196,7 @@ const CreateProduct = () => {
           </label>
           <input
             type="file"
-            name=""
+            name="images"
             id="upload"
             className="hidden"
             multiple
@@ -213,10 +215,9 @@ const CreateProduct = () => {
                   className="h-[120px] w-[120px] object-cover m-2 "
                 />
               ))} */}
-              {images.map((file, index) => (
-  <img key={file.name + index} src={URL.createObjectURL(file)} />
-))}
-
+             {images.map((file, index) => (
+              <img key={file.name + index} src={URL.createObjectURL(file)} />
+            ))}
           </div>
         </div>
         <br />

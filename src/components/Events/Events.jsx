@@ -6,7 +6,7 @@ import { backend_url } from '../../server';
 
 
 const Events = () => {
-  const { allEvents, isLoading } = useSelector((state) => state.event);
+  const { allevents, isLoading } = useSelector((state) => state.event);
 
   return (
     <div>
@@ -19,7 +19,7 @@ const Events = () => {
               </h1>
             </div>
             <div className="w-full grid">
-              <EventCard data={allEvents && allEvents[0]} />
+              <EventCard data={allevents && allevents[0]} />
             </div>
           </div>
         )

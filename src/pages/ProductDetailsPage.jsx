@@ -14,47 +14,51 @@ import { getAllEvents } from "../redux/actions/event.js";
 const ProductDetailsPage = () => {
   const { allProducts } = useSelector((state) => state.products);
   const { allevents } = useSelector((state) => state.event);
+
   const { id } = useParams();
   const [data, setData] = useState(null);
   const [searchParams] = useSearchParams();
   const eventData = searchParams.get("isEvent");
-  const dispatch = useDispatch(); 
 
- useEffect(() => {
-     dispatch(getAllProducts());
-     dispatch(getAllEvents())
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getAllProducts());
+    dispatch(getAllEvents());
   }, [dispatch]);
 
-
-  
-useEffect(() =>{
-     if(eventData){
-         if(allevents && allevents.length >0){
-            const event = allevents.find((i) => i._id === id )
-            setData(event);
-         }
-     } else {
-         if(allProducts && allProducts.length >0){
-            const product = allProducts.find((i) => i._id === id )
-             setData(product);
-         }
-     }
-}, [eventData, id, allevents, allProducts]);
-
-console.log(data, "data");
-console.log(allevents, "allevents");
-console.log(allProducts, "allProducts");
+  useEffect(() => {
+    if (eventData) {
+      // wait for allevents to be loaded
+      if (allevents && allevents.length > 0) {
+        const event = allevents.find((i) => i._id === id);
+        setData(event);
+      }
+    } else {
+      // wait for allProducts to be loaded
+      if (allProducts && allProducts.length > 0) {
+        const product = allProducts.find((i) => i._id === id);
+        setData(product);
+      }
+    }
+  }, [allProducts, eventData, id, allevents]);
 
 
-  return ( 
+
+  console.log(data, "data");
+  console.log(allevents, "allevents");
+  console.log(allProducts, "allProducts");
+
+
+  return (
     <div>
       <Header />
       <ProductDetails data={data} />
       {
         !eventData && (
-           <>
-             {data && <SuggestedProduct data={data}/>}
-           </>
+          <>
+            {data && <SuggestedProduct data={data} />}
+          </>
         )
       }
       <Footer />

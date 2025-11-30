@@ -10,7 +10,6 @@ export const createEvent = (newForm) => async (dispatch) => {
       type: "eventCreateRequest",
     });
     const config = { headers: { "Content-Type": "multipart/form-data" } };
-
     const { data } = await axios.post(
       `${server}/event/create-event`,
       newForm,
@@ -18,12 +17,12 @@ export const createEvent = (newForm) => async (dispatch) => {
     );
     dispatch({
       type: "eventCreateSuccess",
-      payload: data.event,
+      payload: data.events,
     });
   } catch (error) {
     dispatch({
       type: "eventCreateFail",
-      payload: error.response.data.message,
+      payload: error?.response?.data?.message,
     });
   }
 };
@@ -57,7 +56,6 @@ export const deleteEvent = (id) => async (dispatch) => {
       `${server}/event/delete-shop-event/${id}`,
       { withCredentials: true }
     );
-
     dispatch({ type: "deleteEventSuccess", payload: data.message });
   } catch (error) {
     dispatch({

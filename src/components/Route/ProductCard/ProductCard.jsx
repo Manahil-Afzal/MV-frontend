@@ -63,6 +63,7 @@ const { Wishlist } = useSelector((state) => state.wishlist);
         <Link to= {`/product/${data?._id}`}>
           <img
             src={`${backend_url}/uploads/${data?.images[0]}`}
+            // src={`${backend_url}/uploads/${item.user.avatar}`}
             alt=""
             className="w-full h-[170px] object-contain"
           />
@@ -87,10 +88,10 @@ const { Wishlist } = useSelector((state) => state.wishlist);
               {data.originalPrice === 0 ? 
               data.originalPrice
                : data.discountPrice} 
-               
+               $
             </h5>
             <h4 className={`${styles.price}`}>
-              {data.originalPrice ? data.originalPrice + "" : null}
+              {data.originalPrice ? data.originalPrice + "" : null}$
             </h4>
           </div>
           <span className="font=[400] text-[12px] text-[#68d284]">

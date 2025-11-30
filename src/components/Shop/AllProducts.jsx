@@ -11,28 +11,18 @@ import toast from "react-hot-toast";
 import { backend_url } from "../../server";
 
 const AllProducts = () => {
-const { shopProducts, isLoading } = useSelector((state) => state.products);
+const { products, isLoading } = useSelector((state) => state.products);
   const { seller } = useSelector((state) => state.seller);
   const dispatch = useDispatch();
 
 useEffect(() => {
-    if(seller && seller._id){
     dispatch(getAllProductsShop(seller._id));
-    }
-  }, [dispatch, seller]);
+  }, [dispatch]);
 
 
- const handleDelete = async (slug) => {
-  const confirmed = window.confirm("Are you sure you want to delete this product?");
-  if (!confirmed) return;
-
-  try {
-    await dispatch(deleteProduct(slug));
+ const handleDelete = async (id) => {
+     dispatch(deleteProduct(id));
     toast.success("Product deleted successfully!");
-    dispatch(getAllProductsShop(seller?._id)); 
-  } catch (error) {
-    toast.error("Failed to delete product");
-  }
 };
 
   const columns = [
@@ -71,12 +61,10 @@ useEffect(() => {
       type: "number",
       sortable: false,
       renderCell: (params) => {
-        const d = params.row.name;
-        const product_name = d.replace(/\s+/g, "-");
         return (
           <>
-            {/* <Link to={`/product/${product_name}`}> */}
-            <Link to={`/product/${params.row.slug}`}>
+            <Link to={`/product/${params.id}`}>
+            {/* <Link to={`/product/${params.row.slug}`}> */}
               <Button>
                 <AiOutlineEye size={20} />
               </Button>
@@ -96,7 +84,7 @@ useEffect(() => {
         return (
           <>
           {/* <Button onClick={() => handleDelete(params.row.slug)}> */}
-            <Button onClick={() => handleDelete(params.row.id)}>
+            <Button onClick={() => handleDelete(params.id)}>
               <AiOutlineDelete size={20} />
             </Button>
           </>
@@ -106,18 +94,16 @@ useEffect(() => {
   ];
 
 const row = [];
- shopProducts &&
-  shopProducts.forEach((item) => {
+ products &&
+  products.forEach((item) => {
     row.push({
       id: item._id,
       name: item.name,
-        slug: item.slug,
       price: "US" + item.discountPrice,
       Stock: item.stock,
       sold: item.sold_out,
     });
   });
-console.log("shopEvents:", shopProducts);
 
   return (
     <>

@@ -22,6 +22,8 @@ import {
 } from "../../../redux/actions/wishlist";
 import { backend_url } from "../../../server";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { server } from "../../../server";
 
 const ProductDetailsCard = ({ setOpen, data }) => {
   const { cart } = useSelector((state) => state.cart);
@@ -29,8 +31,10 @@ const ProductDetailsCard = ({ setOpen, data }) => {
   const dispatch = useDispatch();
   const [count, setCount] = useState(1);
   const [click, setClick] = useState(false);
-    const [select, setSelect] = useState(false);
+  const [select, setSelect] = useState(false);
     const navigate = useNavigate();
+    const { isAuthenticated, user } = useSelector((state) => state.user);
+
 
 
 
@@ -149,10 +153,10 @@ const ProductDetailsCard = ({ setOpen, data }) => {
 
                 <div className="flex pt-3">
                   <h4 className={`${styles.productDiscountPrice}`}>
-                    {data.discountPrice}
+                    {data.discountPrice + "$"}
                   </h4>
                   <h3 className={`${styles.price}`}>
-                    {data.originalPrice ? data.originalPrice + "" : null}
+                    {data.originalPrice ? data.originalPrice + "$" : null}
                   </h3>
                 </div>
                 <div className="flex items-center mt-12 justify-between pr-3">

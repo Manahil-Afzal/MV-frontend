@@ -1,15 +1,20 @@
 
 import { createReducer } from "@reduxjs/toolkit";
 
+// const initialState = {
+//   // isLoading: true,
+//    isLoading: false,
+//   allProducts: [],
+//   products: [],
+//   error: null,
+//   success: false,
+//   message: null,
+// };
 const initialState = {
-  // isLoading: true,
-   isLoading: false,
-  allProducts: [],
-  shopProducts: [],
-  product: null,
+  isLoading: false,
   error: null,
   success: false,
-  message: null,
+  allProducts: [],
 };
 
 export const productReducer = createReducer(initialState, (builder) => {
@@ -32,7 +37,7 @@ export const productReducer = createReducer(initialState, (builder) => {
     })
     .addCase("productCreateSuccess", (state, action) => {
       state.isLoading = false;
-      state.product = action.payload;
+      state.products = action.payload;
       state.success = true;
     })
     .addCase("productCreateFail", (state, action) => {
@@ -47,7 +52,7 @@ export const productReducer = createReducer(initialState, (builder) => {
      })
     .addCase("getAllProductsShopSuccess", (state,action) => {
           state.isLoading = false; 
-          state.shopProducts = action.payload;
+          state.products = action.payload;
      })
     .addCase("getAllProductsShopFail", (state, action)=>{
           state.isLoading = false; 
@@ -75,20 +80,20 @@ export const productReducer = createReducer(initialState, (builder) => {
 });
 
 
-export const getProductsByCategory = (categoryId) => async (dispatch) => {
-  try {
-    dispatch({ type: "getProductsByCategoryRequest" });
+// export const getProductsByCategory = (categoryId) => async (dispatch) => {
+//   try {
+//     dispatch({ type: "getProductsByCategoryRequest" });
 
-    const { data } = await axios.get(`${server}/product/category/${categoryId}`);
+//     const { data } = await axios.get(`${server}/product/category/${categoryId}`);
 
-    dispatch({
-      type: "getProductsByCategorySuccess",
-      payload: data.products,
-    });
-  } catch (error) {
-    dispatch({
-      type: "getProductsByCategoryFail",
-      payload: error.response?.data?.message || error.message,
-    });
-  }
-};
+//     dispatch({
+//       type: "getProductsByCategorySuccess",
+//       payload: data.products,
+//     });
+//   } catch (error) {
+//     dispatch({
+//       type: "getProductsByCategoryFail",
+//       payload: error.response?.data?.message || error.message,
+//     });
+//   }
+// };

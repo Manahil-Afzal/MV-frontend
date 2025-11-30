@@ -7,12 +7,15 @@ export const createProduct = (newForm) => async (dispatch) => {
     dispatch({
       type: "productCreateRequest",
     });
-    const config = { headers: { "Content-Type": "multipart/form-data" } };
-
+    const config = {
+  headers: {
+    "Content-Type": "multipart/form-data",
+  },
+};
     const { data } = await axios.post(
       `${server}/product/create-product`,
-      newForm,
-      config
+        newForm,
+        config
     );
     dispatch({
       type: "productCreateSuccess",
@@ -21,7 +24,7 @@ export const createProduct = (newForm) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: "productCreateFail",
-      payload: error.response.data.message,
+      payload: error?.response?.data?.message,
     });
   }
 };
@@ -30,7 +33,9 @@ export const createProduct = (newForm) => async (dispatch) => {
 // 2️⃣ Get all products (for homepage)
 export const getAllProducts = () => async (dispatch) => {
   try {
-    dispatch({ type: "getAllProductsRequest" });
+    dispatch({
+      type: "getAllProductsRequest",
+    });
 
     const { data } = await axios.get(`${server}/product/get-all-products`);
     dispatch({
@@ -40,7 +45,7 @@ export const getAllProducts = () => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: "getAllProductsFailed",
-      payload: error.response?.data?.message || error.message,
+      payload: error.response.data.message,
     });
   }
 };
@@ -78,14 +83,11 @@ export const deleteProduct = (id) => async (dispatch) => {
     );
 
     dispatch({ type: "deleteProductSuccess", payload: data.message });
-
-    return data; 
   } catch (error) {
     dispatch({
       type: "deleteProductFail",
       payload: error.response?.data?.message || error.message,
     });
-    throw error; 
   }
 };
 

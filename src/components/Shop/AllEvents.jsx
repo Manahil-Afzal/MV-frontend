@@ -20,30 +20,13 @@ useEffect(() => {
   if (seller && seller._id) {
     dispatch(getAlleventsShop(seller._id));
   }
-}, [dispatch, seller]);
+}, [dispatch]);
 
 
 const handleDelete = async (id) => {
-  const confirmed = window.confirm(
-    "Are you sure you want to delete this event?"
-  );
-  if (!confirmed) return;
-
-  try {
-    await dispatch(deleteEvent(id)); 
+     dispatch(deleteEvent(id)); 
     toast.success("Event deleted successfully!");
-
-    // Refetch the events to update UI
-    if (seller && seller._id) {
-      dispatch(getAlleventsShop(seller._id));
-    }
-  } catch (error) {
-    toast.error("Failed to delete event");
-  }
 };
-
- console.log(id);
-
 
 
   const columns = [
@@ -77,10 +60,8 @@ const handleDelete = async (id) => {
     {
     field: "Preview",
     renderCell: (params) => {
-       const d = params.row.name;
-        const product_name = d.replace(/\s+/g, "-");
       return (
-        <Link to={`/event/${params.row.id}`}>
+        <Link to={`/event/${params.id}`}>
          {/* <Link to={`/product/${params.row.slug}`}> */}
           <Button>
             <AiOutlineEye size={20} />
@@ -93,7 +74,7 @@ const handleDelete = async (id) => {
     field: "Delete",
     renderCell: (params) => {
       return (
-        <Button onClick={() => handleDelete(params.row.id)}>
+        <Button onClick={() => handleDelete(params.id)}>
           <AiOutlineDelete size={20} />
         </Button>
       );
@@ -113,7 +94,7 @@ const handleDelete = async (id) => {
 
       });
     });
-console.log("shopEvents:", shopEvents);
+
 
   return (
     <>

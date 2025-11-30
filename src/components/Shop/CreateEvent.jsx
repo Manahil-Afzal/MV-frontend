@@ -24,17 +24,12 @@ const CreateEvent = () => {
   const [stock, setStock] = useState("");
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-//   console.log(seller);
 
   const handleStartDateChange = (e) => {
     const startDate = new Date(e.target.value);
     const minEndDate = new Date(startDate.getTime() + 3 * 24 * 60 * 60 * 60 * 1000);
     setStartDate(startDate);
     setEndDate(null);
-    // document.getElementById("end-date").min = minEndDate.toISOString().slice(
-    //   0,
-    //   10
-    // );
   };
 
   const handleEndDateChange = (e) => {
@@ -82,7 +77,7 @@ const CreateEvent = () => {
     newForm.append("originalPrice", OriginalPrice);
     newForm.append("discountPrice", discountPrice);
     newForm.append("stock", stock);
-    newForm.append("shopId", seller?._id);
+    newForm.append("shopId", seller._id);
     newForm.append("start_Date", startDate.toISOString());
     newForm.append("Finish_Date", endDate.toISOString());
     dispatch(createEvent(newForm));

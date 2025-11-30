@@ -13,7 +13,7 @@ import { backend_url } from "../../server";
 
 
 const ShopProfileData = ({ isOwner }) => {
-  const { shopProducts } = useSelector((state) => state.products);
+  const { products } = useSelector((state) => state.products);
   const { allevents} = useSelector((state) => state.event);
   const {seller} = useSelector((state) => state.seller);
   const { id } = useParams();
@@ -23,14 +23,14 @@ const ShopProfileData = ({ isOwner }) => {
   useEffect(() => {
     dispatch(getAllProductsShop(id));
     dispatch(getAlleventsShop(id));
-  }, [dispatch, id]);
+  }, [dispatch]);
 
   const [active, setActive] = useState(1);
 
   const allReviews =
-    shopProducts && shopProducts.map((product) => product.reviews).flat();
+    products && products.map((product) => product.reviews).flat();
 
-console.log(shopProducts, "shopProducts");
+console.log(products, "products");
 
 console.log(allevents, "shopEvents");
 
@@ -83,8 +83,8 @@ console.log(allevents, "shopEvents");
       <br />
       {active === 1 && (
         <div className="grid grid-cols-1 gap-[20px] md:grid-cols-2 md:gap-[25px] lg:grid-cols-3 lg:gap-[25px] xl:grid-cols-4 xl:gap-[20px] mb-12 border-0">
-          {shopProducts &&
-            shopProducts.map((i, index) => (
+          {products &&
+            products.map((i, index) => (
               <ProductCard data={i} key={index} isShop={true} />
             ))}
         </div>
