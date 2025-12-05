@@ -6,13 +6,17 @@ import { useSelector } from "react-redux";
 
 const BestDeals = () => {
   const { allProducts } = useSelector((state) => state.products);
+   const [data, setData] = useState([]);
 
-  // useEffect(() => {
-  //   if (allProducts.length > 0) {
-  //     const firstFive = allProducts.slice(0, 5);
-  //     setData(firstFive);
-  //   }
-  // }, [allProducts]);
+
+  useEffect(() => {
+    if (allProducts.length > 0) {
+      const firstFive = allProducts.slice(0, 5);
+      setData(firstFive);
+    }
+  }, [allProducts]);
+
+
   return (
     <div>
       <div className={`${styles.section}`}>
@@ -23,9 +27,9 @@ const BestDeals = () => {
         </div>
         <div className="grid grid-cols-1 gap-[20px] md:grid-cols-2 md:gap-[25px] lg:grid-cols-4 lg:gap-[25px] xl:grid-cols-5 xl:gap-[10px] mb-12 border-0 ">
           {
-            allProducts && allProducts.length !== 0 && (
+            data && data.length !== 0 && (
               <>
-                {allProducts && allProducts.map((product) => <ProductCard data={product} key={product._id} />)}
+                {data && data.map((product) => <ProductCard data={product} key={product._id} />)}
               </>
             )
           }

@@ -12,14 +12,13 @@ import { addToWishlist, removeFromWishlist } from "../../../redux/actions/wishli
 import Ratings from "../../Products/Ratings";
 
 
-const ProductCard = ({ data }) => {
-
-  const [click, setClick] = useState(false);  
+const ProductCard = ({ data, isEvent }) => {
+  const [click, setClick] = useState(false);
   const [open, setOpen] = useState(false);
   const [count, setCount] = useState(1);
   const dispatch = useDispatch();
-const { Wishlist } = useSelector((state) => state.wishlist);
-  const { cart } = useSelector((state) =>  state.cart);
+  const { Wishlist } = useSelector((state) => state.wishlist);
+  const { cart } = useSelector((state) => state.cart);
 
   useEffect(() => {
     if (Wishlist && Wishlist.find((i) => i._id === data._id)) {
@@ -42,28 +41,30 @@ const { Wishlist } = useSelector((state) => state.wishlist);
 
 
   const addToCartHandler = (id) => {
-      const isItemExists = cart && cart.find((i) => i._id === id);
-      if (isItemExists) {
-        toast.error("Item already in cart!")
+    const isItemExists = cart && cart.find((i) => i._id === id);
+    if (isItemExists) {
+      toast.error("Item already in cart!")
+    }
+    else {
+      if (data.stock < count) {
+        toast.error("Product stock limited!");
+      } else {
+        const cartData = { ...data, qty: 1 }
+        dispatch(addToCart(cartData));
+        toast.success("Item added to cart successfully!")
       }
-      else {
-        if (data.stock < count) {
-          toast.error("Product stock limited!");
-        } else {
-          const cartData = { ...data, qty: 1 }
-          dispatch(addToCart(cartData));
-          toast.success("Item added to cart successfully!")
-        }
-      }
-    };
+    }
+  };
   return (
     <>
       <div className="w-full h-[370px] bg-white rounded-lg shadow-sm p-3 relative cursor-pointer">
         <div className="flex justify-end"></div>
-        <Link to= {`/product/${data?._id}`}>
+        <Link to={`${isEvent === true
+            ? `/product/${data._id}?isEvent=true`
+            : `/product/${data._id}`
+          }`} >
           <img
-            src={`${backend_url}/uploads/${data?.images[0]}`}
-            // src={`${backend_url}/uploads/${item.user.avatar}`}
+            src={`${data?.images[0].url}`}
             alt=""
             className="w-full h-[170px] object-contain"
           />
@@ -79,19 +80,19 @@ const { Wishlist } = useSelector((state) => state.wishlist);
         </Link>
 
         <div className="flex">
-            <Ratings ratings={data?.ratings} />
+          <Ratings ratings={data?.ratings} />
         </div>
 
         <div className="py-2 flex items-center justify-between">
           <div className="flex">
             <h5 className={`${styles.productDiscountPrice}`}>
-              {data.originalPrice === 0 ? 
-              data.originalPrice
-               : data.discountPrice} 
-               $
+              {data.OriginalPrice === 0 ?
+                data.OriginalPrice
+                : data.discountPrice}
+              $
             </h5>
             <h4 className={`${styles.price}`}>
-              {data.originalPrice ? data.originalPrice + "" : null}$
+              {data.OriginalPrice ? data.OriginalPrice + "" : null}$
             </h4>
           </div>
           <span className="font=[400] text-[12px] text-[#68d284]">
@@ -136,7 +137,7 @@ const { Wishlist } = useSelector((state) => state.wishlist);
             open && (
               <ProductDetailsCard open={open} setOpen={setOpen} data={data} />
             )
-          } 
+          }
 
         </div>
       </div>

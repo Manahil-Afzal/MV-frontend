@@ -10,16 +10,13 @@ import { getAllProducts } from "../redux/actions/product.js";
 import { useDispatch } from "react-redux";
 import { getAllEvents } from "../redux/actions/event.js";
 
-
 const ProductDetailsPage = () => {
   const { allProducts } = useSelector((state) => state.products);
   const { allevents } = useSelector((state) => state.event);
-
   const { id } = useParams();
   const [data, setData] = useState(null);
   const [searchParams] = useSearchParams();
   const eventData = searchParams.get("isEvent");
-
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -29,13 +26,11 @@ const ProductDetailsPage = () => {
 
   useEffect(() => {
     if (eventData) {
-      // wait for allevents to be loaded
       if (allevents && allevents.length > 0) {
         const event = allevents.find((i) => i._id === id);
         setData(event);
       }
     } else {
-      // wait for allProducts to be loaded
       if (allProducts && allProducts.length > 0) {
         const product = allProducts.find((i) => i._id === id);
         setData(product);

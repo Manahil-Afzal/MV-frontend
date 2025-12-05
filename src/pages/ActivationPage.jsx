@@ -1,30 +1,32 @@
-import React from "react";
-import { useEffect } from "react";
-import { useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { server } from "../server";
 
 const ActivationPage = () => {
   const { activation_token } = useParams();
-  const [ error, setError ] = useState(false);
+    const [error, setError] = useState(false);
+   
 
-  useEffect(() => {
+ useEffect(() => {
     if (activation_token) {
-      const activationEmail = async () => {
-        try {
-          const res = await axios.post(`${server}/user/activation`, {
-            activation_token,
-          });
-          console.log(res.data.message);
-        } catch (error) {
-          console.log(error.response.data.message);
-          setError(true);
-        };
+      const sendRequest = async () => {
+         try {
+           const token = decodeURIComponent(activation_token);
+           const res = await axios.post(`${server}/user/activation`, {
+              activation_token: token,
+           })
+           console.log(res.data);
+         } catch (error) {
+            console.error(error.response.data);
+            setError(true);
+         }
       };
-      activationEmail();
+      sendRequest();
     }
-  }, []);
+  }, [activation_token]);
 
-  return (
+ return (
     <div
       style={{
         width: "100%",
@@ -42,4 +44,5 @@ const ActivationPage = () => {
     </div>
   );
 };
+
 export default ActivationPage;

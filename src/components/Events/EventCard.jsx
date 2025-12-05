@@ -122,7 +122,7 @@ const EventCard = ({ active, data }) => {
       }
     }
   };
-
+console.log(data);
   return (
     <div
       className={`w-full bg-white shadow-lg hover:shadow-6xl rounded-3xl transition-shadow duration-900 p-5 mb-6 
@@ -130,7 +130,7 @@ const EventCard = ({ active, data }) => {
     >
       <div className="w-full lg:w-[50%] m-auto">
         <img
-          src={`${backend_url}/uploads/${data?.images?.[0] || "placeholder.png"}`}
+          src={`${data?.images[0]?.url}`}
           alt={data.name}
           className="w-full h-[300px] object-contain"
         />

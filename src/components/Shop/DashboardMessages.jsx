@@ -8,22 +8,17 @@ import { AiOutlineArrowRight, AiOutlineSend } from "react-icons/ai";
 import styles from "../../styles/styles";
 import { TfiGallery } from "react-icons/tfi";
 import { format } from "timeago.js";
-import { io } from "socket.io-client";
+import  socketIO  from "socket.io-client";
 import { backend_url } from "../../server";
-// const ENDPOINT = "https://socket-ecommerce-tu68.onrender.com/";
-const ENDPOINT = "https://localhost:4000";
 
-const socket = io("http://localhost:4000", {
-  transports: ["polling"],
-  withCredentials: true,
-  reconnection: true,
-  reconnectionAttempts: 10,
-  reconnectionDelay: 1000,
+
+const socket = socketIO("http://localhost:4000", {
+  transports: ["websocket"],
 });
 
 
 const DashboardMessages = () => {
-  const { seller, isLoading } = useSelector((state) => state.seller);
+  const { sellers, isLoading } = useSelector((state) => state.seller);
   const [conversations, setConversations] = useState([]);
   const [arrivalMessage, setArrivalMessage] = useState(null);
   const [currentChat, setCurrentChat] = useState();
@@ -35,33 +30,17 @@ const DashboardMessages = () => {
   const [images, setImages] = useState();
   const [open, setOpen] = useState(false);
   const scrollRef = useRef(null);
-  const [user, setUser] = useState(null);
 
 
-  useEffect(() => {
-    const handleMessage = (data) => {
-      setArrivalMessage({
-        sender: data.senderId,
-        text: data.text,
-        createdAt: Date.now(),
-      });
-    };
-    socket.on("getMessage", handleMessage);
-    return () => socket.off("getMessage", handleMessage);
-  }, []);
-
-
-  useEffect(() => {
-    if (!seller) return;
-
-    socket.emit("addUser", seller._id);
-
-    const handleUsers = (data) => setOnlineUsers(data);
-    socket.on("getUsers", handleUsers);
-
-    return () => socket.off("getUsers", handleUsers);
-  }, [seller]);
-
+ useEffect(() => {
+     socket.on("getMessage", (data) => {
+       setArrivalMessage({
+         sender: data.senderId,
+         text: data.text,
+         createdAt: Date.now(),
+       });
+     });
+   }, []);
 
 
   useEffect(() => {
@@ -71,31 +50,51 @@ const DashboardMessages = () => {
   }, [arrivalMessage, currentChat]);
 
 
+ useEffect(() => {
+    axios
+      .get(`${server}/conversation/get-all-conversation-seller/${sellers._id}`, {
+        withCredentials: true,
+      })
+      .then((res) => {
+        setConversations(res.data.conversation);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [sellers]);
+
+
   useEffect(() => {
-    if (!seller?._id) return;
-
-    const getConversation = async () => {
-      try {
-        const response = await axios.get(
-          `${server}/conversation/get-all-conversation-seller/${seller._id}`,
-          { withCredentials: true }
-        );
-        setConversations(response.data.conversations);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getConversation();
-  }, [seller]);
+    if (sellers) {
+      const sellerId = sellers?._id;
+      socket.emit("addUser", sellerId);
+      socket.on("getUsers", (data) => {
+        setOnlineUsers(data);
+      });
+    }
+  }, [sellers]);
 
 
+const onlineCheck = (chat) => {
+    if (!chat?.members) return false;
+    if (!onlineUsers || !Array.isArray(onlineUsers)) return false;
 
-  const onlineCheck = (chat) => {
-    const chatMembers = chat.members.find((member) => member !== seller?._id);
-    const online = onlineUsers.find((user) => user.userId === chatMembers);
+    const chatMemberId = chat.members.find((id) => id !== sellers._id);
 
-    return online ? true : false;
+    const isOnline = onlineUsers.some((u) => u.userId === chatMemberId);
+
+    return isOnline;
   };
+
+  useEffect(() => {
+    if (currentChat && Array.isArray(onlineUsers)) {
+      const otherUserId = currentChat.members.find((id) => id !== sellers._id);
+
+      const isOnline = onlineUsers.some((u) => u.userId === otherUserId);
+
+      setActiveStatus(isOnline);
+    }
+  }, [currentChat, onlineUsers]);
 
 
   useEffect(() => {
@@ -114,22 +113,20 @@ const DashboardMessages = () => {
     getMessage();
   }, [currentChat]);
 
-
-
   // create new message
   const sendMessageHandler = async (e) => {
     e.preventDefault();
 
     const message = {
-      sender: seller._id,
+      sender: sellers._id,
       text: newMessage,
       conversationId: currentChat._id,
     };
 
-    const receiverId = currentChat.members.find((member) => member !== seller._id);
+    const receiverId = currentChat.members.find((member) => member !== sellers._id);
 
     socket.emit("sendMessage", {
-      senderId: seller._id,
+      senderId: sellers._id,
       receiverId,
       text: newMessage,
     });
@@ -154,13 +151,13 @@ const DashboardMessages = () => {
   const updateLastMessage = async () => {
     socket.emit("updateLastMessage", {
       lastMessage: newMessage,
-      lastMessageId: seller._id,
+      lastMessageId: sellers._id,
     });
 
     await axios
       .put(`${server}/conversation/update-last-message/${currentChat._id}`, {
         lastMessage: newMessage,
-        lastMessageId: seller._id,
+        lastMessageId: sellers._id,
       })
       .then((res) => {
         console.log(res.data.conversation);
@@ -186,11 +183,11 @@ const DashboardMessages = () => {
 
   const imageSendingHandler = async (e) => {
     const receiverId = currentChat.members.find(
-      (member) => member !== seller._id
+      (member) => member !== sellers._id
     );
 
     socket.emit("sendMessage", {
-      senderId: seller._id,
+      senderId: sellers._id,
       receiverId,
       images: e,
     });
@@ -199,7 +196,7 @@ const DashboardMessages = () => {
       await axios
         .post(`${server}/message/create-new-message`, {
           images: e,
-          sender: seller._id,
+          sender: sellers._id,
           text: newMessage,
           conversationId: currentChat._id,
         })
@@ -218,7 +215,7 @@ const DashboardMessages = () => {
       `${server}/conversation/update-last-message/${currentChat._id}`,
       {
         lastMessage: "Photo",
-        lastMessageId: seller._id,
+        lastMessageId: sellers._id,
       }
     );
   };
@@ -245,7 +242,7 @@ const DashboardMessages = () => {
           </h1>
 
 
-          {conversations.length > 0 ? (
+          {conversations ? (
             conversations.map((item, index) => (
               <MessageList
                 data={item}
@@ -253,7 +250,7 @@ const DashboardMessages = () => {
                 index={index}
                 setOpen={setOpen}
                 setCurrentChat={setCurrentChat}
-                me={seller._id}
+                me={sellers._id}
                 setUserData={setUserData}
                 userData={userData}
                 online={onlineCheck(item)}
@@ -274,7 +271,7 @@ const DashboardMessages = () => {
           setNewMessage={setNewMessage}
           sendMessageHandler={sendMessageHandler}
           messages={messages}
-          sellerId={seller._id}
+          sellerId={sellers._id}
           userData={userData}
           activeStatus={activeStatus}
           scrollRef={scrollRef}
@@ -361,7 +358,7 @@ const MessageList = ({
     >
       <div className="relative">
         <img
-          src={user?.avatar ? `${backend_url}/uploads/${user.avatar}` : "/default-avatar.png"}
+          src={`${user?.avatar?.url}`}
           alt=""
           className="w-[50px] h-[50px] rounded-full"
         />
@@ -375,9 +372,8 @@ const MessageList = ({
       </div>
       <div className="pl-3">
         <h1 className="text-[18px]">{user?.name}</h1>
-        {/* <h1 className="text-[18px]">Manahil</h1> */}
         <p className="text-[16px] text-[#000c]">
-          {!isLoading && data?.lastMessageId !== user?._id
+          {data?.lastMessageId !== user?._id
             ? "You:"
             : data.groupTitle}
           {data?.lastMessage}
@@ -405,14 +401,13 @@ const SellerInbox = ({
       <div className="w-full flex p-3 items-center justify-between bg-slate-200">
         <div className="flex">
           <img
-            src={userData?.avatar ? `${backend_url}/uploads/${userData.avatar}` : "/default-avatar.png"}
+            src={`${userData?.avatar?.url}`}
             alt=""
             className="w-[60px] h-[60px] rounded-full"
           />
           <div className="pl-3">
             <h1 className="text-[18px] font-[600]">{userData?.name}</h1>
-             {/* <h1 className="text-[18px]">Manahil</h1> */}
-            <h1>{activeStatus ? "Active Now" : ""}</h1>
+            <h1>{activeStatus ? "online" : "offline"}</h1>
           </div>
         </div>
         <AiOutlineArrowRight
@@ -434,22 +429,14 @@ const SellerInbox = ({
               >
                 {item.sender !== sellerId && (
                   <img
-                    src={
-                      userData?.avatar
-                        ? `${backend_url}/uploads/${userData.avatar}`
-                        : "/default-avatar.png"
-                    }
+                    src={`${userData?.avatar?.url}`}
                     className="w-[40px] h-[40px] rounded-full mr-3"
                     alt=""
                   />
                 )}
                 {item.images && (
                   <img
-                    src={
-                      userData?.avatar
-                        ? `${backend_url}/uploads/${userData.avatar}`
-                        : "/default-avatar.png"
-                    }
+                    src={`${userData?.avatar?.url}`}
                     className="w-[300px] h-[300px] object-cover rounded-[10px] mr-2"
                   />
                 )}

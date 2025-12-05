@@ -14,7 +14,7 @@ import { Button } from "@mui/material";
 import { MdTrackChanges } from "react-icons/md";
 import axios from "axios";
 import { RxCross1 } from "react-icons/rx";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
 import { Country, State, City } from "country-state-city";
 import { updateUserAddress,  loadUser, deleteUserAddress, updateUserPassword } from "../../redux/actions/user";
 import { server } from "../../server";
@@ -77,7 +77,7 @@ const ProfileContent = ({ active }) => {
           <div className="flex justify-center w-full ">
             <div className="relative">
               <img
-                src={`${backend_url}${user?.avatar.url}`}
+                src={`${user?.avatar?.url}`}
                 className="w-[150px] h-[150px] rounded-full object-cover border-[3px] border-[#417fa0]"
                 alt=""
               />
@@ -213,9 +213,16 @@ const UserAllOrders = () => {
     const {orders} = useSelector((state) => state.order);
     const dispatch = useDispatch();
 
+    // useEffect(() => {
+    //     dispatch(getAllOrdersOfUser(user._id));
+    // }, [dispatch, user]);
+
     useEffect(() => {
-        dispatch(getAllOrdersOfUser(user._id));
-    }, [dispatch, user]);
+  if (user && user._id) {
+    dispatch(getAllOrdersOfUser(user._id));
+  }
+}, [dispatch, user]);
+
   const columns = [
     {
       field: "id",
@@ -267,15 +274,7 @@ const UserAllOrders = () => {
     },
   ];
 
-  // const row = [];
-  //  allOrders && allOrders.forEach((item) => {
-  //      row.push({
-  //         id: item._id,
-  //         itemsQty: item.orderItems.length,
-  //         total: "US$" + item.totalPrice,
-  //         status: item.orderStatus,
-  //      });
-  //  });
+
   const row = [];
 
 orders && orders.forEach((item) => {
@@ -305,9 +304,15 @@ const AllRefundOrders = () => {
   const { orders } = useSelector((state) => state.order);
   const dispatch = useDispatch();
 
+  // useEffect(() => {
+  //   dispatch(getAllOrdersOfUser(user._id));
+  // }, []);
+
   useEffect(() => {
+  if (user && user._id) {
     dispatch(getAllOrdersOfUser(user._id));
-  }, []);
+  }
+}, [dispatch, user]);
 
   const eligibleOrders =
     orders?.filter((item) => item.status === "Processing refund") || [];
@@ -390,9 +395,15 @@ const TrackOrder = () => {
   const { orders } = useSelector((state) => state.order);
   const dispatch = useDispatch();
 
+  // useEffect(() => {
+  //   dispatch(getAllOrdersOfUser(user._id));
+  // }, []);
   useEffect(() => {
+  if (user && user._id) {
     dispatch(getAllOrdersOfUser(user._id));
-  }, []);
+  }
+}, [dispatch, user]);
+
 
   const columns = [
     { field: "id", headerName: "Order ID", minWidth: 150, flex: 0.7 },
@@ -553,7 +564,7 @@ const Address = () => {
 
   const handleSubmit = async (e) => {
         e.preventDefault();
-
+    
       if (addressType === "" || country === "" || city === "") {
         toast.error("Please fill all the fields!");
     } else {
@@ -567,8 +578,6 @@ const Address = () => {
             zipCode
           )
         );
-
-
       toast.success("Address saved successfully!");
       setOpen(false);
       setCountry("");
@@ -577,6 +586,7 @@ const Address = () => {
       setAddress2("");
       setZipCode("");
       setAddressType("");
+      window.location.reload();
     }
   };
 
@@ -736,18 +746,17 @@ const Address = () => {
         </div>
         <br />
         {
-          user && Array.isArray(user.addresses) && user.addresses.length > 0 ? (
-            user.addresses.map((item, index) => (
+          user && user?.addresses?.map((item, index) => (
               <div
                 key={index}
                 className="w-full bg-white h-[70px] rounded-[4px] flex items-center px-3 shadow justify-between pr-10"
               >
                 <div className="flex items-center">
-                  <h5 className="pl-5 font-[600]">{item.addressType || "Default"}</h5>
+                  <h5 className="pl-5 font-[600]">{item.addressType}</h5>
                 </div>
 
                 <div className="pl-8 flex items-center">
-                  <h6>{`${item.address1}, ${item.city}, ${item.country}`}</h6>
+                  <h6>{item.address1} {item.address2}</h6>
                 </div>
 
                 <div className="pl-8 flex items-center">
@@ -762,11 +771,12 @@ const Address = () => {
                   />
                 </div>
               </div>
-            ))
-          ) : (
-            <p className="text-gray-600 mt-3">No addresses found.</p>
-          )
-        }
+            )
+          ) 
+        }  
+          {user && user?.addresses?.length === 0 && (
+               <p className="text-gray-600 mt-3">No addresses found.</p>
+          )}
 
       </div>
       );

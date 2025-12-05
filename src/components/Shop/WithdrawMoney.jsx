@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllOrdersOfShop} from "../../redux/actions/order";
+import { getAllOrderOfShop} from "../../redux/actions/order";
 import styles from "../../styles/styles";
 import { RxCross1 } from "react-icons/rx";
 import axios from "axios";
@@ -13,7 +13,7 @@ const WithdrawMoney = () => {
   const [open, setOpen] = useState(false);
    const { orders } = useSelector((state) => state.order);
   const dispatch = useDispatch();
-  const { seller } = useSelector((state) => state.seller);
+  const { sellers } = useSelector((state) => state.seller);
   const [paymentMethod, setPaymentMethod] = useState(false);
   const [withdrawAmount, setWithdrawAmount] = useState(50);
   const [deliveredOrder, setDeliveredOrder] = useState(null);
@@ -25,12 +25,10 @@ const WithdrawMoney = () => {
     bankHolderName: "",
     bankAddress: "",
   });
-  
 
   useEffect(() => {
-   
-    dispatch(getAllOrdersOfShop(seller._id));
-     const orderData = orders && orders.filter((item) => item.status.toLowerCase() === "delivered");
+    dispatch(getAllOrderOfShop(sellers._id));
+    const orderData = orders && orders.filter((item) => item.status.toLowerCase() === "delivered");
     setDeliveredOrder(orderData);
 }, [dispatch]);
 
@@ -283,20 +281,20 @@ const availableBalance = totalEarningWithoutTax - serviceCharge;
                   Available Withdraw Methods:
                 </h3>
 
-                {seller && seller?.withdrawMethod ? (
+                {sellers && sellers?.withdrawMethod ? (
                   <div>
-                    <div className="800px:flex w-full justify-between items-center">
-                      <div className="800px:w-[50%]">
+                    <div className="800:flex w-full justify-between items-center">
+                      <div className="800:w-[50%]">
                         <h5>
                           Account Number:{" "}
                           {"*".repeat(
-                            seller?.withdrawMethod.bankAccountNumber.length - 3
+                            sellers?.withdrawMethod.bankAccountNumber.length - 3
                           ) +
-                            seller?.withdrawMethod.bankAccountNumber.slice(-3)}
+                            sellers?.withdrawMethod.bankAccountNumber.slice(-3)}
                         </h5>
-                        <h5>Bank Name: {seller?.withdrawMethod.bankName}</h5>
+                        <h5>Bank Name: {sellers?.withdrawMethod.bankName}</h5>
                       </div>
-                      <div className="800px:w-[50%]">
+                      <div className="800:w-[50%]">
                         <AiOutlineDelete
                           size={25}
                           className="cursor-pointer"
@@ -307,13 +305,13 @@ const availableBalance = totalEarningWithoutTax - serviceCharge;
                     <br />
                     <h4>Available Balance: {availableBalance}$</h4>
                     <br />
-                    <div className="800px:flex w-full items-center">
+                    <div className="800:flex w-full items-center">
                       <input
                         type="number"
                         placeholder="Amount..."
                         value={withdrawAmount}
                         onChange={(e) => setWithdrawAmount(e.target.value)}
-                        className="800px:w-[100px] w-[full] border 800px:mr-3 p-1 rounded"
+                        className="800:w-[100px] w-[full] border 800:mr-3 p-1 rounded"
                       />
                       <div
                         className={`${styles.button} !h-[42px] text-white`}

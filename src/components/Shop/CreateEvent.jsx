@@ -9,7 +9,7 @@ import {createEvent} from "../../redux/actions/event";
 
 
 const CreateEvent = () => {
-  const { seller } = useSelector((state) => state.seller);
+  const { sellers } = useSelector((state) => state.seller);
   const { isLoading, success, error } = useSelector((state) => state.event);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -55,11 +55,21 @@ const CreateEvent = () => {
     }
   }, [dispatch, error, success]);
 
-  const handleImageChange = (e) => {
-    e.preventDefault();
+   const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
 
-    let files = Array.from(e.target.files);
-    setImages((prevImages) => [...prevImages, ...files]);
+    setImages([]);
+
+    files.forEach((file) => {
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        if (reader.readyState === 2) {
+          setImages((old) => [...old, reader.result]);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
   };
 
   const handleSubmit = (e) => {
@@ -77,7 +87,7 @@ const CreateEvent = () => {
     newForm.append("originalPrice", OriginalPrice);
     newForm.append("discountPrice", discountPrice);
     newForm.append("stock", stock);
-    newForm.append("shopId", seller._id);
+    newForm.append("shopId", sellers._id);
     newForm.append("start_Date", startDate.toISOString());
     newForm.append("Finish_Date", endDate.toISOString());
     dispatch(createEvent(newForm));
@@ -260,17 +270,9 @@ const CreateEvent = () => {
             <label htmlFor="upload">
               <AiOutlinePlusCircle size={30} className="mt-3" color="#555" />
             </label>
-            {/* {images &&
-              images.map((i) => (
-                <img
-                  src={URL.createObjectURL(i)}
-                  key={i}
-                  alt=""
-                  className="h-[120px] w-[120px] object-cover m-2 "
-                />
-              ))} */}
+
             {images.map((file, index) => (
-              <img key={file.name + index} src={URL.createObjectURL(file)} />
+              <img key={file.name + index} src={file} />
             ))}
           </div>
         </div>

@@ -1,15 +1,6 @@
 
 import { createReducer } from "@reduxjs/toolkit";
 
-// const initialState = {
-//   // isLoading: true,
-//    isLoading: false,
-//   allProducts: [],
-//   products: [],
-//   error: null,
-//   success: false,
-//   message: null,
-// };
 const initialState = {
   isLoading: false,
   error: null,
@@ -32,13 +23,28 @@ export const productReducer = createReducer(initialState, (builder) => {
     })
 
 
+    // .addCase("productCreateRequest", (state) => {
+    //   state.isLoading = true;
+    // })
+    // .addCase("productCreateSuccess", (state, action) => {
+    //   state.isLoading = false;
+    //   state.products = action.payload;
+    //   state.success = true;
+    // })
+    // .addCase("productCreateFail", (state, action) => {
+    //   state.isLoading = false;
+    //   state.error = action.payload;
+    //   state.success = false;
+    // })
+    
+
     .addCase("productCreateRequest", (state) => {
       state.isLoading = true;
     })
     .addCase("productCreateSuccess", (state, action) => {
       state.isLoading = false;
-      state.products = action.payload;
       state.success = true;
+      state.product = action.payload;
     })
     .addCase("productCreateFail", (state, action) => {
       state.isLoading = false;
@@ -58,8 +64,6 @@ export const productReducer = createReducer(initialState, (builder) => {
           state.isLoading = false; 
           state.error = action.payload;
      })
-
-
        // delete all products of shop
     .addCase("deleteProductRequest", (state) => {
           state.isLoading = true;

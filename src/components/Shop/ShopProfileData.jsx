@@ -8,7 +8,7 @@ import ProductCard from "../Route/ProductCard/ProductCard";
 import Ratings from "../Products/Ratings";
 import { getAlleventsShop } from "../../redux/actions/event";
 import { backend_url } from "../../server";
-// import { events } from "../../../../../backend/model/product";
+
 
 
 
@@ -30,9 +30,7 @@ const ShopProfileData = ({ isOwner }) => {
   const allReviews =
     products && products.map((product) => product.reviews).flat();
 
-console.log(products, "products");
 
-console.log(allevents, "shopEvents");
 
   return (
     <div className="w-full">
@@ -118,7 +116,7 @@ console.log(allevents, "shopEvents");
             allReviews.map((item, index) => (
               <div className="w-full flex my-4">
                 <img
-                  src={`${backend_url}/${item.user.avatar}`}
+                  src={`${item.user.avatar.url}`}
                   className="w-[50px] h-[50px] rounded-full"
                    />
                 <div className="pl-2">

@@ -4,12 +4,8 @@ import { createReducer } from "@reduxjs/toolkit";
 
 const initialState = {
   isAuthenticated: false,
-   user: null,
-    error: null,
-    loading: false,
-   addressloading: false, 
-    message: null,
-  updateAddressSuccessMessage: null,
+  user: null,
+  loading: true,
 };
 //builder callback notation
 export const userReducer = createReducer(initialState, (builder) => {
@@ -26,6 +22,7 @@ export const userReducer = createReducer(initialState, (builder) => {
       state.loading = false;
       state.error = action.payload;
       state.isAuthenticated = false;
+      state.user = null;
     })
  
     // update user information
@@ -34,7 +31,7 @@ export const userReducer = createReducer(initialState, (builder) => {
     })
      .addCase("updateUserInfoSuccess", (state, action) => {
         state.loading = false;
-        state.user= action.payload;
+        state.users = action.payload;
     })
      .addCase("updateUserInfoFailed", (state, action) => {
         state.loading = false;
@@ -48,7 +45,7 @@ export const userReducer = createReducer(initialState, (builder) => {
     .addCase("updateUserAddressSuccess", (state, action) => {
       state.addressloading = false;
       state.updateAddressSuccessMessage = action.payload;
-      state.user = action.payload.user;
+      state.users = action.payload.user;
     })
     .addCase("updateUserAddressFailed", (state, action) => {
       state.addressloading = false;
@@ -60,7 +57,7 @@ export const userReducer = createReducer(initialState, (builder) => {
       })
       .addCase("deleteUserAddressSuccess", (state, action) => {
           state.addressloading = false;
-          state.user = action.payload;
+          state.users = action.payload;
       })
        .addCase("deleteUserFailed", (state, action) => {
           state.addressloading = false;
@@ -80,10 +77,25 @@ export const userReducer = createReducer(initialState, (builder) => {
     state.error = action.payload; 
   })
 
+    // ADMIN — get all users
+    .addCase("getAllUsersRequest", (state) => {
+      state.usersLoading = true;
+    })
+    .addCase("getAllUsersSuccess", (state, action) => {
+      state.usersLoading = false;
+      state.users = action.payload;
+    })
+    .addCase("getAllUsersFailed", (state, action) => {
+      state.usersLoading = false;
+      state.error = action.payload;
+    })
+
    .addCase("clearErrors", (state) => {
       state.error = null;
     })
      .addCase("clearMessages", (state) => {
       state.updateAddressSuccessMessage = null;
-    });
+    })
   });
+
+  

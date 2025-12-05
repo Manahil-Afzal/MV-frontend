@@ -15,7 +15,7 @@ const ShopInfo = ({ isOwner }) => {
   //  const { data } = useSelector((state) => state.data);
   // const data = dataData;
   const [data, setData] = useState(null);
-  const { shopProducts } = useSelector((state) => state.products);
+  const { products } = useSelector((state) => state.products);
   const [isLoading, setIsLoading] = useState(false);
   const { id } = useParams();  
   const dispatch = useDispatch();
@@ -52,10 +52,10 @@ const logoutHandler = async () => {
 };
 
  const totalReviewsLength =
-    shopProducts &&
-    shopProducts.reduce((acc, product) => acc + product.reviews.length, 0);
+    products &&
+    products.reduce((acc, product) => acc + product.reviews.length, 0);
 
-  const totalRatings = shopProducts && shopProducts.reduce((acc,product) => acc + product.reviews.reduce((sum,review) => sum + review.rating, 0),0);
+  const totalRatings = products && products.reduce((acc,product) => acc + product.reviews.reduce((sum,review) => sum + review.rating, 0),0);
 
   const averageRating = totalRatings / totalReviewsLength || 0;
 
@@ -70,7 +70,7 @@ const logoutHandler = async () => {
               <img
                 src={
                   data?.avatar
-                    ? `${backend_url}/uploads/${data?.avatar}`
+                    ? `${data?.avatar?.url}`
                     : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtGhh6EJ3GsKjem9tPvDkiLHQrR1z-HFFUHA&s"
                 }
                 alt=""
@@ -94,7 +94,7 @@ const logoutHandler = async () => {
           </div>
           <div className="p-3">
             <h5 className="font-[600] text-left mb-1">Total Number</h5>
-            <h4 className="text-[#000000a6] text-left mb-1">{shopProducts && shopProducts.length}</h4>
+            <h4 className="text-[#000000a6] text-left mb-1">{products && products.length}</h4>
           </div>
           <div className="p-3">
             <h5 className="font-[600] text-left mb-1">Shop Ratings</h5>

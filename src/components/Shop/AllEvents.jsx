@@ -8,17 +8,18 @@ import { DataGrid, renderActionsCell } from "@mui/x-data-grid";
 import toast from "react-hot-toast";
 import { getAlleventsShop, deleteEvent } from "../../redux/actions/event";
 import { backend_url } from "../../server";
+import AllOrders from "./AllOrders";
 
 const AllEvents = () => {
-const { shopEvents, isLoading } = useSelector((state) => state.event);
-  const { seller } = useSelector((state) => state.seller);
+const { allevents, isLoading } = useSelector((state) => state.event);
+  const { sellers } = useSelector((state) => state.seller);
   const dispatch = useDispatch();
    const {id} = useState();
    
 useEffect(() => {
    
-  if (seller && seller._id) {
-    dispatch(getAlleventsShop(seller._id));
+  if (sellers && sellers._id) {
+    dispatch(getAlleventsShop(sellers._id));
   }
 }, [dispatch]);
 
@@ -26,6 +27,7 @@ useEffect(() => {
 const handleDelete = async (id) => {
      dispatch(deleteEvent(id)); 
     toast.success("Event deleted successfully!");
+    window.location.reload();
 };
 
 
@@ -61,8 +63,7 @@ const handleDelete = async (id) => {
     field: "Preview",
     renderCell: (params) => {
       return (
-        <Link to={`/event/${params.id}`}>
-         {/* <Link to={`/product/${params.row.slug}`}> */}
+        <Link to={`/event/${params.id}?isEvent=true`}>
           <Button>
             <AiOutlineEye size={20} />
           </Button>
@@ -83,12 +84,12 @@ const handleDelete = async (id) => {
 ];
 
   const row = [];
-  shopEvents  &&
-    shopEvents .forEach((item) => {
+    allevents  &&
+    allevents .forEach((item) => {
       row.push({
         id: item._id,
         name: item.name,
-        price: "US" + item.discountPrice,
+        price: "US" + "$" + item.discountPrice,
         Stock: item.stock,
        sold: item.sold_out, 
 

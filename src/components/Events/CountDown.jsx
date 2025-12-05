@@ -7,6 +7,7 @@ const CountDown = () => {
     const timer = setTimeout(() => {
       setTimeLeft(calculateTimeLeft());
     }, 1000);
+    
     return () => clearTimeout(timer);
   });
 
@@ -21,7 +22,7 @@ const CountDown = () => {
         minutes: Math.floor((difference / 1000 / 60) % 60),
         seconds: Math.floor((difference / 1000) % 60),
       };
-    }
+    } 
     return timeLeft;
   }
 

@@ -7,7 +7,7 @@ import { createProduct } from "../../redux/actions/product";
 import toast from "react-hot-toast";
 
 const CreateProduct = () => {
-  const { seller } = useSelector((state) => state.seller);
+  const { sellers } = useSelector((state) => state.seller);
   const { isLoading, success, error } = useSelector((state) => state.products);
   const navigate = useNavigate("");
   const dispatch = useDispatch("");
@@ -32,30 +32,92 @@ const CreateProduct = () => {
     }
   }, [dispatch, error, success]);
 
-  const handleImageChange = (e) => {
-    e.preventDefault();
-    let files = Array.from(e.target.files);
-    setImages((prevImages) => [...prevImages, ...files]);
+   const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    setImages([]);
+    files.forEach((file) => {
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        if (reader.readyState === 2) {
+          setImages((old) => [...old, reader.result]);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
   };
 
-  const handleSubmit = (e) => {
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+
+  // if (!sellers || !sellers._id) {
+  //   toast.error("Shop not loaded. Please login again.");
+  //   return;
+  // }
+
+
+  //   const newForm = new FormData();
+
+  //   images.forEach((image) => {
+  //     newForm.append("images", image);
+  //   });
+  //   newForm.append("name", name);
+  //   newForm.append("description", description);
+  //   newForm.append("category", category);
+  //   newForm.append("tags", tags);
+  //   newForm.append("OriginalPrice", OriginalPrice);
+  //   newForm.append("discountPrice", discountPrice);
+  //   newForm.append("stock", stock);
+  //   newForm.append("shopId", sellers._id);
+  //   dispatch(createProduct(
+  //      {  name,
+  //       description,
+  //       category,
+  //       tags,
+  //       OriginalPrice,
+  //       discountPrice,
+  //       stock,
+  //       shopId: sellers._id,
+  //       images,}
+  //   ));
+  // };
+
+const handleSubmit = (e) => {
     e.preventDefault();
+
     const newForm = new FormData();
+
     images.forEach((image) => {
       newForm.append("images", image);
     });
+
     newForm.append("name", name);
     newForm.append("description", description);
     newForm.append("category", category);
     newForm.append("tags", tags);
-    newForm.append("originalPrice", OriginalPrice);
+    newForm.append("OriginalPrice", OriginalPrice);
     newForm.append("discountPrice", discountPrice);
     newForm.append("stock", stock);
-    newForm.append("shopId", seller._id);
-    dispatch(createProduct(newForm));
+    newForm.append("shopId", sellers._id);
+
+    dispatch(
+      createProduct({
+        name,
+        description,
+        category,
+        tags,
+        OriginalPrice,
+        discountPrice,
+        stock,
+        shopId: sellers._id,
+        images,
+      })
+    );
   };
 
 
+
+console.log(sellers);
   return (
     <div className="w-[70%] bg-white shadow h-[80vh] rounded-[4px] p-3 overflow-y-scroll ">
       <h5 className="text-[30px] font-Poppins text-center">Create Product</h5>
@@ -216,7 +278,7 @@ const CreateProduct = () => {
                 />
               ))} */}
              {images.map((file, index) => (
-              <img key={file.name + index} src={URL.createObjectURL(file)} />
+              <img key={file.name + index} src={file} />
             ))}
           </div>
         </div>

@@ -23,15 +23,15 @@ const AllCoupons = () => {
   const [minAmount, setMinAmount] = useState("");
   const [maxAmount, setMaxAmount] = useState("");
   const [selectedProducts, setSelectedProducts] = useState("");
-  const { seller } = useSelector((state) => state.seller);
-  const {allProducts} = useSelector((state) => (state.products));
+  const { sellers } = useSelector((state) => state.seller);
+  const {products} = useSelector((state) => (state.products));
   const dispatch = useDispatch();
 
   useEffect(() => {
   const fetchCoupons = async () => {
     setIsLoading(true);
     try {
-      const { data } = await axios.get(`${server}/coupon/get-coupon/${seller._id}`, {
+      const { data } = await axios.get(`${server}/coupon/get-coupon/${sellers._id}`, {
         withCredentials: true,
       });
       setCoupons(data.couponCodes);
@@ -41,10 +41,10 @@ const AllCoupons = () => {
       setIsLoading(false);
     }
   };
+  if (sellers && sellers._id) fetchCoupons();
+}, [sellers]);
 
-  if (seller && seller._id) fetchCoupons();
-}, [seller]);
-
+console.log(products);
 
   const handleSubmit = async (e) => {
   e.preventDefault();
@@ -57,11 +57,10 @@ const AllCoupons = () => {
         minAmount: Number(minAmount),
         maxAmount: Number(maxAmount),
         selectedProducts: selectedProducts || "", 
-        shopId: seller._id,
+        shopId: sellers._id,
       },
       { withCredentials: true }
     );
-
     setCoupons([...coupons, data.couponCode]); 
     toast.success("Coupon code created successfully!");
     setOpen(false);
@@ -237,8 +236,8 @@ const handleDelete = async (id) => {
                       <option value="Choose your selected products">
                         Choose a selected product
                       </option>
-                      {allProducts &&
-                        allProducts.map((i) => (
+                      {products &&
+                        products.map((i) => (
                           <option value={i.name} key={i.name}>
                             {i.name}
                           </option>

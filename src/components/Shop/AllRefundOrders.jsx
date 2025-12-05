@@ -4,21 +4,19 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Loader from "../Layout/Loader";
-import { getAllOrdersOfShop } from "../../redux/actions/order";
+import { getAllOrderOfShop } from "../../redux/actions/order";
 import { AiOutlineArrowRight } from "react-icons/ai";
 
 
 const AllRefundOrders = () => {
   const { orders, isLoading } = useSelector((state) => state.order);
-  const { seller } = useSelector((state) => state.seller);
+  const { sellers } = useSelector((state) => state.seller);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (seller && seller._id) {
-      dispatch(getAllOrdersOfShop(seller._id));
-    }
-  }, [dispatch, seller]);
+      dispatch(getAllOrderOfShop(sellers._id));
+  }, [dispatch]);
 
   const refundOrders = orders && orders.filter((item) => item.status === "Processing refund" || item.status === "Refund Success");
 
@@ -73,8 +71,8 @@ const AllRefundOrders = () => {
   ];
 
   const row = [];
-  orders &&
-    orders.forEach((item) => {
+  refundOrders &&
+    refundOrders.forEach((item) => {
       row.push({
         id: item._id,
         itemsQty: item.cart.length,

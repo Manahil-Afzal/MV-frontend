@@ -92,7 +92,7 @@ const UserOrderDetails = () => {
       });
   };
 
-console.log(orders);
+
 
 
 return (
@@ -121,7 +121,7 @@ return (
           <div key={item._id || index} className="w-full flex flex-col items-start mb-5">
             <div className="w-full flex items-start">
               <img
-                src={`${backend_url}/uploads/${item.images[0]}`}
+                src={`${item.images[0]?.url}`}
                 alt=""
                 className="w-[80px] h-[80px]"
               />
@@ -142,18 +142,7 @@ return (
             </div>
 
             {/* ✅ Reviews for this product */}
-            {item.reviews?.length > 0 && (
-              <div className="reviews-section mt-2 ml-3 w-full">
-                <h4 className="font-semibold">Reviews:</h4>
-                {item.reviews.map((rev, i) => (
-                  <div key={i} className="border p-2 mb-2 rounded">
-                    <p><strong>{rev.user?.name || "User"}</strong></p>
-                    <p>Rating: {rev.rating} / 5</p>
-                    <p>{rev.comment}</p>
-                  </div>
-                ))}
-              </div>
-            )}
+          
           </div>
         ))}
 
@@ -172,7 +161,7 @@ return (
               </h2>
               <br />
               <div className="w-full flex">
-                <img src={`${backend_url}/uploads/${selectedItem?.images[0]}`}
+                <img src={`${selectedItem?.images[0]?.url}`}
                   alt="" className="w-[80px] h-[80px]" />
                 <div>
                   <div className="pl-3 text-[20px]">

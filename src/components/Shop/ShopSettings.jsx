@@ -8,15 +8,15 @@ import { loadSeller } from "../../redux/actions/user";
 import { toast } from "react-toastify";
 
 const ShopSettings = () => {
-  const { seller } = useSelector((state) => state.seller);
+  const { sellers } = useSelector((state) => state.seller);
   const [avatar, setAvatar] = useState();
-  const [name, setName] = useState(seller && seller.name);
+  const [name, setName] = useState(sellers && sellers.name);
   const [description, setDescription] = useState(
-    seller && seller.description ? seller.description : ""
+    sellers && sellers.description ? sellers.description : ""
   );
-  const [address, setAddress] = useState(seller && seller.address);
-  const [phoneNumber, setPhoneNumber] = useState(seller && seller.phoneNumber);
-  const [zipCode, setZipcode] = useState(seller && seller.zipCode);
+  const [address, setAddress] = useState(sellers && sellers.address);
+  const [phoneNumber, setPhoneNumber] = useState(sellers && sellers.phoneNumber);
+  const [zipCode, setZipcode] = useState(sellers && sellers.zipCode);
 
   const dispatch = useDispatch();
 
@@ -78,7 +78,7 @@ const ShopSettings = () => {
         <div className="relative">
   <img
     // src={avatar ? avatar : `${seller.avatar?.url}`}
-    src={`${backend_url}/uploads/${seller.avatar}`}
+    src={`${sellers?.avatar?.url}`}
     alt=""
     className="w-[200px] h-[200px] rounded-full cursor-pointer border-4 border-[#154753]" // <-- added border
   />
@@ -109,7 +109,7 @@ const ShopSettings = () => {
             </div>
             <input
               type="name"
-              placeholder={`${seller.name}`}
+              placeholder={`${sellers.name}`}
               value={name}
               onChange={(e) => setName(e.target.value)}
               className={`${styles.input} !w-[95%] mb-4 800px:mb-0`}
@@ -123,8 +123,8 @@ const ShopSettings = () => {
             <input
               type="name"
               placeholder={`${
-                seller?.description
-                  ? seller.description
+                sellers?.description
+                  ? sellers.description
                   : "Enter your shop description"
               }`}
               value={description}
@@ -138,7 +138,7 @@ const ShopSettings = () => {
             </div>
             <input
               type="name"
-              placeholder={seller?.address}
+              placeholder={sellers?.address}
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               className={`${styles.input} !w-[95%] mb-4 800px:mb-0`}
@@ -152,7 +152,7 @@ const ShopSettings = () => {
             </div>
             <input
               type="number"
-              placeholder={seller?.phoneNumber}
+              placeholder={sellers?.phoneNumber}
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
               className={`${styles.input} !w-[95%] mb-4 800px:mb-0`}
@@ -166,7 +166,7 @@ const ShopSettings = () => {
             </div>
             <input
               type="number"
-              placeholder={seller?.zipCode}
+              placeholder={sellers?.zipCode}
               value={zipCode}
               onChange={(e) => setZipcode(e.target.value)}
               className={`${styles.input} !w-[95%] mb-4 800px:mb-0`}

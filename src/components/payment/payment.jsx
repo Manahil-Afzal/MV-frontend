@@ -23,7 +23,6 @@ const PaymentPage = () => {
   const [stripeApiKey, setStripeApiKey] = useState("");
   async function getStripeApiKey() {
     const { data } = await axios.get(`${server}/payment/stripeapikey`);
-    console.log(data);
     setStripeApiKey(data.stripeApikey);
     console.log(data.stripeApikey);
   }

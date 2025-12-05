@@ -53,7 +53,9 @@ import ShopAllRefunds from "./pages/Shop/ShopAllRefunds";
 import ShopSettingsPage from "./pages/Shop/ShopSettingsPage"
 import ShopWithDrawMoneyPage from "./pages/Shop/ShopWithDrawMoneyPage.jsx";
 import ShopInboxPage from "./pages/Shop/ShopInboxPage.jsx";
-
+import { AdminDashboardPage, AdminDashboardUsers, AdminDashboardSellers, AdminDashboardOrders, AdminDashboardProducts, AdminDashboardEvents, AdminDashboardWithdraw } from "./routes/AdminRoutes";
+import ProtectedAdminRoute from "./routes/ProtectedAdminRoute";
+import ShopActivationPage from "./components/Shop/ShopActivationPage.jsx";
 
 
 const App = () => {
@@ -65,15 +67,8 @@ const App = () => {
   useEffect(() => {
     Store.dispatch(loadUser());
     Store.dispatch(loadSeller());
-    Store.dispatch(getAllProducts());
-    Store.dispatch(getAllEvents());
   }, []);
 
-
-
-  if (loading || isLoading) {
-    return <div className="loading">Loading...</div>;
-  }
 
   return (
     <>
@@ -94,9 +89,9 @@ const App = () => {
           path="/activation/:activation_token"
           element={<ActivationPage />}
         />
-        <Route
+         <Route
           path="/seller/activation/:activation_token"
-          element={<SellerActivationPage />}
+          element={<ShopActivationPage />}
         />
         <Route path="/products" element={<ProductsPage />} />
         <Route path="/product/:id" element={<ProductDetailsPage />} />
@@ -241,7 +236,7 @@ const App = () => {
             </SellerProtectedRoute>
           }
         />
-      <Route
+        <Route
           path="/dashboard-withdraw-money"
           element={
             <SellerProtectedRoute isAuthenticated={isAuthenticated}>
@@ -249,7 +244,7 @@ const App = () => {
             </SellerProtectedRoute>
           }
         />
-          <Route
+        <Route
           path="/dashboard-messages"
           element={
             <SellerProtectedRoute isAuthenticated={isAuthenticated}>
@@ -257,11 +252,52 @@ const App = () => {
             </SellerProtectedRoute>
           }
         />
-       {/* <Route path="/admin/dashboard" element={<AdminDashboardPage />} /> */}
+        <Route path="/admin/dashboard" element={
+          <ProtectedAdminRoute>
+            <AdminDashboardPage />
+          </ProtectedAdminRoute>
+        } />
 
- 
+
+        <Route path="/admin-users" element={
+          <ProtectedAdminRoute>
+            <AdminDashboardUsers />
+          </ProtectedAdminRoute>
+        } />
+
+         <Route path="/admin-sellers" element={
+          <ProtectedAdminRoute>
+            <AdminDashboardSellers />
+          </ProtectedAdminRoute>
+        } />
+
+          <Route path="/admin-orders" element={
+          <ProtectedAdminRoute>
+            <AdminDashboardOrders />
+          </ProtectedAdminRoute>
+        } />
+
+         <Route path="/admin-products" element={
+          <ProtectedAdminRoute>
+            <AdminDashboardProducts />
+          </ProtectedAdminRoute>
+        } />
+
+         <Route path="/admin-events" element={
+          <ProtectedAdminRoute>
+            <AdminDashboardEvents />
+          </ProtectedAdminRoute>
+        } />
+
+
+          <Route path="/admin-withdraw-request" element={
+          <ProtectedAdminRoute>
+            <AdminDashboardWithdraw />
+          </ProtectedAdminRoute>
+        } />
+
+
       </Routes>
-
 
       <ToastContainer
         position="bottom-center"

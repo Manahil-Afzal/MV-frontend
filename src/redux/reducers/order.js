@@ -2,13 +2,9 @@
 import { createReducer } from "@reduxjs/toolkit";
 
 const initialState = {
-  // isLoading: true,
    isLoading: false,
   orders: [],
-  product: null,
   error: null,
-  success: false, 
-  message: null,
 };
 
 export const orderReducer = createReducer(initialState, (builder) => {
@@ -26,19 +22,36 @@ export const orderReducer = createReducer(initialState, (builder) => {
     })
 
 // get all orders of shop
- .addCase("getAllOrdersShopRequest", (state) => {
+.addCase("getAllOrderShopRequest", (state) => {
       state.isLoading = true;
     })
-    .addCase("getAllOrdersShopSuccess", (state, action) => {
+    .addCase("getAllOrderShopSuccess", (state, action) => {
       state.isLoading = false;
       state.orders = action.payload;
     })
-    .addCase("getAllOrdersShopFail", (state, action) => {
+    .addCase("getAllOrderShopFailed", (state, action) => {
       state.isLoading = false;
+      state.error = action.payload;
+})
+
+    // get all orders of shop
+ .addCase("adminAllOrdersRequest", (state) => {
+      state.adminOrderLoading  = true;
+    })
+    .addCase("adminAllOrdersSuccess", (state, action) => {
+      state.adminOrderLoading  = false;
+      state.adminOrders  = action.payload;
+    })
+    .addCase("adminAllOrdersFailed", (state, action) => {
+      state.adminOrderLoading  = false;
       state.error = action.payload;
     })
 
     .addCase("clearErrors", (state) => {
       state.error = null;
-    });
+    })
+
 });
+
+
+

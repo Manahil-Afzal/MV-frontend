@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BsFillBagFill } from "react-icons/bs";
-import { getAllOrdersOfShop } from "../../redux/actions/order";
+import { getAllOrderOfShop } from "../../redux/actions/order";
 import { useParams, Link } from "react-router-dom";
 import { backend_url } from "../../server";
 import styles from "../../styles/styles";
@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom";
 
 const OrderDetails = () => {
   const { orders, isLoading } = useSelector((state) => state.order);
-  const { seller } = useSelector((state) => state.seller);
+  const { sellers } = useSelector((state) => state.seller);
   const dispatch = useDispatch();
   const [status, setStatus] = React.useState("");
   const navigate = useNavigate();
@@ -25,12 +25,10 @@ const OrderDetails = () => {
  
 const data =  orders &&  orders.find((item) => item._id === id);
 useEffect(() => {
-  if (seller?._id) {
-    dispatch(getAllOrdersOfShop(seller._id));
-  }
-}, [dispatch, seller?._id]);
+    dispatch(getAllOrderOfShop(sellers._id));
+}, [dispatch]);
 
-console.log(data);
+
 
   const orderUpdateHandler = async (e) => {
     await axios
@@ -103,7 +101,7 @@ console.log(data);
         data.cart.map((item, index) => (
           <div className="w-full flex items-start mb-5">
             <img
-              src={`${backend_url}/uploads/${item.images[0]}`}
+              src={`${item?.images[0]?.url}`}
               alt=""
               className="w-[80px] h-[80px] "
             />

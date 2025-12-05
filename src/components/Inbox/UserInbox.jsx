@@ -45,7 +45,7 @@ const UserInbox = () => {
       setMessages((prev) => [...prev, arrivalMessage]);
   }, [arrivalMessage, currentChat]);
 
-  useEffect(() => {
+  useEffect(() => {    
     const getConversation = async () => {
       try {
         const response = await axios.get(
@@ -73,12 +73,26 @@ const UserInbox = () => {
     }
   }, [user]);
 
-  const onlineCheck = (chat) => {
-    const chatMembers = chat.members.find((member) => member !== user?._id);
-    const online = onlineUsers.find((user) => user.userId === chatMembers);
-
-    return online ? true : false;
-  };
+ const onlineCheck = (chat) => {
+     if (!chat?.members) return false;
+     if (!onlineUsers || !Array.isArray(onlineUsers)) return false;
+ 
+     const chatMemberId = chat.members.find((id) => id !== user._id);
+ 
+     const isOnline = onlineUsers.some((u) => u.userId === chatMemberId);
+ 
+     return isOnline;
+   };
+ 
+   useEffect(() => {
+     if (currentChat && Array.isArray(onlineUsers)) {
+       const otherUserId = currentChat.members.find((id) => id !== user._id);
+ 
+       const isOnline = onlineUsers.some((u) => u.userId === otherUserId);
+ 
+       setActiveStatus(isOnline);
+     }
+   }, [currentChat, onlineUsers]);
 
   // get messages
   useEffect(() => {
@@ -283,8 +297,6 @@ const MessageList = ({
       try {
         const res = await axios.get(`${server}/shop/get-shop-info/${userId}`);
         setUser(res.data.shop);
-        console.log("SHOP USER DATA:", res.data.shop); 
-        console.log("AVATAR:", res.data.shop?.avatar);
       } catch (error) {
         console.log(error);
       }
@@ -292,7 +304,7 @@ const MessageList = ({
     getUser();
   }, [me, data]);
 
-  console.log(user?.avatar?.url);
+ 
 
   return (
     <div
@@ -308,17 +320,12 @@ const MessageList = ({
     >
       <div className="relative">
         <img
-        
-          src={
-            user?.avatar
-              ? `${backend_url}/uploads/${user.avatar}`
-              : "/default-avatar.png"
-          }
+           src={ `${userData?.avatar?.url}`}
           alt=""
           className="w-[50px] h-[50px] rounded-full"
         />
         {online ? (
-          <div className="w-[12px] h-[12px] bg-[#F2A533] rounded-full absolute top-[2px] right-[2px]" />
+          <div className="w-[12px] h-[12px] bg-green-400 rounded-full absolute top-[2px] right-[2px]" />
         ) : (
           <div className="w-[12px] h-[12px] bg-[#F2A533] rounded-full absolute top-[2px] right-[2px]" />
         )}
@@ -326,7 +333,7 @@ const MessageList = ({
       <div className="pl-3">
         <h1 className="text-[18px]">{user?.name}</h1>
         <p className="text-[16px] text-[#000c]">
-          {!loading && data?.lastMessageId !== userData?._id
+          {data?.lastMessageId !== userData?._id
             ? "You:"
             : userData?.name.split(" ")[0] + ": "}{" "}
           {data?.lastMessage}
@@ -350,21 +357,16 @@ const SellerInbox = ({
 }) => {
   return (
     <div className="w-[full] min-h-full flex flex-col justify-between p-5">
-      {/* message header */}
       <div className="w-full flex p-3 items-center justify-between bg-slate-200">
         <div className="flex">
           <img
-            src={
-              userData?.avatar
-                ? `${backend_url}/uploads/${userData.avatar}`
-                : "/default-avatar.png"
-            }
+            src={ `${userData?.avatar?.url}`}
             alt=""
             className="w-[60px] h-[60px] rounded-full"
           />
           <div className="pl-3">
             <h1 className="text-[18px] font-[600]">{userData?.name}</h1>
-            <h1>{activeStatus ? "Active Now" : ""}</h1>
+            <h1>{activeStatus ? "online"  : "offline"}</h1>
           </div>
         </div>
         <AiOutlineArrowRight
@@ -385,22 +387,14 @@ const SellerInbox = ({
             >
               {item.sender !== sellerId && (
                 <img
-                  src={
-                    userData?.avatar
-                      ? `${backend_url}/uploads/${userData.avatar}`
-                      : "/default-avatar.png"
-                  }
+                  src={ `${userData?.avatar?.url}`}
                   className="w-[40px] h-[40px] rounded-full mr-3"
                   alt=""
                 />
               )}
               {item.images && (
                 <img
-                  src={
-                    userData?.avatar
-                      ? `${backend_url}/uploads/${userData.avatar}`
-                      : "/default-avatar.png"
-                  }
+                  src={ `${userData?.avatar?.url}`}
                   className="w-[300px] h-[300px] object-cover rounded-[10px] ml-2 mb-2"
                 />
               )}

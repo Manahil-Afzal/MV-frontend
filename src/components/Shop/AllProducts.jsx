@@ -12,11 +12,11 @@ import { backend_url } from "../../server";
 
 const AllProducts = () => {
 const { products, isLoading } = useSelector((state) => state.products);
-  const { seller } = useSelector((state) => state.seller);
+  const { sellers } = useSelector((state) => state.seller);
   const dispatch = useDispatch();
 
 useEffect(() => {
-    dispatch(getAllProductsShop(seller._id));
+    dispatch(getAllProductsShop(sellers._id));
   }, [dispatch]);
 
 
@@ -24,6 +24,8 @@ useEffect(() => {
      dispatch(deleteProduct(id));
     toast.success("Product deleted successfully!");
 };
+
+
 
   const columns = [
     { field: "id", headerName: "Product Id", minWidth: 150, flex: 0.7 },
@@ -64,7 +66,6 @@ useEffect(() => {
         return (
           <>
             <Link to={`/product/${params.id}`}>
-            {/* <Link to={`/product/${params.row.slug}`}> */}
               <Button>
                 <AiOutlineEye size={20} />
               </Button>
@@ -83,7 +84,6 @@ useEffect(() => {
       renderCell: (params) => {
         return (
           <>
-          {/* <Button onClick={() => handleDelete(params.row.slug)}> */}
             <Button onClick={() => handleDelete(params.id)}>
               <AiOutlineDelete size={20} />
             </Button>
@@ -99,7 +99,7 @@ const row = [];
     row.push({
       id: item._id,
       name: item.name,
-      price: "US" + item.discountPrice,
+      price: "US" + "$" + item.discountPrice,
       Stock: item.stock,
       sold: item.sold_out,
     });

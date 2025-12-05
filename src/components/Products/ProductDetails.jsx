@@ -32,7 +32,7 @@ const ProductDetails = ({ data }) => {
   const dispatch = useDispatch();
   const searchParams = new URLSearchParams(location.search); 
   const isEvent = searchParams.get("isEvent");
-
+  const {sellers}  = useSelector((state) => state.seller);
 
 
   useEffect(() => {
@@ -143,7 +143,7 @@ const ProductDetails = ({ data }) => {
             <div className="block w-full 800:flex">
               <div className="w-[50%] 800:w-[50%]">
                 <img
-                  src={`${backend_url}/uploads/${data?.images?.[select] || data?.images?.[0]}`}
+                  src={`${data?.images[select].url}`}
                   alt=""
                   className="w-[80%]"
                 />
@@ -154,7 +154,7 @@ const ProductDetails = ({ data }) => {
                       } cursor-pointer `}
                   >
                     <img
-                      src={`${backend_url}/uploads/${data?.images && data?.images[0]}`}
+                      src={`${data?.images[select].url}`}
                       alt=""
                       className="h-[150px]"
                       onClick={() => setSelect(0)}
@@ -165,7 +165,7 @@ const ProductDetails = ({ data }) => {
                       } cursor-pointer`}
                   >
                     <img
-                      src={`${backend_url}/uploads/${data?.images && data?.images[0]}`}
+                      src={`${data?.images[select].url}`}
                       alt=""
                       className="h-[150px]"
                       onClick={() => setSelect(1)}
@@ -235,15 +235,15 @@ const ProductDetails = ({ data }) => {
                   </span>
                 </div>
                 <div className=" flex items-center pt-8">
-                  <Link to={`/shop/${data?.shop.id}`}>
+                  <Link to={`/shop/preview/${data?.shop._id}`}>
                     <img
-                      src={`${backend_url}/uploads/${data?.shop?.avatar}`}
+                      src={`${sellers?.avatar?.url}`}
                       alt={data?.shop?.name || "Shop Avatar"}
                       className="w-[50px] h-[50px] rounded-full mr-2"
                     />
                   </Link>
                   <div className="pr-8">
-                    <Link to={`/shop/${data?.shop.id}`}>
+                    <Link to={`/shop/preview/${data?.shop._id}`}>
                       <h3 className={`${styles.shop_name} pb-1 pt-1`}>
                         {data.shop.name}
                       </h3>
@@ -333,7 +333,8 @@ const ProductDetailsInfo = ({ data, products, totalReviewsLength, totalRatings, 
           {(
             data?.reviews || []).map((item, index) => (
               <div className="w-full flex my-2" key={index}>
-                <img src={`${backend_url}/uploads/${item.user.avatar}`}
+                <img 
+                src={`${item?.user?.avatar?.url}`}
                   alt=""
                   className="w-[50px] h-[50px] rounded-full"
                 />
@@ -367,11 +368,7 @@ const ProductDetailsInfo = ({ data, products, totalReviewsLength, totalRatings, 
             <Link to={`/shop/${data.shop._id}`}>
               <div className="flex items-center">
                 <img
-                  src={
-                    data?.shop?.avatar
-                      ? `${backend_url}/uploads/${data.shop.avatar}`
-                      : "/default-avatar.png"
-                  }
+                  src={`${data?.shop?.avatar?.url}`}
                   className="w-[50px] h-[50px] rounded-full"
                   alt={data?.shop?.name || "Seller Avatar"}
                 />

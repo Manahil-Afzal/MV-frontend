@@ -33,7 +33,7 @@ export const eventReducer = createReducer(initialState, (builder) => {
      })
     .addCase("getAlleventsShopSuccess", (state,action) => {
           state.isLoading = false; 
-          state.shopEvents = action.payload;
+          state.allevents = action.payload;
      })
     .addCase("getAlleventsShopFailed", (state, action)=>{
           state.isLoading = false; 
