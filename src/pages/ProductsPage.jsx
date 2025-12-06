@@ -44,7 +44,7 @@ const ProductsPage = () => {
           {data && data.map((i, index) => <ProductCard data={i} key={index} />)}
         </div>
         {data && data.length === 0 ? (
-          <h1 className="text-center w-full font-extrabold text-4xl pb-[100px]">
+          <h1 className="text-center w-full font-extrabold text-[#F2A533] text-4xl pb-[100px]">
             No Products Found
           </h1>
         ) : null}

@@ -18,14 +18,17 @@ useEffect(() => {
     return (
     <div className={`${styles.section}`}>
       <div className={`${styles.heading}`}>
-        <h1 className="text-3xl font-bold">Popular Events</h1>
+        <h1 className="text-3xl text-[#417fa0] font-bold">Popular Events</h1>
       </div>
 
       <div className="w-full grid gap-4">
         {allevents && allevents.length > 0 ? (
-          allevents.map((event) => <EventCard data={event} key={event._id} />)
+          // allevents.map((event) => <EventCard data={event} key={event._id} />)
+            allevents.slice(0, 1).map((event) => (
+            <EventCard key={event._id} data={event} />
+          ))
         ) : (
-          <p className="text-[30px] text-center font-bold">
+          <p className="text-[30px] text-center text-[#F2A533] font-bold">
             No Events Available!
           </p>
         )}
